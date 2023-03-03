@@ -6,6 +6,11 @@ from tests.conftest import _make_region
 
 
 class TestGenerateBrackets:
+    """
+    These tests use naive tests of highest/lowest to make sure that we built the trees
+    correctly
+    """
+
     @pytest.mark.parametrize("geographic_region", GeographicRegion)
     def test_regional_winners_of_lowest_rank(
         self, geographic_region: GeographicRegion
@@ -63,3 +68,10 @@ class TestGenerateBrackets:
         # winner
         assert region.g15.rank_reg == 16
         assert region.winner.rank_reg == 16
+
+    @pytest.mark.parametrize("geographic_region", GeographicRegion)
+    def test_print_bracket(self, geographic_region: GeographicRegion) -> None:
+        """Prints the bracket outcomes, requires manual validation"""
+        region = _make_region(geographic_region.value, LowestWins())
+        region.print()
+        assert False, "still needs work!"

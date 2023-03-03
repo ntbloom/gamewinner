@@ -37,10 +37,11 @@ class Region:
         self.winner = self.g15
 
     def print(self) -> None:
+        """Print the columns nicely"""
         col0 = 0
-        col1 = 12
+        col1 = 10
         col2 = 20
-        col3 = 35
+        col3 = 30
         print(" " * col0, self.g1.name)
         print(" " * col1, self.g9.name)
         print(" " * col0, self.g2.name)
