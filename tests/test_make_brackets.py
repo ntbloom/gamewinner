@@ -1,15 +1,14 @@
 import pytest
 
-from gamewinner import GeographicRegion, Strategy
+from gamewinner import GeographicRegion
+from gamewinner.strategies import HighestWins
 from tests.conftest import _make_region
 
 
 class TestGenerateBrackets:
     @pytest.mark.parametrize("geographic_region", GeographicRegion)
-    def test_winners_of_game1(
-        self, geographic_region: GeographicRegion, strategy: Strategy
-    ) -> None:
-        region = _make_region(geographic_region.value, strategy)
+    def test_winners_of_game1(self, geographic_region: GeographicRegion) -> None:
+        region = _make_region(geographic_region.value, HighestWins())
         assert region.g1.rank_reg == 1
         assert region.g2.rank_reg == 8
         assert region.g3.rank_reg == 5
