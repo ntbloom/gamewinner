@@ -35,7 +35,7 @@ class Team:
         return self.name == other.name
 
     def __repr__(self) -> str:
-        return f"name={self.name}, region={self.region.value}, reg_rank={self.rank_reg}, nat_rank={self.rank_nat}"
+        return f"name={self.name}, region={self.region.value}, reg_rank={self.rank_reg}, nat_rank={self.rank_nat}"  # noqa
 
 
 class Strategy(ABC):
