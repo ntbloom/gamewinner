@@ -1,7 +1,8 @@
-from gamewinner import Strategy, Team
+from gamewinner.strategies.istrategy import IStrategy
+from gamewinner.team import Team
 
 
-class HighestWins(Strategy):
+class HighestWins(IStrategy):
     def pick(self, team1: Team, team2: Team) -> Team:
         assert team1.rank_nat != team2.rank_nat
         diff = team1.rank_reg - team2.rank_reg

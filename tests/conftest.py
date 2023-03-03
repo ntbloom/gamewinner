@@ -1,9 +1,11 @@
-from gamewinner import GeographicRegion, Region, Strategy, Team
+from gamewinner.games.region import Region
+from gamewinner.strategies.istrategy import IStrategy
+from gamewinner.team import GeographicRegion, Team
 
 nat_rank_counter = 1
 
 
-def _make_region(region_name: str, strategy: Strategy) -> Region:
+def _make_region(region_name: str, strategy: IStrategy) -> Region:
     region = GeographicRegion(region_name)
     teams: list[Team] = []
     for i in range(1, 17):

@@ -1,1 +1,3 @@
-from gamewinner.bracket.work_in_progress import *  # noqa
+from gamewinner.games.final_four import FinalFour  # noqa
+from gamewinner.games.region import Region  # noqa
+from gamewinner.team import GeographicRegion, Team  # noqa

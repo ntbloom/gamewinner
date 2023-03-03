@@ -1,7 +1,7 @@
 import pytest
 
-from gamewinner import GeographicRegion
 from gamewinner.strategies import HighestWins
+from gamewinner.team import GeographicRegion
 from tests.conftest import _make_region
 
 
