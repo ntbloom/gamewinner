@@ -68,7 +68,7 @@ class Region:
         self.g5 = self._pick(6, 11)
         self.g6 = self._pick(3, 14)
         self.g7 = self._pick(7, 10)
-        self.g8 = self._pick(8, 15)
+        self.g8 = self._pick(2, 15)
 
         # round 2
         self.g9 = self.strategy.pick(self.g1, self.g2)
