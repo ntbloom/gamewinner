@@ -26,10 +26,12 @@ class Team:
         self.region = region
         self.regional_rank = regional_rank
         self.national_rank = national_rank
-        for k, v in kwargs:
+        for k, v in kwargs.items():
             setattr(self, f"_{k}", v)
 
-    def __eq__(self, other: Self) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Team):
+            return NotImplemented
         return self.name == other.name
 
 
@@ -79,7 +81,7 @@ class Region:
         self.g15 = self.strategy.pick(self.g13, self.g14)
         self.winner = self.g15
 
-    def print(self):
+    def print(self) -> None:
         col0 = 0
         col1 = 12
         col2 = 20
