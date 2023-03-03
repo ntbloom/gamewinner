@@ -1,5 +1,5 @@
 test:
-	poetry run pytest
+	poetry run pytest --cov=gamewinner/
 
 precommit:
 	poetry run pre-commit run --all-files

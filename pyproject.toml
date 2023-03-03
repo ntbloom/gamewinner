@@ -15,7 +15,14 @@ isort = "*"
 mypy = "*"
 pre-commit = "*"
 pytest = "*"
+pytest-cov = "*"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line_length = 88

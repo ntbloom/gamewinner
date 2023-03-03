@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from enum import IntEnum, unique
-from typing import Any, Self
+from enum import Enum, unique
+from typing import Any
 
 
 @unique
-class GeographicRegion(IntEnum):
-    WEST = 0
-    EAST = 1
-    SOUTH = 2
-    MIDWEST = 3
+class GeographicRegion(Enum):
+    WEST = "West"
+    EAST = "East"
+    SOUTH = "South"
+    MIDWEST = "Midwest"
 
 
 class Team:
@@ -24,8 +24,8 @@ class Team:
     ):
         self.name = name
         self.region = region
-        self.regional_rank = regional_rank
-        self.national_rank = national_rank
+        self.rank_reg = regional_rank
+        self.rank_nat = national_rank
         for k, v in kwargs.items():
             setattr(self, f"_{k}", v)
 
@@ -33,6 +33,9 @@ class Team:
         if not isinstance(other, Team):
             return NotImplemented
         return self.name == other.name
+
+    def __repr__(self) -> str:
+        return f"name={self.name}, region={self.region.value}, reg_rank={self.rank_reg}, nat_rank={self.rank_nat}"
 
 
 class Strategy(ABC):
@@ -52,7 +55,7 @@ class Region:
         assert len(wildcards) == 2
         assert len(teams) == 16
         self.teams = teams
-        self.teams.sort(key=lambda x: x.regional_rank)
+        self.teams.sort(key=lambda x: x.rank_reg)
 
         self.strategy = strategy
         self._g0 = self.strategy.pick(wildcards[0], wildcards[1])
