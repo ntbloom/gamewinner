@@ -26,10 +26,5 @@ class Team:
         for k, v in kwargs.items():
             setattr(self, f"_{k}", v)
 
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Team):
-            return NotImplemented
-        return self.name == other.name
-
     def __repr__(self) -> str:
         return f"name={self.name}, region={self.region.value}, reg_rank={self.rank_reg}, nat_rank={self.rank_nat}"  # noqa

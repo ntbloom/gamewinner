@@ -1,62 +1,51 @@
+import logging
+
 from gamewinner.strategies import Strategy
-from gamewinner.team import Team
+from gamewinner.team import GeographicRegion, Team
 
 
 class Region:
-    def __init__(self, teams: list[Team], wildcards: list[Team], strategy: Strategy):
-        assert len(wildcards) == 2
+    def __init__(self, name: GeographicRegion, teams: list[Team], strategy: Strategy):
         assert len(teams) == 16
+        self.name = name
         self.teams = teams
         self.teams.sort(key=lambda x: x.rank_reg)
 
         self.strategy = strategy
-        self._g0 = self.strategy.pick(wildcards[0], wildcards[1])
+        self._log = logging.getLogger(__name__)
 
-        # round 1
-        self.g1 = self._pick(1, 16)
-        self.g2 = self._pick(8, 9)
-        self.g3 = self._pick(5, 12)
-        self.g4 = self._pick(4, 13)
-        self.g5 = self._pick(6, 11)
-        self.g6 = self._pick(3, 14)
-        self.g7 = self._pick(7, 10)
-        self.g8 = self._pick(2, 15)
+    def first_round(self) -> None:
+        self._log.debug(f"{self.name.value} first round")
 
-        # round 2
-        self.g9 = self.strategy.pick(self.g1, self.g2)
-        self.g10 = self.strategy.pick(self.g3, self.g4)
-        self.g11 = self.strategy.pick(self.g5, self.g6)
-        self.g12 = self.strategy.pick(self.g7, self.g8)
+        def _pick(one: int, two: int) -> tuple[Team, Team]:
+            return self._play(self.teams[one - 1], self.teams[two - 1])
 
-        # sweet 16
-        self.g13 = self.strategy.pick(self.g9, self.g10)
-        self.g14 = self.strategy.pick(self.g11, self.g12)
+        self.w1, self.l1 = _pick(1, 16)
+        self.w2, self.l2 = _pick(8, 9)
+        self.w3, self.l3 = _pick(5, 12)
+        self.w4, self.l4 = _pick(4, 13)
+        self.w5, self.l5 = _pick(6, 11)
+        self.w6, self.l6 = _pick(3, 14)
+        self.w7, self.l7 = _pick(7, 10)
+        self.w8, self.l8 = _pick(2, 15)
 
-        # elite 8
-        self.g15 = self.strategy.pick(self.g13, self.g14)
-        self.winner = self.g15
+    def second_round(self) -> None:
+        self._log.debug(f"{self.name.value} second round")
+        self.w9, self.l9 = self._play(self.w1, self.w2)
+        self.w10, self.l10 = self._play(self.w3, self.w4)
+        self.w11, self.l11 = self._play(self.w5, self.w6)
+        self.w12, self.l12 = self._play(self.w7, self.w8)
 
-    def print(self) -> None:
-        """Print the columns nicely"""
-        col0 = 0
-        col1 = 10
-        col2 = 20
-        col3 = 30
-        print(" " * col0, self.g1.name)
-        print(" " * col1, self.g9.name)
-        print(" " * col0, self.g2.name)
-        print(" " * col2, self.g13.name)
-        print(" " * col0, self.g3.name)
-        print(" " * col1, self.g10.name)
-        print(" " * col0, self.g4.name)
-        print(" " * col3, self.g15.name)
-        print(" " * col0, self.g5.name)
-        print(" " * col1, self.g11.name)
-        print(" " * col0, self.g6.name)
-        print(" " * col2, self.g14.name)
-        print(" " * col0, self.g7.name)
-        print(" " * col1, self.g12.name)
-        print(" " * col0, self.g8.name)
+    def sweet_sixteen(self) -> None:
+        self._log.debug(f"{self.name.value} sweet sixteen")
+        self.w13, self.l13 = self._play(self.w9, self.w10)
+        self.w14, self.l14 = self._play(self.w11, self.w12)
 
-    def _pick(self, one: int, two: int) -> Team:
-        return self.strategy.pick(self.teams[one - 1], self.teams[two - 1])
+    def elite_eight(self) -> None:
+        self._log.debug(f"{self.name.value} elite eight")
+        self.w15, self.l15 = self._play(self.w13, self.w14)
+        self.winner = self.w15
+
+    def _play(self, team1: Team, team2: Team) -> tuple[Team, Team]:
+        assert team1 is not None and team2 is not None
+        return self.strategy.pick(team1, team2)

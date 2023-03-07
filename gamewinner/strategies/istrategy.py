@@ -4,8 +4,27 @@ from gamewinner.team import Team
 
 
 class IStrategy(ABC):
+    def prepare(self) -> None:
+        """
+        Called before any games are played. This can be used to add datapoints
+        to any teams or further amend the strategy after the brackets have
+        been laid out.
+
+        It is not necessary to overload this method; the default is a no-op.
+        """
+        pass
+
+    def adjust(self) -> None:
+        """
+        Called after each round.  This can be used to amend strategies based on
+        the results of previous games.
+
+        It is not necessary to overload this method; the default is a no-op.
+        """
+        pass
+
     @abstractmethod
-    def pick(self, team1: Team, team2: Team) -> Team:
+    def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         """Pick a game winner"""
         return NotImplemented
 
