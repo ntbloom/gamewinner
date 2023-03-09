@@ -1,6 +1,11 @@
+from __future__ import annotations
+
+import csv
+from pathlib import Path
+
 from gamewinner.games.region import Region
-from gamewinner.strategies.istrategy import IStrategy
-from gamewinner.team import GeographicRegion
+from gamewinner.strategies.istrategy import Strategy
+from gamewinner.team import GeographicRegion, Team
 
 
 class Bracket:
@@ -10,7 +15,7 @@ class Bracket:
         east: Region,
         south: Region,
         midwest: Region,
-        strategy: IStrategy,
+        strategy: Strategy,
     ):
         self.west = west
         self.east = east
@@ -20,6 +25,58 @@ class Bracket:
         self.regions = tuple(region.value.lower() for region in GeographicRegion)
 
         self.strategy = strategy
+
+    @staticmethod
+    def create(teamfile: Path, strategy: Strategy) -> Bracket:
+        """Create a bracket from a CSV file"""
+        west_teams: list[Team] = []
+        east_teams: list[Team] = []
+        south_teams: list[Team] = []
+        midwest_teams: list[Team] = []
+        playoffs: list[Team] = []
+
+        with open(teamfile, "r") as f:
+            reader = csv.reader(f)
+            reader.__next__()
+            for row in reader:
+                name, region, rank, wins, losses = row
+                match region:
+                    case _ if "Playoff" in region:
+                        _region = region.split("-")[0]
+                        in_playoff = True
+                    case _:
+                        _region = region
+                        in_playoff = False
+                geographic_region = GeographicRegion(str(_region))
+                team = Team(
+                    name=name,
+                    region=geographic_region,
+                    rank=int(rank),
+                    wins=int(wins),
+                    losses=int(losses),
+                )
+                if in_playoff:
+                    playoffs.append(team)
+                else:
+                    eval(f"{geographic_region.value.lower()}_teams.append(team)")
+
+        # do any adjustments to the strategy now that we know who all the teams are
+        strategy.prepare()
+
+        playoffs.sort(key=lambda team: team.region.value)
+        first_playoff, _ = strategy.pick(playoffs[0], playoffs[1])
+        second_playoff, _ = strategy.pick(playoffs[2], playoffs[3])
+        third_playoff, _ = strategy.pick(playoffs[4], playoffs[5])
+        fourt_playoff, _ = strategy.pick(playoffs[6], playoffs[7])
+        for team in (first_playoff, second_playoff, third_playoff, fourt_playoff):
+            eval(f"{team.region.value.lower()}_teams.append(team)")
+
+        west = Region(GeographicRegion.WEST, west_teams, strategy)
+        east = Region(GeographicRegion.EAST, east_teams, strategy)
+        south = Region(GeographicRegion.SOUTH, south_teams, strategy)
+        midwest = Region(GeographicRegion.MIDWEST, midwest_teams, strategy)
+
+        return Bracket(west, east, south, midwest, strategy)
 
     def _play_round(self, round_name: str) -> None:
         self.strategy.adjust()
@@ -57,7 +114,6 @@ class Bracket:
         self.final_score = self.strategy.predict_score(self.winner, self.runner_up)
 
     def play(self) -> None:
-        self.strategy.prepare()
         self._first_round()
 
         self.strategy.adjust()

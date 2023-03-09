@@ -6,13 +6,17 @@ from gamewinner.team import GeographicRegion, Team
 
 class Region:
     def __init__(self, name: GeographicRegion, teams: list[Team], strategy: Strategy):
-        assert len(teams) == 16
+        self._log = logging.getLogger(__name__)
         self.name = name
         self.teams = teams
-        self.teams.sort(key=lambda x: x.rank_reg)
+        self.teams.sort(key=lambda x: x.rank)
 
         self.strategy = strategy
-        self._log = logging.getLogger(__name__)
+
+        # do some quick checking
+        assert len(teams) == 16, f"expected 16 teams, got {len(teams)}"
+        ranks = {team.rank for team in self.teams}
+        assert len(ranks) == 16, f"expected 16 unique ranks, got {len(ranks)}"
 
     def first_round(self) -> None:
         self._log.debug(f"{self.name.value} first round")

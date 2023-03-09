@@ -15,16 +15,24 @@ class Team:
         self,
         name: str,
         region: GeographicRegion,
-        regional_rank: int,
-        national_rank: int,
+        rank: int,
+        wins: int,
+        losses: int,
         **kwargs: Any,
     ):
         self.name = name
         self.region = region
-        self.rank_reg = regional_rank
-        self.rank_nat = national_rank
+        self.rank = rank
+        self.wins = wins
+        self.losses = losses
+        self.win_rate = self.wins / (self.wins + self.losses)
         for k, v in kwargs.items():
             setattr(self, f"_{k}", v)
 
     def __repr__(self) -> str:
-        return f"name={self.name}, region={self.region.value}, reg_rank={self.rank_reg}, nat_rank={self.rank_nat}"  # noqa
+        return (
+            f"{self.name}, "
+            f"{self.region.value}, "
+            f"#{self.rank}, "
+            f"({self.wins}-{self.losses})/{round(self.win_rate*100)}%"
+        )

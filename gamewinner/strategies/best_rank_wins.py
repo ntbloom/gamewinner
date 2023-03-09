@@ -9,17 +9,32 @@ class BestRankWins(IStrategy):
     """
 
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
-        assert team1.rank_nat != team2.rank_nat
-        if team1.rank_reg == team2.rank_reg:
-            if team1.rank_nat < team2.rank_nat:
+        if team1.rank == team2.rank:
+            if team1.win_rate == team2.win_rate:
+                if team1.wins == team2.wins:
+                    if team1.losses == team2.losses:
+                        # when in doubt pick the first team
+                        return team1, team2
+                    else:
+                        if team1.losses < team2.losses:
+                            return team1, team2
+                        else:
+                            return team2, team1
+                else:
+                    if team1.wins > team2.wins:
+                        return team1, team2
+                    else:
+                        return team2, team1
+            else:
+                if team1.win_rate > team2.win_rate:
+                    return team1, team2
+                else:
+                    return team2, team1
+        else:
+            if team1.rank < team2.rank:
                 return team1, team2
             else:
                 return team2, team1
-
-        if team1.rank_reg < team2.rank_reg:
-            return team1, team2
-        else:
-            return team2, team1
 
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         return 81, 67
