@@ -28,7 +28,8 @@ class Bracket:
 
     @staticmethod
     def create(teamfile: Path, strategy: Strategy) -> Bracket:
-        """Create a bracket from a CSV file"""
+        assert teamfile.exists()
+
         west_teams: list[Team] = []
         east_teams: list[Team] = []
         south_teams: list[Team] = []
@@ -131,6 +132,7 @@ class Bracket:
         self.strategy.adjust()
         self._final()
 
+        self.print()
+
     def print(self) -> None:
-        """Print the bracket on the page"""
         pass
