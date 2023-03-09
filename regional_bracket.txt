@@ -1,6 +1,0 @@
-G0 (playoff)
-
-G1 (1 v 16) G9 (G1 v G2) G2 (8 v 9) G13 (G9 v G10) G3 (5 v 12) G10 (G3 v G4) G4
-(4 v 13)  
- G15 (G13 v G14) G5 (6 v 11) G11 (G5 v G6) G6 (3 v 14)  
- G14 (G11 v G12) G7 (7 v 10) G12 (G7 v G8) G8 (2 v 15)
