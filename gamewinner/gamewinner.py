@@ -8,3 +8,4 @@ def play(year: int, strategy: Strategy) -> None:
     teamfile = Path(__file__).parent.joinpath("data").joinpath(f"{year}.csv")
     bracket = Bracket.create(teamfile, strategy)
     bracket.play()
+    bracket.print()

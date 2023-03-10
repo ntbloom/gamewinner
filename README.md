@@ -49,20 +49,25 @@ Texas Tech,West,3,25,9
 ...
 ```
 
+
+
+
 ### Define a Strategy
 
 Implement a class that inherits from the `IStrategy` interface defined in
 [istrategy.py](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/istrategy.py).
+Example strategies can be found in [gamewinner/strategies/](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/) (i.e. the classic [BestRankWins](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/best_rank_wins.py)).
+
 The class has 4 main methods:
 
-### `prepare() -> None`
+### `prepare(teams: dict[str,Team]) -> None`
 
 - gets called after the teams are loaded into the bracket but before any games
   (including first four) are played
 - used to do any external data fetching, rank teams, etc.
 - defaults to no-op if you don't override the method
 
-### `adjust() -> None`
+### `adjust(teams: dict[str,Team]) -> None`
 
 - gets called before each round, including the first four
 - adjust your strategy to accomodate "Cinderella factor" or how to recover after
@@ -77,6 +82,7 @@ The class has 4 main methods:
 ### `predict_score(winner: Team, loser: Team) -> tuple[int, int]`
 
 - predict the score of a game, generally reserved for the final game
+
 
 ## Run the model
 

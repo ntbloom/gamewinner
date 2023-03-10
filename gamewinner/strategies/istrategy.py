@@ -1,10 +1,13 @@
+import logging
 from abc import ABC, abstractmethod
 
 from gamewinner.team import Team
 
 
 class IStrategy(ABC):
-    def prepare(self) -> None:
+    _log = logging.getLogger(__name__)
+
+    def prepare(self, teams: dict[str, Team]) -> None:
         """
         Called before any games are played, including the first four. This can
         be used to add datapoints to any teams or further amend the strategy
@@ -14,7 +17,7 @@ class IStrategy(ABC):
         """
         pass
 
-    def adjust(self) -> None:
+    def adjust(self, teams: dict[str, Team]) -> None:
         """
         Called before each round, including in between the first four and the
         first round.  This can be used to amend strategies based on the results

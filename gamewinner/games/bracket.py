@@ -22,9 +22,22 @@ class Bracket:
         self.south = south
         self.midwest = midwest
 
-        self.regions = tuple(region.value.lower() for region in GeographicRegion)
+        self._teams = {
+            team.name: team
+            for team in (
+                self.west.teams
+                + self.east.teams
+                + self.south.teams
+                + self.midwest.teams
+            )
+        }
+        self._region_names = tuple(region.value.lower() for region in GeographicRegion)
 
         self.strategy = strategy
+
+    @property
+    def teams(self) -> dict[str, Team]:
+        return self._teams
 
     @staticmethod
     def create(teamfile: Path, strategy: Strategy) -> Bracket:
@@ -35,6 +48,7 @@ class Bracket:
         south_teams: list[Team] = []
         midwest_teams: list[Team] = []
         playoffs: list[Team] = []
+        teams: dict[str, Team] = {}
 
         with open(teamfile, "r") as f:
             reader = csv.reader(f)
@@ -56,13 +70,14 @@ class Bracket:
                     wins=int(wins),
                     losses=int(losses),
                 )
+                teams[name] = team
                 if in_playoff:
                     playoffs.append(team)
                 else:
                     eval(f"{geographic_region.value.lower()}_teams.append(team)")
 
         # do any adjustments to the strategy now that we know who all the teams are
-        strategy.prepare()
+        strategy.prepare(teams)
 
         playoffs.sort(key=lambda team: team.region.value)
         first_playoff, _ = strategy.pick(playoffs[0], playoffs[1])
@@ -80,8 +95,8 @@ class Bracket:
         return Bracket(west, east, south, midwest, strategy)
 
     def _play_round(self, round_name: str) -> None:
-        self.strategy.adjust()
-        for reg in self.regions:
+        self.strategy.adjust(self.teams)
+        for reg in self._region_names:
             cmd = f"self.{reg}.{round_name}()"
             eval(cmd)
 
@@ -108,7 +123,7 @@ class Bracket:
         )
 
     def _final(self) -> None:
-        self.strategy.adjust()
+        self.strategy.adjust(self.teams)
         self.winner, self.runner_up = self.strategy.pick(
             self.winner_west_east, self.winner_south_midwest
         )
@@ -116,22 +131,11 @@ class Bracket:
 
     def play(self) -> None:
         self._first_round()
-
-        self.strategy.adjust()
         self._second_round()
-
-        self.strategy.adjust()
         self._sweet_sixteen()
-
-        self.strategy.adjust()
         self._elite_eight()
-
-        self.strategy.adjust()
         self._final_four()
-
-        self.strategy.adjust()
         self._final()
-
         self.print()
 
     def print(self) -> None:

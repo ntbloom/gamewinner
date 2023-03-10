@@ -1,9 +1,16 @@
 from pathlib import Path
 
 import pytest
+from _pytest.python import Metafunc
 
 from gamewinner.games.bracket import Bracket
-from gamewinner.strategies import BestRankWins, WorstRankWins
+from gamewinner.strategies import (
+    BestRankWins,
+    SlothfireSteady,
+    Strategy,
+    VanillaMiya,
+    WorstRankWins,
+)
 from gamewinner.team import Team
 
 
@@ -25,10 +32,29 @@ def worst_wins_bracket(teamfile: Path) -> Bracket:
     return Bracket.create(teamfile, WorstRankWins())
 
 
+def pytest_generate_tests(metafunc: Metafunc) -> None:
+    fixture = "strategy"
+    if fixture in metafunc.fixturenames:
+        available_strategies = (
+            BestRankWins(),
+            WorstRankWins(),
+            VanillaMiya(),
+            SlothfireSteady(),
+        )
+        metafunc.parametrize(fixture, available_strategies, scope="function")
+
+
+@pytest.fixture(scope="function")
+def strategized_bracket(teamfile: Path, strategy: Strategy) -> Bracket:
+    bracket = Bracket.create(teamfile, strategy)
+    bracket.play()
+    return bracket
+
+
 best_worst = (
     ("Notre Dame", "Rutgers"),
-    ("Texas A&M CC", "Texas Southern"),
-    ("Bryant", "Wright St."),
+    ("Texas A&M-Corpus Christi", "Texas Southern"),
+    ("Bryant", "Wright State"),
     ("Wyoming", "Indiana"),
 )
 
@@ -92,10 +118,16 @@ class TestBracketWorstWins:
         bracket.play()
 
         # should be all #1s
-        assert bracket.west.winner.name == "Georgia St."
-        assert bracket.east.winner.name == "Norfolk St."
-        assert bracket.south.winner.name == "Wright St."
+        assert bracket.west.winner.name == "Georgia State"
+        assert bracket.east.winner.name == "Norfolk State"
+        assert bracket.south.winner.name == "Wright State"
         assert bracket.midwest.winner.name == "Texas Southern"
 
         assert bracket.winner.name == "Texas Southern"
-        assert bracket.runner_up.name == "Georgia St."
+        assert bracket.runner_up.name == "Georgia State"
+
+
+class TestStrategiesArePlayable:
+    def test_the_final_game_happens(self, strategized_bracket: Bracket) -> None:
+        assert strategized_bracket.winner
+        assert strategized_bracket.runner_up
