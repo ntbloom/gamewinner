@@ -88,7 +88,6 @@ class TestBracketBestWins:
         bracket.play()
 
         region = bracket.west.name.value.lower()
-        print(region)
         gameorder = (
             ("Gonzaga", "Georgia State"),
             ("Boise State", "Memphis"),
