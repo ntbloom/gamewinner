@@ -72,6 +72,17 @@ class TestBracketBestWins:
         bracket = best_wins_bracket
         bracket.play()
 
+        first_four = [
+            (matchup[0].name, matchup[1].name) for matchup in bracket.first_four
+        ]
+        for matchup in (
+            ("Texas A&M-Corpus Christi", "Texas Southern"),
+            ("Wyoming", "Indiana"),
+            ("Bryant", "Wright State"),
+            ("Notre Dame", "Rutgers"),
+        ):
+            assert matchup in first_four
+
         teams = {
             team.name
             for team in bracket.west.teams
