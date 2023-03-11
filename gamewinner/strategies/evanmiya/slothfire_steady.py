@@ -20,7 +20,7 @@ class SlothfireSteady(IEvanMiyaStrategy):
             + 0.5 * self._rank_to_percentile(team.evanmiyaTempoRank, reverse=True)
             + 0.3 * self._rank_to_percentile(team.evanmiyaOffRank)
             + 0.3 * self._rank_to_percentile(team.evanmiyaRank)
-            + team.evanmiyaKillShotsAllowedPerGame
+            - team.evanmiyaKillShotsAllowedPerGame
         )
 
         # upset factor

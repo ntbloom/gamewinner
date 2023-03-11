@@ -12,4 +12,4 @@ class VanillaMiya(IEvanMiyaStrategy):
 
     @no_type_check
     def _team_metric(self, team: Team) -> float:
-        return self._rank_to_percentile(team.evanmiyaDefRank)
+        return self._rank_to_percentile(team.evanmiyaRank)
