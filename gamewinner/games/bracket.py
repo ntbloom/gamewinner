@@ -20,6 +20,8 @@ class Bracket:
         midwest: Region,
         strategy: Strategy,
     ):
+        self._played = False
+
         self.first_four = first_four
         self.west = west
         self.east = east
@@ -145,8 +147,23 @@ class Bracket:
         self._elite_eight()
         self._final_four()
         self._final()
+        self._played = True
 
     def print(self) -> None:
+        winning_color = "green"
+        losing_color = "bright_black"
+        start_win = f"[{winning_color}]"
+        end_win = f"[/{winning_color}]"
+        start_lose = f"[{losing_color}]"
+        end_lose = f"[/{losing_color}]"
+
+        assert self._played, "Must play bracket before printing!"
         rprint(
-            f"[bold]Final prediction for {self.strategy.name}: [green]{self.winner} {self.final_score[0]}[/green] - [red]{self.runner_up} {self.final_score[1]}[/red]"  # noqa
+            f"[bold]Final prediction for {self.strategy.name}: {start_win}{self.winner} {self.final_score[0]}{end_win} - {start_lose}{self.runner_up} {self.final_score[1]}{end_lose}"  # noqa
         )
+
+        # first four
+        rprint()
+        rprint("[bold]First Four:")
+        for game in self.first_four:
+            rprint(f"{start_win}{game[0]}{end_win}/{start_lose}{game[1]}{end_lose}")
