@@ -7,8 +7,13 @@ from gamewinner.team import Team
 
 class TheCuts23(IEvanMiyaStrategy):
     """
-    Uses all default IEvanMiyaStrategy methods
-    self._team_metric() returns overal Evan Miya rank
+    The Inuagural Effort by The Mind Behind The Cuts, Dan H Cook III
+
+    Heavily based on BPR, but with a large randomness factor added as well
+
+    Additional weighting on Resume Rank and a little extra random bonus 
+    weighted on the inverse of Home Rank (i.e. you get a slight penalty 
+    for being significantly better at home than on the road)
     """
 
     @no_type_check
