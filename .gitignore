@@ -7,3 +7,6 @@ __pycache__/
 poetry.lock
 .pytest_cache/
 .mypy_cache/
+.DS_Store
+scratch_seth/
+

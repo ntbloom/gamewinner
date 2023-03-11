@@ -12,14 +12,8 @@ class BestRankWins(IStrategy):
         if team1.rank == team2.rank:
             if team1.win_rate == team2.win_rate:
                 if team1.wins == team2.wins:
-                    if team1.losses == team2.losses:
-                        # when in doubt pick the first team
-                        return team1, team2
-                    else:
-                        if team1.losses < team2.losses:
-                            return team1, team2
-                        else:
-                            return team2, team1
+                    # when in doubt pick the first team
+                    return team1, team2
                 else:
                     if team1.wins > team2.wins:
                         return team1, team2

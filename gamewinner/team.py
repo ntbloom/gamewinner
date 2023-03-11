@@ -30,9 +30,9 @@ class Team:
             setattr(self, f"_{k}", v)
 
     def __repr__(self) -> str:
-        return (
-            f"{self.name}, "
-            f"{self.region.value}, "
-            f"#{self.rank}, "
-            f"({self.wins}-{self.losses})/{round(self.win_rate*100)}%"
-        )
+        return f"{self.rank} {self.name}"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Team):
+            return NotImplemented
+        return self.name == other.name
