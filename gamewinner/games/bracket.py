@@ -38,6 +38,11 @@ class Bracket:
             )
         }
         self._region_names = tuple(region.value.lower() for region in GeographicRegion)
+        self.regions = (self.west, self.east, self.south, self.midwest)
+
+        # colors for pretty printing
+        self._winning_team_color = "green"
+        self._losing_team_color = "bright_black"
 
         self.strategy = strategy
 
@@ -150,20 +155,29 @@ class Bracket:
         self._played = True
 
     def print(self) -> None:
-        winning_color = "green"
-        losing_color = "bright_black"
-        start_win = f"[{winning_color}]"
-        end_win = f"[/{winning_color}]"
-        start_lose = f"[{losing_color}]"
-        end_lose = f"[/{losing_color}]"
-
         assert self._played, "Must play bracket before printing!"
-        rprint(
-            f"[bold]Final prediction for {self.strategy.name}: {start_win}{self.winner} {self.final_score[0]}{end_win} - {start_lose}{self.runner_up} {self.final_score[1]}{end_lose}"  # noqa
-        )
+        rprint(f"[bold]Final Prediction for {self.strategy.name}")
+        rprint(self._print_game(self.winner, self.runner_up))
+        rprint(f"Final score: {self.final_score[0]},{self.final_score[1]}")
 
         # first four
         rprint()
         rprint("[bold]First Four:")
         for game in self.first_four:
-            rprint(f"{start_win}{game[0]}{end_win}/{start_lose}{game[1]}{end_lose}")
+            rprint(self._print_game(*game))
+
+        rprint()
+
+        region = "west"
+        rprint("[red bold]West Region")
+        for i in range(1, 9):
+            winner = eval(f"self.{region}.w{i}")
+            loser = eval(f"self.{region}.l{i}")
+            rprint(self._print_game(winner, loser))
+
+    def _print_game(self, winner: Team, loser: Team) -> str:
+        start_win = f"[{self._winning_team_color}]"
+        end_win = f"[/{self._winning_team_color}]"
+        start_lose = f"[{self._losing_team_color}]"
+        end_lose = f"[/{self._losing_team_color}]"
+        return f"{start_win}{winner}{end_win}-{start_lose}{loser}{end_lose}"
