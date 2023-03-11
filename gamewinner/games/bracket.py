@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from rich import print as rprint
+from rich.console import Console
 
 from gamewinner.games.region import Region
 from gamewinner.strategies.istrategy import Strategy
@@ -40,11 +40,12 @@ class Bracket:
         self._region_names = tuple(region.value.lower() for region in GeographicRegion)
         self.regions = (self.west, self.east, self.south, self.midwest)
 
-        # colors for pretty printing
+        self.strategy = strategy
+
+        # initialize the console for pretty printing
+        self._console = Console()
         self._winning_team_color = "green"
         self._losing_team_color = "bright_black"
-
-        self.strategy = strategy
 
     @property
     def teams(self) -> dict[str, Team]:
@@ -156,24 +157,24 @@ class Bracket:
 
     def print(self) -> None:
         assert self._played, "Must play bracket before printing!"
-        rprint(f"[bold]Final Prediction for {self.strategy.name}")
-        rprint(self._print_game(self.winner, self.runner_up))
-        rprint(f"Final score: {self.final_score[0]},{self.final_score[1]}")
+        self._console.print(f"[bold]Final Prediction for {self.strategy.name}")
+        self._console.print(self._print_game(self.winner, self.runner_up))
+        self._console.print(f"Final score: {self.final_score[0]},{self.final_score[1]}")
 
         # first four
-        rprint()
-        rprint("[bold]First Four:")
+        self._console.print()
+        self._console.print("[bold]First Four:")
         for game in self.first_four:
-            rprint(self._print_game(*game))
+            self._console.print(self._print_game(*game))
 
-        rprint()
+        self._console.print()
 
         region = "west"
-        rprint("[red bold]West Region")
+        self._console.print("[red bold]West Region")
         for i in range(1, 9):
             winner = eval(f"self.{region}.w{i}")
             loser = eval(f"self.{region}.l{i}")
-            rprint(self._print_game(winner, loser))
+            self._console.print(self._print_game(winner, loser))
 
     def _print_game(self, winner: Team, loser: Team) -> str:
         start_win = f"[{self._winning_team_color}]"
