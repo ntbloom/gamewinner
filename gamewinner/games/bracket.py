@@ -82,11 +82,16 @@ class Bracket:
         strategy.prepare(teams)
 
         playoffs.sort(key=lambda team: team.region.value)
-        first_playoff, _ = strategy.pick(playoffs[0], playoffs[1])
-        second_playoff, _ = strategy.pick(playoffs[2], playoffs[3])
-        third_playoff, _ = strategy.pick(playoffs[4], playoffs[5])
-        fourt_playoff, _ = strategy.pick(playoffs[6], playoffs[7])
-        for team in (first_playoff, second_playoff, third_playoff, fourt_playoff):
+        playoff1_winner, playoff1_loser = strategy.pick(playoffs[0], playoffs[1])
+        playoff2_winner, playoff2_loser = strategy.pick(playoffs[2], playoffs[3])
+        playoff3_winner, playoff3_loser = strategy.pick(playoffs[4], playoffs[5])
+        playoff4_winner, playoff4_loser = strategy.pick(playoffs[6], playoffs[7])
+        for team in (
+            playoff1_winner,
+            playoff2_winner,
+            playoff3_winner,
+            playoff4_winner,
+        ):
             eval(f"{team.region.value.lower()}_teams.append(team)")
 
         west = Region(GeographicRegion.WEST, west_teams, strategy)

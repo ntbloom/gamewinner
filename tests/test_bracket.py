@@ -82,6 +82,30 @@ class TestBracketBestWins:
         assert winner in teams
         assert loser not in teams
 
+    def test_all_first_round_matchups(self, best_wins_bracket: Bracket) -> None:
+        """Make sure we set out the games in right order"""
+        bracket = best_wins_bracket
+        bracket.play()
+
+        region = bracket.west.name.value.lower()
+        print(region)
+        gameorder = (
+            ("Gonzaga", "Georgia State"),
+            ("Boise State", "Memphis"),
+            ("Connecticut", "New Mexico State"),
+            ("Arkansas", "Vermont"),
+            ("Alabama", "Notre Dame"),
+            ("Texas Tech", "Montana State"),
+            ("Michigan State", "Davidson"),
+            ("Duke", "Cal State Fullerton"),
+        )
+        for idx, teams in enumerate(gameorder):
+            gamenum = idx + 1
+            winner = eval(f"bracket.{region}.w{gamenum}.name")
+            loser = eval(f"bracket.{region}.l{gamenum}.name")
+            assert winner == teams[0]
+            assert loser == teams[1]
+
     def test_bracket_with_best_wins(self, best_wins_bracket: Bracket) -> None:
         bracket = best_wins_bracket
         bracket.play()
