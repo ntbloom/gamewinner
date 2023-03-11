@@ -1,57 +1,9 @@
-from pathlib import Path
-
 import pytest
-from _pytest.python import Metafunc
 
 from gamewinner.games.bracket import Bracket
-from gamewinner.strategies import (
-    BestRankWins,
-    SlothfireSteady,
-    Strategy,
-    VanillaMiya,
-    WorstRankWins,
-)
 from gamewinner.team import Team
 
-
-@pytest.fixture(scope="class")
-def teamfile() -> Path:
-    """Test team file to use"""
-    games2022 = Path(__file__).parent.parent.joinpath("data").joinpath("2022.csv")
-    assert games2022.exists()
-    return games2022
-
-
-@pytest.fixture(scope="class")
-def best_wins_bracket(teamfile: Path) -> Bracket:
-    return Bracket.create(teamfile, BestRankWins())
-
-
-@pytest.fixture(scope="class")
-def worst_wins_bracket(teamfile: Path) -> Bracket:
-    return Bracket.create(teamfile, WorstRankWins())
-
-
-def pytest_generate_tests(metafunc: Metafunc) -> None:
-    fixture = "strategy"
-    if fixture in metafunc.fixturenames:
-        available_strategies = (
-            BestRankWins(),
-            WorstRankWins(),
-            VanillaMiya(),
-            SlothfireSteady(),
-        )
-        metafunc.parametrize(fixture, available_strategies, scope="function")
-
-
-@pytest.fixture(scope="function")
-def strategized_bracket(teamfile: Path, strategy: Strategy) -> Bracket:
-    bracket = Bracket.create(teamfile, strategy)
-    bracket.play()
-    return bracket
-
-
-best_worst = (
+first_four = (
     ("Notre Dame", "Rutgers"),
     ("Texas A&M-Corpus Christi", "Texas Southern"),
     ("Bryant", "Wright State"),
@@ -64,7 +16,7 @@ class TestBracketBestWins:
         best_wins_bracket.play()
         print(best_wins_bracket.winner)
 
-    @pytest.mark.parametrize("winner,loser", best_worst)
+    @pytest.mark.parametrize("winner,loser", first_four)
     def test_playoffs(
         self, best_wins_bracket: Bracket, winner: Team, loser: Team
     ) -> None:
@@ -96,7 +48,7 @@ class TestBracketBestWins:
 
 
 class TestBracketWorstWins:
-    @pytest.mark.parametrize("best,worst", best_worst)
+    @pytest.mark.parametrize("best,worst", first_four)
     def test_playoffs(
         self, worst_wins_bracket: Bracket, best: Team, worst: Team
     ) -> None:
