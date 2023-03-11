@@ -95,7 +95,7 @@ pretty much any system.
 from gamewinner import gamewinner
 from yourlib.strategies import YourFavoriteStrategy
 
-gamewinner.play(year=2023, strategy = YourFavoriteStrategy())
+gamewinner.play(year=2023, strategy=YourFavoriteStrategy())
 ```
 
 That's it. Good luck!

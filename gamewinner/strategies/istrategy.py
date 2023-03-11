@@ -7,6 +7,10 @@ from gamewinner.team import Team
 class IStrategy(ABC):
     _log = logging.getLogger(__name__)
 
+    @property
+    def name(self) -> str:
+        return NotImplemented
+
     def prepare(self, teams: dict[str, Team]) -> None:
         """
         Called before any games are played, including the first four. This can

@@ -3,6 +3,8 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
+from rich import print as rprint
+
 from gamewinner.games.region import Region
 from gamewinner.strategies.istrategy import Strategy
 from gamewinner.team import GeographicRegion, Team
@@ -41,7 +43,7 @@ class Bracket:
 
     @staticmethod
     def create(teamfile: Path, strategy: Strategy) -> Bracket:
-        assert teamfile.exists()
+        assert teamfile.exists(), f"Illegal file: {str(teamfile)}"
 
         west_teams: list[Team] = []
         east_teams: list[Team] = []
@@ -136,7 +138,8 @@ class Bracket:
         self._elite_eight()
         self._final_four()
         self._final()
-        self.print()
 
     def print(self) -> None:
-        pass
+        rprint(
+            f"[bold]Final prediction for {self.strategy.name}: [green]{self.winner} {self.final_score[0]}[/green] - [red]{self.runner_up} {self.final_score[1]}[/red]"  # noqa
+        )

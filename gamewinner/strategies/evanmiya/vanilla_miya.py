@@ -10,6 +10,10 @@ class VanillaMiya(IEvanMiyaStrategy):
     self._team_metric() returns overal Evan Miya rank
     """
 
+    @property
+    def name(self) -> str:
+        return "Vanilla Miya"
+
     @no_type_check
     def _team_metric(self, team: Team) -> float:
         return self._rank_to_percentile(team.evanmiyaDefRank)

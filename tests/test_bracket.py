@@ -41,7 +41,12 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
             VanillaMiya(),
             SlothfireSteady(),
         )
-        metafunc.parametrize(fixture, available_strategies, scope="function")
+        metafunc.parametrize(
+            fixture,
+            available_strategies,
+            scope="function",
+            ids=(strat.name.replace(" ", "").lower() for strat in available_strategies),
+        )
 
 
 @pytest.fixture(scope="function")
@@ -60,10 +65,6 @@ best_worst = (
 
 
 class TestBracketBestWins:
-    def test_print_team(self, best_wins_bracket: Bracket) -> None:
-        best_wins_bracket.play()
-        print(best_wins_bracket.winner)
-
     @pytest.mark.parametrize("winner,loser", best_worst)
     def test_playoffs(
         self, best_wins_bracket: Bracket, winner: Team, loser: Team
@@ -127,7 +128,12 @@ class TestBracketWorstWins:
         assert bracket.runner_up.name == "Georgia State"
 
 
-class TestStrategiesArePlayable:
+class TestAllStrategies:
     def test_the_final_game_happens(self, strategized_bracket: Bracket) -> None:
         assert strategized_bracket.winner
         assert strategized_bracket.runner_up
+
+
+class TestPrintBrackets:
+    def test_print_bracket(self, strategized_bracket: Bracket) -> None:
+        strategized_bracket.print()
