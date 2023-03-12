@@ -5,6 +5,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: install packages
+      - uses: actions/checkout@v3
       - run: |
           echo "Hello world"
