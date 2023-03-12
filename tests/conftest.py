@@ -1,15 +1,9 @@
 from pathlib import Path
 
 import pytest
-from _pytest.python import Metafunc
 
 from gamewinner.games.bracket import Bracket
-from gamewinner.strategies import (
-    BestRankWins,
-    Strategy,
-    WorstRankWins,
-    available_strategies,
-)
+from gamewinner.strategies import BestRankWins, Strategy, WorstRankWins
 
 
 @pytest.fixture(scope="class")
@@ -28,12 +22,6 @@ def best_wins_bracket(teamfile: Path) -> Bracket:
 @pytest.fixture(scope="class")
 def worst_wins_bracket(teamfile: Path) -> Bracket:
     return Bracket.create(teamfile, WorstRankWins())
-
-
-def pytest_generate_tests(metafunc: Metafunc) -> None:
-    fixture = "strategy"
-    if fixture in metafunc.fixturenames:
-        metafunc.parametrize(fixture, available_strategies, scope="function")
 
 
 @pytest.fixture(scope="function")

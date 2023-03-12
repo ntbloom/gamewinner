@@ -13,6 +13,10 @@ class SlothfireSteady(IEvanMiyaStrategy):
     In theory, this would pick UVa high, but we'll see what the numbers say...
     """
 
+    @property
+    def name(self) -> str:
+        return "SlothFireSteady"
+
     @no_type_check
     def _team_metric(self, team: Team) -> float:
         overall_score = (

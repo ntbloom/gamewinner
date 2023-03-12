@@ -7,6 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+rich = "*"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -20,6 +21,9 @@ pytest-cov = "*"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+play = "gamewinner.gamewinner:main"
 
 [tool.isort]
 profile = "black"

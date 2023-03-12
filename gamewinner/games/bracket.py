@@ -11,12 +11,16 @@ from gamewinner.team import GeographicRegion, Team
 class Bracket:
     def __init__(
         self,
+        first_four: list[tuple[Team, Team]],
         west: Region,
         east: Region,
         south: Region,
         midwest: Region,
         strategy: Strategy,
     ):
+        self.played = False
+
+        self.first_four = first_four
         self.west = west
         self.east = east
         self.south = south
@@ -32,6 +36,7 @@ class Bracket:
             )
         }
         self._region_names = tuple(region.value.lower() for region in GeographicRegion)
+        self.regions = (self.west, self.east, self.south, self.midwest)
 
         self.strategy = strategy
 
@@ -41,7 +46,7 @@ class Bracket:
 
     @staticmethod
     def create(teamfile: Path, strategy: Strategy) -> Bracket:
-        assert teamfile.exists()
+        assert teamfile.exists(), f"Illegal file: {str(teamfile)}"
 
         west_teams: list[Team] = []
         east_teams: list[Team] = []
@@ -79,20 +84,25 @@ class Bracket:
         # do any adjustments to the strategy now that we know who all the teams are
         strategy.prepare(teams)
 
+        # play the playoffs, add the teams to the regions accordingly
         playoffs.sort(key=lambda team: team.region.value)
-        first_playoff, _ = strategy.pick(playoffs[0], playoffs[1])
-        second_playoff, _ = strategy.pick(playoffs[2], playoffs[3])
-        third_playoff, _ = strategy.pick(playoffs[4], playoffs[5])
-        fourt_playoff, _ = strategy.pick(playoffs[6], playoffs[7])
-        for team in (first_playoff, second_playoff, third_playoff, fourt_playoff):
-            eval(f"{team.region.value.lower()}_teams.append(team)")
+        first_four: list[tuple[Team, Team]] = []
+        for order in [
+            (0, 1),
+            (2, 3),
+            (4, 5),
+            (6, 7),
+        ]:
+            first_four.append(strategy.pick(playoffs[order[0]], playoffs[order[1]]))
+        for t in first_four:
+            eval(f"{t[0].region.value.lower()}_teams.append(t[0])")
 
         west = Region(GeographicRegion.WEST, west_teams, strategy)
         east = Region(GeographicRegion.EAST, east_teams, strategy)
         south = Region(GeographicRegion.SOUTH, south_teams, strategy)
         midwest = Region(GeographicRegion.MIDWEST, midwest_teams, strategy)
 
-        return Bracket(west, east, south, midwest, strategy)
+        return Bracket(first_four, west, east, south, midwest, strategy)
 
     def _play_round(self, round_name: str) -> None:
         self.strategy.adjust(self.teams)
@@ -136,7 +146,4 @@ class Bracket:
         self._elite_eight()
         self._final_four()
         self._final()
-        self.print()
-
-    def print(self) -> None:
-        pass
+        self.played = True

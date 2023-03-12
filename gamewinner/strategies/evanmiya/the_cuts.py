@@ -16,6 +16,10 @@ class TheCuts23(IEvanMiyaStrategy):
     for being significantly better at home than on the road)
     """
 
+    @property
+    def name(self) -> str:
+        return "TheCuts23"
+
     @no_type_check
     def _team_metric(self, team: Team) -> float:
         overall_score = (

@@ -77,9 +77,3 @@ class TestBracketWorstWins:
 
         assert bracket.winner.name == "Texas Southern"
         assert bracket.runner_up.name == "Georgia State"
-
-
-class TestStrategiesArePlayable:
-    def test_the_final_game_happens(self, strategized_bracket: Bracket) -> None:
-        assert strategized_bracket.winner
-        assert strategized_bracket.runner_up

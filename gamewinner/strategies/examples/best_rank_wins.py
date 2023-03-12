@@ -8,6 +8,10 @@ class BestRankWins(IStrategy):
     has a lower national rank wins.
     """
 
+    @property
+    def name(self) -> str:
+        return "BestRankWins"
+
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         if team1.rank == team2.rank:
             if team1.win_rate == team2.win_rate:
