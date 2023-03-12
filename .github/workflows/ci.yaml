@@ -1,0 +1,10 @@
+name: gamewinner
+run-name: ${{ github.actor }} running CI for gamewinner
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install packages
+      - run: |
+          echo "Hello world"
