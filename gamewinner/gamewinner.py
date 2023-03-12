@@ -45,13 +45,13 @@ def main() -> None:
 
     try:
         strategy = eval(f"strategies.{args.strategy}()")
-    except NameError:
+    except AttributeError:
         raise ValueError(
             f"Unsupported strategy {args.strategy}, legal choices = {legal_strategies}"
         )
     try:
         printer = eval(f"printers.{args.printer}")
-    except NameError:
+    except AttributeError:
         raise ValueError(
             f"Unsupported printer {args.printer}, legal choices = {legal_printers}"
         )

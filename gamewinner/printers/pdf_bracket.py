@@ -1,16 +1,12 @@
-from abc import ABC, abstractmethod
 from typing import Any
 
 from gamewinner.games.bracket import Bracket
+from gamewinner.printers.iprinter import IPrinter
 
 
-class IPrinter(ABC):
-    name: str = NotImplemented
+class PdfBracket(IPrinter):
+    name = "PdfBracket"
 
     @staticmethod
-    @abstractmethod
     def print(bracket: Bracket, *args: Any, **kwargs: Any) -> None:
         raise NotImplementedError
-
-
-Printer = IPrinter
