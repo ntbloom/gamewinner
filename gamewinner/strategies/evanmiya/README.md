@@ -1,9 +1,28 @@
 # Evan Miya Strategy
 
-Starting with the 2023 season, Evan Miya data as of the Conference Championship
-Week has been added. Details below, along with attribute names.
+This strategy adds Evan Miya data (from the "Team Ratings" section of [evinmiya.com](https://evanmiya.com/)) for use in `pick()` methods. Details on the available data, along with attribute names, is below under "Data Definitions".
 
-**Glossary:**
+# Defining a strategy
+
+This library defines an `IEvanMiyaStrategy` class, which your strategy will inherit from. This class loads the data for use, and defines a default `pick()` method, which runs both teams through a `_team_metric()` method and picks the team with the highest resulting score. 
+
+## Helper methods
+
+### `_team_metric()`
+
+The simplest path to designing a new strategy is to implement a custom `_team_metric()` algorithm and inherit the defaults for everything else. **See example strategies below** for syntax and inspiration.
+
+### `_rank_to_percentile()`
+Much of the Evan Miya data is in the form of ranks, with the best team for the relevant category having a rank of 1 and worst being ranked 335(?). However, ranks can be obnoxious to do math with. The [`_rank_to_percentile()`](https://github.com/ntbloom/gamewinner/blob/a26d1f2/gamewinner/strategies/evanmiya/ievanmiya.py#L115-L119) method translates these ranks to percentiles: rank 1 becomes `1.0`, rank 2 becomes `0.998...`, etc. and all ranks below 250 become `0.0`. You can also use the `reverse` argument, for example if you want team with a _lower_ `evanmiyaHomeRank` to get a bonus. Several of the examples below use this method.
+
+## Example strategies
+
+* [VanillaMiya](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/evanmiya/vanilla_miya.py) is the simplest option. The team with the highest `evanmiyaRank` always wins.
+* [SlothfireSteady](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/evanmiya/slothfire_steady.py) uses `evanmiyaDefRank` and `evanmiyaTempoRank` to give preference to teams that control the tempo and flow of the game.
+* [TheCuts23](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/evanmiya/the_cuts.py) prioritizes `evanmiyaBPR`, with some extra points for resume and being good on the road.
+* [MrFreeze](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/evanmiya/mr_freeze.py) is a somewhat abstract strategy, inspired by the films of Mr Arnold S.
+
+# Data Definitions
 
 - `evanmiyaRank` - Evan Miya Rank: Overal rank, based on Evan Miya statistics
 - `evanmiyaOBPR` - OBPR: Team Offensive Bayesian Performance Rating reflects a
