@@ -9,7 +9,7 @@ from gamewinner.team import Team
 console = Console()
 
 
-class Rich(PlainText):
+class WithColors(PlainText):
     name = "Rich"
 
     winning_team_color = "green"
@@ -21,14 +21,14 @@ class Rich(PlainText):
 
     @staticmethod
     def print(bracket: Bracket, *args: Any, **kwargs: Any) -> None:
-        Rich._print(bracket)
+        WithColors._print(bracket)
 
     @classmethod
     def _print(cls, bracket: Bracket) -> None:
         console.print(
             f"Overall prediction for {bracket.strategy.name}: "
-            f"[bold {Rich.winning_team_color}]{bracket.winner}"
-            f"[/bold {Rich.winning_team_color}] "
+            f"[bold {WithColors.winning_team_color}]{bracket.winner}"
+            f"[/bold {WithColors.winning_team_color}] "
             f"over {bracket.runner_up}: "
             f"{bracket.final_score}"
         )
@@ -41,5 +41,5 @@ class Rich(PlainText):
     def _print_game(cls, winner: Team, loser: Team, indentation: int = 0) -> None:
         tabs = indentation * "\t"
         console.print(
-            f"{tabs}{Rich.start_win}{winner}{Rich.end_win}-{Rich.start_lose}{loser}{Rich.end_lose}"  # noqa
+            f"{tabs}{WithColors.start_win}{winner}{WithColors.end_win} beats {WithColors.start_lose}{loser}{WithColors.end_lose}"  # noqa
         )

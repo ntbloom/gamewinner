@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Type
 
 from gamewinner.games.bracket import Bracket
 
@@ -13,4 +13,4 @@ class IPrinter(ABC):
         raise NotImplementedError
 
 
-Printer = IPrinter
+Printer = Type[IPrinter]

@@ -21,8 +21,8 @@ def play(
 def main() -> None:
     import argparse
 
-    legal_printers = [printer.name for printer in printers.available_printers]
     legal_strategies = [strategy.name for strategy in strategies.available_strategies]
+    legal_printers = {"plaintext", "color"}
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -40,13 +40,12 @@ def main() -> None:
     parser.add_argument(
         "--printer",
         type=str,
-        default="PlainText",
+        default="color",
         help=f"how to print the bracket, must be one of {legal_printers}",
     )
 
     args = parser.parse_args()
     strategy: strategies.Strategy
-    printer: printers.Printer
     year: int = args.year
 
     match year:
@@ -63,12 +62,16 @@ def main() -> None:
         raise ValueError(
             f"Unsupported strategy {args.strategy}, legal choices = {legal_strategies}"
         )
-    try:
-        printer = eval(f"printers.{args.printer}")
-    except AttributeError:
-        raise ValueError(
-            f"Unsupported printer {args.printer}, legal choices = {legal_printers}"
-        )
+
+    if args.printer not in legal_printers:
+        raise ValueError(f"Unsupported printer, must be one of {legal_printers}")
+    match args.printer:
+        case "plaintext":
+            printer = printers.PlainText
+        case "color":
+            printer = printers.WithColors
+        case _:
+            raise ValueError("illegal printer")
     play(year, strategy, west_matchup, printer)
 
 
