@@ -1,5 +1,4 @@
 import csv
-import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -22,10 +21,6 @@ class IEvanMiyaStrategy(IStrategy, ABC):
         """
         Loads all the Evan Miya data and attaches it to the teams
         """
-        log = logging.getLogger(__name__)
-        log.warning(
-            "Incorrect data for Farleigh Dickinson and Southeast Missouri State, results may be inconsistent"  # noqa
-        )
         assert EVAN_MIYA_FILE.exists()
 
         with open(EVAN_MIYA_FILE, "r") as f:
