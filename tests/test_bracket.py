@@ -1,7 +1,10 @@
+from pathlib import Path
+
 import pytest
 
 from gamewinner.games.bracket import Bracket
-from gamewinner.team import Team
+from gamewinner.strategies import BestRankWins
+from gamewinner.team import GeographicRegion, Team
 
 first_four = (
     ("Notre Dame", "Rutgers"),
@@ -64,6 +67,33 @@ class TestBracketBestWins:
             loser = eval(f"bracket.{region}.l{gamenum}.name")
             assert winner == teams[0]
             assert loser == teams[1]
+
+    @pytest.mark.parametrize("region", GeographicRegion)
+    def test_final_four(self, teamfile: Path, region: GeographicRegion) -> None:
+        if region == GeographicRegion.WEST:
+            pytest.skip("invalid region")
+        bracket = Bracket.create(teamfile, BestRankWins(), region)
+        bracket.play()
+
+        assert len(bracket.final_four) == 2
+        for game in bracket.final_four:
+            assert len(game) == 2
+
+        match region:
+            case GeographicRegion.EAST:
+                expected = {"Gonzaga", "Baylor"}, {"Arizona", "Kansas"}
+            case GeographicRegion.SOUTH:
+                expected = {"Gonzaga", "Arizona"}, {"Kansas", "Baylor"}
+            case GeographicRegion.MIDWEST:
+                expected = {"Gonzaga", "Kansas"}, {"Baylor", "Arizona"}
+            case _:
+                raise ValueError("unreachable")
+
+        actual = set(team.name for team in bracket.final_four[0]), set(
+            team.name for team in bracket.final_four[1]
+        )
+        for matchup in expected:
+            assert matchup in actual
 
 
 class TestBracketWorstWins:

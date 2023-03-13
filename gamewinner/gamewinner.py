@@ -3,11 +3,17 @@ from pathlib import Path
 import gamewinner.printers as printers
 import gamewinner.strategies as strategies
 from gamewinner.games.bracket import Bracket
+from gamewinner.team import GeographicRegion
 
 
-def play(year: int, strategy: strategies.Strategy, printer: printers.Printer) -> None:
+def play(
+    year: int,
+    strategy: strategies.Strategy,
+    west_final_four_matchup: GeographicRegion,
+    printer: printers.Printer,
+) -> None:
     teamfile = Path(__file__).parent.parent.joinpath("data").joinpath(f"{year}.csv")
-    bracket = Bracket.create(teamfile, strategy)
+    bracket = Bracket.create(teamfile, strategy, west_final_four_matchup)
     bracket.play()
     printer.print(bracket)
 
@@ -43,6 +49,14 @@ def main() -> None:
     printer: printers.Printer
     year: int = args.year
 
+    match year:
+        case 2022:
+            west_matchup = GeographicRegion.EAST
+        case 2023:
+            west_matchup = GeographicRegion.MIDWEST
+        case _:
+            raise ValueError("Unsupported year")
+
     try:
         strategy = eval(f"strategies.{args.strategy}()")
     except AttributeError:
@@ -55,7 +69,7 @@ def main() -> None:
         raise ValueError(
             f"Unsupported printer {args.printer}, legal choices = {legal_printers}"
         )
-    play(year, strategy, printer)
+    play(year, strategy, west_matchup, printer)
 
 
 if __name__ == "__main__":

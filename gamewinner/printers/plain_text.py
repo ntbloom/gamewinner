@@ -46,8 +46,8 @@ class PlainText(IPrinter):
     @classmethod
     def _final_four(cls, bracket: Bracket) -> None:
         print("FINAL FOUR:")
-        cls._print_game(bracket.winner_south_midwest, bracket.loser_south_midwest)
-        cls._print_game(bracket.winner_west_east, bracket.loser_west_east)
+        cls._print_game(bracket.ff2_winner, bracket.ff2_loser)
+        cls._print_game(bracket.ff1_winner, bracket.ff1_loser)
         print("FINAL:")
         cls._print_game(bracket.winner, bracket.runner_up)
 
