@@ -24,7 +24,7 @@ data points are included:
 
 Additional data such as national rankings or seasonal statistics are not
 included as part of the main library, but should be implemented as part of a
-concrete strategy (see below).
+concrete strategy (see [`IEvanMiyaStrategy`](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/evanmiya/README.md) for an example of this).
 
 Teams in the first four have their region marked as `<REGION>-Playoff` along
 with the regional rank they're competing for.
