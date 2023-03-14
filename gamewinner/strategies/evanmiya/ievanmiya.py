@@ -96,7 +96,7 @@ class IEvanMiyaStrategy(IStrategy, ABC):
     #########
 
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
-        return random.randint(70, 78), random.randint(61, 69)
+        return randint(70, 78), randint(61, 69)
 
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         """
