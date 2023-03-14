@@ -49,7 +49,7 @@ class TheCuts23Frozen(IEvanMiyaStrategy):
 
     @property
     def name(self) -> str:
-        return "TheCuts23"
+        return "TheCuts23Frozen"
 
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         return 82, 68

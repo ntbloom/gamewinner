@@ -83,7 +83,7 @@ class SlothfireSteadyBayz(IEvanMiyaStrategy):
 
     @property
     def name(self) -> str:
-        return "SlothfireSteady"
+        return "SlothfireSteadyBayz"
 
     @no_type_check
     def _team_metric(self, team: Team) -> float:
