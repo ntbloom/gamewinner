@@ -130,4 +130,5 @@ class IEvanMiyaStrategy(IStrategy, ABC):
         func -- a function that returns a float, i.e. a _team_metric() function)
         numdraws -- number of times to run func(), defaults to 1000
         """
-        return median([func() for x in range((numdraws - 1))])
+        ans = median([func() for x in range((numdraws - 1))])
+        return float(ans)

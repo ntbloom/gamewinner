@@ -10,4 +10,5 @@ poetry.lock
 .DS_Store
 scratch_seth/
 *.ipynb
-
+venv/
+.venv/
