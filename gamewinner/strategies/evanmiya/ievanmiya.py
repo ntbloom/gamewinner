@@ -1,6 +1,8 @@
 import csv
 from abc import ABC, abstractmethod
 from pathlib import Path
+from random import randint
+from typing import Callable
 
 from gamewinner.strategies.istrategy import IStrategy
 from gamewinner.team import Team
@@ -93,7 +95,7 @@ class IEvanMiyaStrategy(IStrategy, ABC):
     #########
 
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
-        return 76, 67
+        return random.randint(70, 78), random.randint(61, 69)
 
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         """
