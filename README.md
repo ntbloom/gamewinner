@@ -1,5 +1,10 @@
 # gamewinner
 
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+
+
 March madness predictor. Bring your own game winning prediction algorithm and
 hope for the best library and get a bracket printed out with the winners, along
 with a score for the final game.
@@ -19,7 +24,7 @@ data points are included:
 
 Additional data such as national rankings or seasonal statistics are not
 included as part of the main library, but should be implemented as part of a
-concrete strategy (see below).
+concrete strategy (see [`IEvanMiyaStrategy`](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/evanmiya/README.md) for an example of this).
 
 Teams in the first four have their region marked as `<REGION>-Playoff` along
 with the regional rank they're competing for.
@@ -95,7 +100,7 @@ pretty much any system.
 from gamewinner import gamewinner
 from yourlib.strategies import YourFavoriteStrategy
 
-gamewinner.play(year=2023, strategy = YourFavoriteStrategy())
+gamewinner.play(year=2023, strategy=YourFavoriteStrategy())
 ```
 
 That's it. Good luck!

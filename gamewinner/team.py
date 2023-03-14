@@ -29,8 +29,11 @@ class Team:
         for k, v in kwargs.items():
             setattr(self, f"_{k}", v)
 
+    def __hash__(self) -> int:
+        return hash(self.name)
+
     def __repr__(self) -> str:
-        return f"{self.rank} {self.name}"
+        return f"({self.rank}) {self.name}"
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Team):

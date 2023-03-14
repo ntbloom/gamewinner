@@ -1,0 +1,13 @@
+name: gamewinner build and test
+run-name: ${{ github.actor }} running CI for gamewinner
+on: [push]
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: python3 -m pip install poetry
+      - run: poetry install
+      - run: make precommit
+      - run: make mypy
+      - run: make test

@@ -7,6 +7,10 @@ from gamewinner.team import Team
 class IStrategy(ABC):
     _log = logging.getLogger(__name__)
 
+    @property
+    def name(self) -> str:
+        raise NotImplementedError
+
     def prepare(self, teams: dict[str, Team]) -> None:
         """
         Called before any games are played, including the first four. This can
@@ -30,12 +34,12 @@ class IStrategy(ABC):
     @abstractmethod
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         """Pick a game winner"""
-        return NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         """Predict the score of a game"""
-        return NotImplemented
+        raise NotImplementedError
 
 
 Strategy = IStrategy

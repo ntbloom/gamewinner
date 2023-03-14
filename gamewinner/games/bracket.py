@@ -11,16 +11,23 @@ from gamewinner.team import GeographicRegion, Team
 class Bracket:
     def __init__(
         self,
+        first_four: list[tuple[Team, Team]],
         west: Region,
         east: Region,
         south: Region,
         midwest: Region,
         strategy: Strategy,
+        west_final_four_matchup: GeographicRegion,
     ):
+        self.played = False
+
+        self.first_four = first_four
         self.west = west
         self.east = east
         self.south = south
         self.midwest = midwest
+
+        self._west_machup = west_final_four_matchup
 
         self._teams = {
             team.name: team
@@ -32,6 +39,7 @@ class Bracket:
             )
         }
         self._region_names = tuple(region.value.lower() for region in GeographicRegion)
+        self.regions = (self.west, self.east, self.south, self.midwest)
 
         self.strategy = strategy
 
@@ -39,9 +47,15 @@ class Bracket:
     def teams(self) -> dict[str, Team]:
         return self._teams
 
+    @property
+    def final_four(self) -> tuple[tuple[Team, Team], ...]:
+        return tuple(self._final_four)
+
     @staticmethod
-    def create(teamfile: Path, strategy: Strategy) -> Bracket:
-        assert teamfile.exists()
+    def create(
+        teamfile: Path, strategy: Strategy, west_final_four_matchup: GeographicRegion
+    ) -> Bracket:
+        assert teamfile.exists(), f"Illegal file: {str(teamfile)}"
 
         west_teams: list[Team] = []
         east_teams: list[Team] = []
@@ -79,20 +93,27 @@ class Bracket:
         # do any adjustments to the strategy now that we know who all the teams are
         strategy.prepare(teams)
 
+        # play the playoffs, add the teams to the regions accordingly
         playoffs.sort(key=lambda team: team.region.value)
-        first_playoff, _ = strategy.pick(playoffs[0], playoffs[1])
-        second_playoff, _ = strategy.pick(playoffs[2], playoffs[3])
-        third_playoff, _ = strategy.pick(playoffs[4], playoffs[5])
-        fourt_playoff, _ = strategy.pick(playoffs[6], playoffs[7])
-        for team in (first_playoff, second_playoff, third_playoff, fourt_playoff):
-            eval(f"{team.region.value.lower()}_teams.append(team)")
+        first_four: list[tuple[Team, Team]] = []
+        for order in [
+            (0, 1),
+            (2, 3),
+            (4, 5),
+            (6, 7),
+        ]:
+            first_four.append(strategy.pick(playoffs[order[0]], playoffs[order[1]]))
+        for t in first_four:
+            eval(f"{t[0].region.value.lower()}_teams.append(t[0])")
 
         west = Region(GeographicRegion.WEST, west_teams, strategy)
         east = Region(GeographicRegion.EAST, east_teams, strategy)
         south = Region(GeographicRegion.SOUTH, south_teams, strategy)
         midwest = Region(GeographicRegion.MIDWEST, midwest_teams, strategy)
 
-        return Bracket(west, east, south, midwest, strategy)
+        return Bracket(
+            first_four, west, east, south, midwest, strategy, west_final_four_matchup
+        )
 
     def _play_round(self, round_name: str) -> None:
         self.strategy.adjust(self.teams)
@@ -100,43 +121,49 @@ class Bracket:
             cmd = f"self.{reg}.{round_name}()"
             eval(cmd)
 
-    def _first_round(self) -> None:
+    def _play_first_round(self) -> None:
         self._play_round("first_round")
 
-    def _second_round(self) -> None:
+    def _play_second_round(self) -> None:
         self._play_round("second_round")
 
-    def _sweet_sixteen(self) -> None:
+    def _play_sweet_sixteen(self) -> None:
         self._play_round("sweet_sixteen")
 
-    def _elite_eight(self) -> None:
+    def _play_elite_eight(self) -> None:
         self._play_round("elite_eight")
 
-    def _final_four(self) -> None:
-        # west plays east
-        self.winner_west_east, self.loser_west_east = self.strategy.pick(
-            self.west.winner, self.east.winner
+    def _play_final_four(self) -> None:
+        # decide the matchups based on who the west bracket is matched against
+        matchups = {
+            "east": self.east.winner,
+            "south": self.south.winner,
+            "midwest": self.midwest.winner,
+        }
+        west_opponent = matchups.pop(self._west_machup.name.lower())
+        self.ff1_winner, self.ff1_loser = self.strategy.pick(
+            self.west.winner, west_opponent
         )
-        # south plays midwest
-        self.winner_south_midwest, self.loser_south_midwest = self.strategy.pick(
-            self.south.winner, self.midwest.winner
+        self.ff2_winner, self.ff2_loser = self.strategy.pick(
+            matchups.popitem()[1], matchups.popitem()[1]
+        )
+        self._final_four = (self.ff1_winner, self.ff1_loser), (
+            self.ff2_winner,
+            self.ff2_loser,
         )
 
-    def _final(self) -> None:
+    def _play_final(self) -> None:
         self.strategy.adjust(self.teams)
         self.winner, self.runner_up = self.strategy.pick(
-            self.winner_west_east, self.winner_south_midwest
+            self.ff1_winner, self.ff2_winner
         )
         self.final_score = self.strategy.predict_score(self.winner, self.runner_up)
 
     def play(self) -> None:
-        self._first_round()
-        self._second_round()
-        self._sweet_sixteen()
-        self._elite_eight()
-        self._final_four()
-        self._final()
-        self.print()
-
-    def print(self) -> None:
-        pass
+        self._play_first_round()
+        self._play_second_round()
+        self._play_sweet_sixteen()
+        self._play_elite_eight()
+        self._play_final_four()
+        self._play_final()
+        self.played = True
