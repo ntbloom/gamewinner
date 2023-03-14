@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from random import randint
 from typing import Callable
+from statistics import median
 
 from gamewinner.strategies.istrategy import IStrategy
 from gamewinner.team import Team
@@ -119,3 +120,14 @@ class IEvanMiyaStrategy(IStrategy, ABC):
         if reverse:
             perc = 1 - perc
         return perc
+
+    def _dumbayz(self, func: Callable, numdraws: int = 1000) -> :
+        """
+        A dumb Bayesian simulator.
+
+        Runs func() numdraws times and returns the median from all the runs
+
+        func -- a function that returns a float, i.e. a _team_metric() function)
+        numdraws -- number of times to run func(), defaults to 1000
+        """
+        return median([func() for x in range((numdraws - 1))])
