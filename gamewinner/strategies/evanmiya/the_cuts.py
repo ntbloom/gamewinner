@@ -37,6 +37,7 @@ class TheCuts23(IEvanMiyaStrategy):
 
         return overall_score
 
+
 class TheCuts23DumBayz(IEvanMiyaStrategy):
     """
     The Bayesian version of TheCuts23
@@ -51,11 +52,13 @@ class TheCuts23DumBayz(IEvanMiyaStrategy):
 
     @no_type_check
     def _team_metric(self, team: Team) -> float:
-        overall_score = self._dumbayz(lambda :(
-            random.random()
-            * self._rank_to_percentile(team.evanmiyaResumeRank)
-            * team.evanmiyaBPR
-        ))
+        overall_score = self._dumbayz(
+            lambda: (
+                random.random()
+                * self._rank_to_percentile(team.evanmiyaResumeRank)
+                * team.evanmiyaBPR
+            )
+        )
 
         # upset factor
         overall_score = overall_score + (

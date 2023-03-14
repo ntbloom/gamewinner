@@ -2,8 +2,8 @@ import csv
 from abc import ABC, abstractmethod
 from pathlib import Path
 from random import randint
-from typing import Callable
 from statistics import median
+from typing import Callable
 
 from gamewinner.strategies.istrategy import IStrategy
 from gamewinner.team import Team
