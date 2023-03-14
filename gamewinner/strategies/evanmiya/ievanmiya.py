@@ -121,7 +121,7 @@ class IEvanMiyaStrategy(IStrategy, ABC):
             perc = 1 - perc
         return perc
 
-    def _dumbayz(self, func: Callable, numdraws: int = 1000) -> :
+    def _dumbayz(self, func: Callable, numdraws: int = 1000) -> float:
         """
         A dumb Bayesian simulator.
 
