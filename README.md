@@ -103,7 +103,17 @@ from yourlib.strategies import YourFavoriteStrategy
 gamewinner.play(year=2023, strategy=YourFavoriteStrategy())
 ```
 
+Or in your terminal with `poetry`
+
+```
+poetry run play --strategy YourFavoriteStrategy
+```
+
+<
+
 That's it. Good luck!
 
 Special thanks to [Vulfpeck](https://youtu.be/j3rwKl267gEh) for the name
 inspiration.
+
+
