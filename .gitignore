@@ -9,4 +9,6 @@ poetry.lock
 .mypy_cache/
 .DS_Store
 scratch_seth/
-
+*.ipynb
+venv/
+.venv/
