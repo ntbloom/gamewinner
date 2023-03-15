@@ -28,6 +28,7 @@ class DoctorLizard(IEvanMiyaStrategy):
     def name(self) -> str:
         return "DoctorLizard"
 
+    @no_type_check
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         """
         The Lizard Sauce
