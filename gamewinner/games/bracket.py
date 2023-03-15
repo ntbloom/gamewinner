@@ -44,6 +44,7 @@ class Bracket:
         self.regions = (self.west, self.east, self.south, self.midwest)
 
         self.strategy = strategy
+        self.upsets: list[str] = []
 
     @property
     def teams(self) -> dict[str, Team]:
@@ -170,3 +171,6 @@ class Bracket:
         self._play_final_four()
         self._play_final()
         self.played = True
+        for region in self.regions:
+            for upset in region.upsets:
+                self.upsets.append(upset)

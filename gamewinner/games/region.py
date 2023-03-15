@@ -10,6 +10,7 @@ class Region:
         self.name = name
         self.teams = teams
         self.teams.sort(key=lambda x: x.rank)
+        self.upsets: list[str] = []
 
         self.strategy = strategy
 
@@ -52,4 +53,7 @@ class Region:
 
     def _play(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         assert team1 is not None and team2 is not None
-        return self.strategy.pick(team1, team2)
+        winner, loser = self.strategy.pick(team1, team2)
+        if loser.rank < winner.rank and (winner.rank - loser.rank) >= 5:
+            self.upsets.append(f"{winner} over {loser}")
+        return winner, loser

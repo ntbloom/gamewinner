@@ -24,6 +24,10 @@ class PlainText(IPrinter):
         for region in bracket.regions:
             cls._region(region)
         cls._final_four(bracket)
+        print()
+        print(f"[red]{len(bracket.upsets)} upsets predicted:")
+        for upset in bracket.upsets:
+            print(f"[red]\t{upset}")
 
     @classmethod
     def _first_four(cls, bracket: Bracket) -> None:

@@ -1,5 +1,5 @@
 import csv
-from abc import ABC, abstractmethod
+from abc import ABC
 from pathlib import Path
 from random import randint
 from statistics import median
@@ -87,9 +87,8 @@ class IEvanMiyaStrategy(IStrategy, ABC):
             # could check all of them, but for now just check one.
             assert hasattr(team, "evanmiyaRank"), f"skipped {team.name}"
 
-    @abstractmethod
     def _team_metric(self, team: Team) -> float:
-        return NotImplemented
+        raise NotImplementedError
 
     #########
     # everything below here can be overriden, or you can inherit the defaults

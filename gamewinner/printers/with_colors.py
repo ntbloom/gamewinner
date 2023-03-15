@@ -36,6 +36,10 @@ class WithColors(PlainText):
         for region in bracket.regions:
             cls._region(region)
         cls._final_four(bracket)
+        console.print()
+        console.print(f"[magenta]{len(bracket.upsets)} upsets predicted:")
+        for upset in bracket.upsets:
+            console.print(f"[magenta]\t{upset}")
 
     @classmethod
     def _print_game(cls, winner: Team, loser: Team, indentation: int = 0) -> None:

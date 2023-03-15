@@ -11,7 +11,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 
 
 class TestPrinters:
-    def test_print(self, best_wins_bracket: Bracket, printer: Printer) -> None:
-        bracket = best_wins_bracket
+    def test_print(self, strategized_bracket: Bracket, printer: Printer) -> None:
+        bracket = strategized_bracket
         bracket.play()
         printer.print(bracket)
