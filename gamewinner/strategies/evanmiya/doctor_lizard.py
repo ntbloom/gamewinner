@@ -7,19 +7,20 @@ from gamewinner.team import Team
 class DoctorLizard(IEvanMiyaStrategy):
     """
     Straight from The Doc:
-    
-    > My strategy would probably be something like..... 
-    > if the difference in ranking (using the injuryrank) is greater than 25, pick higher rank. 
-    > If not, subtract points allowed (DBPR) from points scored (OBPR) and select team with greater value 
-    >   unless difference is less than 5.
+
+    > My strategy would probably be something like.....
+    > if the difference in ranking (using the injuryrank) is greater than 25,
+    >   pick higher rank. If not, subtract points allowed (DBPR) from points
+    >   scored (OBPR) and select team with greater valueunless difference is
+    >   less than 5.
     > If not greater than 5, pick team with more KillShotsPerGame.
 
-    Note: "points allowed" and "points scored" aren't in this data set. 
+    Note: "points allowed" and "points scored" aren't in this data set.
           We are interpretting The Doc to have meant overal point differntial
           which, while also not in the data set, is pretty similar to what's
           being captured by BPR. So that's what we're using.
 
-          If and when The Doc reviews this, we will remove this note and 
+          If and when The Doc reviews this, we will remove this note and
           adjust as necessary.
     """
 
@@ -40,7 +41,8 @@ class DoctorLizard(IEvanMiyaStrategy):
             else:
                 return team2, team1
 
-        # "If not, subtract points allowed from points scored and select team with greater value..."
+        # "If not, subtract points allowed from points scored and select team
+        #    with greater value..."
         # (Using BPR for this, see note above)
         # "...unless difference is less than 5."
         elif abs(team1.evanmiyaBPR - team2.evanmiyaBPR) >= 5:
