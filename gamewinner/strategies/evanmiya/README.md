@@ -1,6 +1,6 @@
 # Evan Miya Strategy
 
-This strategy adds Evan Miya data (from the "Team Ratings" section of [evinmiya.com](https://evanmiya.com/)) for use in `pick()` methods. Details on the available data, along with attribute names, is below under "Data Definitions".
+This strategy adds Evan Miya data (from the "Team Ratings" section of [evanmiya.com](https://evanmiya.com/)) for use in `pick()` methods. Details on the available data, along with attribute names, is below under "Data Definitions".
 
 # Defining a strategy
 

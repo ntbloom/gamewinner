@@ -8,9 +8,7 @@ from typing import Callable
 from gamewinner.strategies.istrategy import IStrategy
 from gamewinner.team import Team
 
-EVAN_MIYA_FILE = (
-    Path(__file__).parent.joinpath("data").joinpath("evanmiya_clean_20230309.csv")
-)
+EVAN_MIYA_FILE = Path(__file__).parent.joinpath("data").joinpath("evanmiya.csv")
 
 
 class IEvanMiyaStrategy(IStrategy, ABC):
