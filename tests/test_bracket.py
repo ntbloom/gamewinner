@@ -1,10 +1,9 @@
-from pathlib import Path
-
 import pytest
 
 from gamewinner.games.bracket import Bracket
 from gamewinner.strategies import BestRankWins
 from gamewinner.team import GeographicRegion, Team
+from gamewinner.years import Year
 
 first_four = (
     ("Notre Dame", "Rutgers"),
@@ -69,10 +68,14 @@ class TestBracketBestWins:
             assert loser == teams[1]
 
     @pytest.mark.parametrize("region", GeographicRegion)
-    def test_final_four(self, teamfile: Path, region: GeographicRegion) -> None:
+    def test_final_four(self, region: GeographicRegion, reference_year: Year) -> None:
         if region == GeographicRegion.WEST:
             pytest.skip("invalid region")
-        bracket = Bracket.create(teamfile, BestRankWins(), region)
+
+        # inject the test west_plays variable into the 2022 data
+        year = Year(reference_year.year, west_plays=region)
+
+        bracket = Bracket.create(BestRankWins(), year)
         bracket.play()
 
         assert len(bracket.final_four) == 2

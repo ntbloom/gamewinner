@@ -26,7 +26,7 @@ class WithColors(PlainText):
     @classmethod
     def _print(cls, bracket: Bracket) -> None:
         console.print(
-            f"Overall prediction for {bracket.strategy.name}: "
+            f"Overall prediction for {bracket.strategy.name}/{bracket.year.year}: "
             f"[bold {WithColors.winning_team_color}]{bracket.winner}"
             f"[/bold {WithColors.winning_team_color}] "
             f"over {bracket.runner_up}: "

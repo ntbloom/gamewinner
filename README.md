@@ -4,7 +4,6 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
-
 March madness predictor. Bring your own game winning prediction algorithm and
 hope for the best library and get a bracket printed out with the winners, along
 with a score for the final game.
@@ -24,7 +23,9 @@ data points are included:
 
 Additional data such as national rankings or seasonal statistics are not
 included as part of the main library, but should be implemented as part of a
-concrete strategy (see [`IEvanMiyaStrategy`](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/evanmiya/README.md) for an example of this).
+concrete strategy (see
+[`IEvanMiyaStrategy`](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/evanmiya/README.md)
+for an example of this).
 
 Teams in the first four have their region marked as `<REGION>-Playoff` along
 with the regional rank they're competing for.
@@ -54,14 +55,14 @@ Texas Tech,West,3,25,9
 ...
 ```
 
-
-
-
 ### Define a Strategy
 
 Implement a class that inherits from the `IStrategy` interface defined in
 [istrategy.py](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/istrategy.py).
-Example strategies can be found in [gamewinner/strategies/](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/) (i.e. the classic [BestRankWins](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/best_rank_wins.py)).
+Example strategies can be found in
+[gamewinner/strategies/](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/)
+(i.e. the classic
+[BestRankWins](https://github.com/ntbloom/gamewinner/blob/main/gamewinner/strategies/best_rank_wins.py)).
 
 The class has 4 main methods:
 
@@ -88,7 +89,6 @@ The class has 4 main methods:
 
 - predict the score of a game, generally reserved for the final game
 
-
 ## Run the model
 
 Once you've got your strategy figured out, printing a sample bracket is trivial.
@@ -100,20 +100,34 @@ pretty much any system.
 from gamewinner import gamewinner
 from yourlib.strategies import YourFavoriteStrategy
 
-gamewinner.play(year=2023, strategy=YourFavoriteStrategy())
+gamewinner.play(strategy=YourFavoriteStrategy())
 ```
 
 Or in your terminal with `poetry`
 
-```
-poetry run play --strategy YourFavoriteStrategy
+```shell
+poetry run play --help
+#usage: play [-h] [--strategy STRATEGY] [--year YEAR] [--printer PRINTER]
+#
+#options:
+#  -h, --help           show this help message and exit
+#  --strategy STRATEGY  what strategy you want to use, must be one of ['BestRankWins',
+#                       'MrFreeze', 'SlothfireSteady', 'SlothfireSteadiest',
+#                       'SlothfireSteadyBayz', 'TheCuts23', 'TheCuts23Frozen',
+#                       'TheCuts23DumBayz', 'VanillaMiya', 'WorstRankWins']
+#  --year YEAR          year you want to play
+#  --printer PRINTER    how to print the bracket, must be one of {'plaintext', 'color'}
+#
 ```
 
-<
+There is an additional `make` target if that's preferable, though you don't get
+all the features:
+
+```sh
+make play strategy=BestRankWins
+```
 
 That's it. Good luck!
 
 Special thanks to [Vulfpeck](https://youtu.be/j3rwKl267gEh) for the name
 inspiration.
-
-

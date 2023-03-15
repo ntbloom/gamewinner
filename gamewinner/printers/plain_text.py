@@ -15,7 +15,7 @@ class PlainText(IPrinter):
     @classmethod
     def _print(cls, bracket: Bracket) -> None:
         print(
-            f"Overall prediction for {bracket.strategy.name}: "
+            f"Overall prediction for {bracket.strategy.name}/{bracket.year.year}: "
             f"{bracket.winner} over {bracket.runner_up}: "
             f"{bracket.final_score}"
         )
