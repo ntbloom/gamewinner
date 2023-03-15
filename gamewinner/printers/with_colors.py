@@ -26,7 +26,7 @@ class WithColors(PlainText):
     @classmethod
     def _print(cls, bracket: Bracket) -> None:
         console.print(
-            f"Overall prediction for {bracket.strategy.name}: "
+            f"Overall prediction for {bracket.strategy.name}/{bracket.year.year}: "
             f"[bold {WithColors.winning_team_color}]{bracket.winner}"
             f"[/bold {WithColors.winning_team_color}] "
             f"over {bracket.runner_up}: "
@@ -36,6 +36,10 @@ class WithColors(PlainText):
         for region in bracket.regions:
             cls._region(region)
         cls._final_four(bracket)
+        console.print()
+        console.print(f"[magenta]{len(bracket.upsets)} upsets predicted:")
+        for upset in bracket.upsets:
+            console.print(f"[magenta]\t{upset}")
 
     @classmethod
     def _print_game(cls, winner: Team, loser: Team, indentation: int = 0) -> None:

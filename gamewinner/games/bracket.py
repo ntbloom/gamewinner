@@ -6,6 +6,7 @@ from pathlib import Path
 from gamewinner.games.region import Region
 from gamewinner.strategies.istrategy import Strategy
 from gamewinner.team import GeographicRegion, Team
+from gamewinner.years import Year, this_year
 
 
 class Bracket:
@@ -17,7 +18,7 @@ class Bracket:
         south: Region,
         midwest: Region,
         strategy: Strategy,
-        west_final_four_matchup: GeographicRegion,
+        year: Year = this_year,
     ):
         self.played = False
 
@@ -27,7 +28,8 @@ class Bracket:
         self.south = south
         self.midwest = midwest
 
-        self._west_machup = west_final_four_matchup
+        self.year = year
+        self._west_machup = year.west_plays
 
         self._teams = {
             team.name: team
@@ -42,6 +44,7 @@ class Bracket:
         self.regions = (self.west, self.east, self.south, self.midwest)
 
         self.strategy = strategy
+        self.upsets: list[str] = []
 
     @property
     def teams(self) -> dict[str, Team]:
@@ -52,10 +55,13 @@ class Bracket:
         return tuple(self._final_four)
 
     @staticmethod
-    def create(
-        teamfile: Path, strategy: Strategy, west_final_four_matchup: GeographicRegion
-    ) -> Bracket:
-        assert teamfile.exists(), f"Illegal file: {str(teamfile)}"
+    def create(strategy: Strategy, year: Year) -> Bracket:
+        teamfile = (
+            Path(__file__)
+            .parent.parent.parent.joinpath("data")
+            .joinpath(f"{year.year}.csv")
+        )
+        assert teamfile.exists(), f"Missing teamfile for year {year.year}: {teamfile=}"
 
         west_teams: list[Team] = []
         east_teams: list[Team] = []
@@ -111,9 +117,7 @@ class Bracket:
         south = Region(GeographicRegion.SOUTH, south_teams, strategy)
         midwest = Region(GeographicRegion.MIDWEST, midwest_teams, strategy)
 
-        return Bracket(
-            first_four, west, east, south, midwest, strategy, west_final_four_matchup
-        )
+        return Bracket(first_four, west, east, south, midwest, strategy, year)
 
     def _play_round(self, round_name: str) -> None:
         self.strategy.adjust(self.teams)
@@ -167,3 +171,6 @@ class Bracket:
         self._play_final_four()
         self._play_final()
         self.played = True
+        for region in self.regions:
+            for upset in region.upsets:
+                self.upsets.append(upset)

@@ -1,19 +1,21 @@
-from pathlib import Path
-
 import gamewinner.printers as printers
 import gamewinner.strategies as strategies
 from gamewinner.games.bracket import Bracket
-from gamewinner.team import GeographicRegion
+from gamewinner.years import Year, available_years, this_year
 
 
 def play(
-    year: int,
     strategy: strategies.Strategy,
-    west_final_four_matchup: GeographicRegion,
-    printer: printers.Printer,
+    year: int = this_year.year,
+    printer: printers.Printer = printers.WithColors,
 ) -> None:
-    teamfile = Path(__file__).parent.parent.joinpath("data").joinpath(f"{year}.csv")
-    bracket = Bracket.create(teamfile, strategy, west_final_four_matchup)
+    def _find_year() -> Year:
+        for _year in available_years:
+            if _year.year == year:
+                return _year
+        raise ValueError(f"Unsupported year: {year}")
+
+    bracket = Bracket.create(strategy, _find_year())
     bracket.play()
     printer.print(bracket)
 
@@ -34,7 +36,7 @@ def main() -> None:
     parser.add_argument(
         "--year",
         type=int,
-        default=2023,
+        default=this_year.year,
         help="year you want to play",
     )
     parser.add_argument(
@@ -47,14 +49,6 @@ def main() -> None:
     args = parser.parse_args()
     strategy: strategies.Strategy
     year: int = args.year
-
-    match year:
-        case 2022:
-            west_matchup = GeographicRegion.EAST
-        case 2023:
-            west_matchup = GeographicRegion.MIDWEST
-        case _:
-            raise ValueError("Unsupported year")
 
     try:
         strategy = eval(f"strategies.{args.strategy}()")
@@ -72,7 +66,7 @@ def main() -> None:
             printer = printers.WithColors
         case _:
             raise ValueError("illegal printer")
-    play(year, strategy, west_matchup, printer)
+    play(strategy, year, printer)
 
 
 if __name__ == "__main__":
