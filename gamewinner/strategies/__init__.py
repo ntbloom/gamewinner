@@ -1,3 +1,5 @@
+from gamewinner.strategies.evanmiya.chillz import Chillz  # noqa
+from gamewinner.strategies.evanmiya.chillz import KillerChillz  # noqa
 from gamewinner.strategies.evanmiya.doctor_lizard import DoctorLizard  # noqa
 from gamewinner.strategies.evanmiya.mr_freeze import MrFreeze
 from gamewinner.strategies.evanmiya.slothfire_steady import SlothfireSteadiest  # noqa
@@ -22,6 +24,8 @@ available_strategies = (
     TheCuts23Frozen(),
     TheCuts23DumBayz(),
     TheWhiteWhale(),
+    Chillz(),
+    KillerChillz(),
     VanillaMiya(),
     DoctorLizard(),
     WorstRankWins(),
