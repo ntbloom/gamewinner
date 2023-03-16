@@ -10,8 +10,11 @@ class RecencyBias(IEvanMiyaStrategy2):
     RecencyBias looks to reward teams playing their best basketball in the 30
     days leading up to the tournament. 
     
-    Still heavily based on BPR, however the results will be influenced by each 
-    team's recent play.
+    RecencyBias considers:
+    - Roster Rank (percentile)
+    - Season BPR
+    - Kill shots per game / Kill shots allowed per game ratio
+    - Last 30 day change in BPR
     """
 
     @property
