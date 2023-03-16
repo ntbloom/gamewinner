@@ -21,16 +21,16 @@ class RecencyBias(IEvanMiyaStrategy2):
     @no_type_check
     def _team_metric(self, team: Team) -> float:
         overall_score = (
-            random.random()
-            * self._rank_to_percentile(team.evanmiyaResumeRank)
+            self._rank_to_percentile(team.evanmiyaRosterRank)
             * team.evanmiyaBPR
+            + (team.evanmiyaKillShotsPerGame / team.evanmiyaKillShotsAllowedPerGame)
         )
 
         # recency factor
         overall_score = overall_score + (
             0.5
             * random.random()
-            * team.evanmiyaBPRChange
+            + 3 * team.evanmiyaBPRChange
         )
 
         return overall_score
@@ -40,7 +40,7 @@ class RecencyBiasDumBayz(IEvanMiyaStrategy2):
     """
     The Bayesian version of RecencyBias
     Simulates the core strategy 1000 times and takes the median,
-    then modifies it with the upset score.
+    then modifies it with the recency score.
     """
 
     @property
@@ -52,8 +52,9 @@ class RecencyBiasDumBayz(IEvanMiyaStrategy2):
         overall_score = self._dumbayz(
             lambda: (
                 random.random()
-                * self._rank_to_percentile(team.evanmiyaResumeRank)
+                * self._rank_to_percentile(team.evanmiyaRosterRank)
                 * team.evanmiyaBPR
+                + (team.evanmiyaKillShotsPerGame / team.evanmiyaKillShotsAllowedPerGame)
             )
         )
 
@@ -61,7 +62,7 @@ class RecencyBiasDumBayz(IEvanMiyaStrategy2):
         overall_score = overall_score + (
             0.5
             * random.random()
-            * team.evanmiyaBPRChange
+            + 3 * team.evanmiyaBPRChange
         )
 
         return overall_score
