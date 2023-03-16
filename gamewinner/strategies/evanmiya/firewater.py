@@ -21,7 +21,7 @@ class FireWaterFireWater(IEvanMiyaStrategy):
             - 0.75 * team.evanmiyaKillShotsAllowedPerGame
             + 0.75 * team.evanmiyaKillShotsPerGame
             + 0.75 * self._rank_to_percentile(team.evanmiyaInjuryRank)
-            + 0.25 * self._rank_to_percentile(team.evanmiyaHomeRank, reverse = True)
+            + 0.25 * self._rank_to_percentile(team.evanmiyaHomeRank, reverse=True)
         )
         return overall_score
 
