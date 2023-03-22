@@ -1,5 +1,3 @@
-from typing import no_type_check
-
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
 from gamewinner.team import Team
 
@@ -28,16 +26,17 @@ class DoctorLizard(IEvanMiyaStrategy):
     def name(self) -> str:
         return "DoctorLizard"
 
-    @no_type_check
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         """
         The Lizard Sauce
         """
 
+        props1 = self.em_teams[team1.name]
+        props2 = self.em_teams[team2.name]
         # "if the difference in ranking (using the injuryrank) is greater than 25..."
-        if abs(team1.evanmiyaInjuryRank - team2.evanmiyaInjuryRank) > 25:
+        if abs(props1.injury_rank - props2.injury_rank) > 25:
             # "pick higher rank"
-            if team1.evanmiyaInjuryRank < team2.evanmiyaInjuryRank:
+            if props1.injury_rank < props2.injury_rank:
                 return team1, team2
             else:
                 return team2, team1
@@ -46,37 +45,26 @@ class DoctorLizard(IEvanMiyaStrategy):
         #    with greater value..."
         # (Using BPR for this, see note above)
         # "...unless difference is less than 5."
-        elif abs(team1.evanmiyaBPR - team2.evanmiyaBPR) >= 5:
-            if team1.evanmiyaBPR > team2.evanmiyaBPR:
+        elif abs(props1.bpr - props2.bpr) >= 5:
+            if props1.bpr > props2.bpr:
                 return team1, team2
             else:
                 return team2, team1
 
         # "If not greater than 5, pick team with more KillShotsPerGame."
         else:
-            if team1.evanmiyaKillShotsPerGame > team2.evanmiyaKillShotsPerGame:
+            if props1.kill_shots_per_game > props2.kill_shots_per_game:
                 return team1, team2
-            elif team2.evanmiyaKillShotsPerGame > team1.evanmiyaKillShotsPerGame:
+            elif props2.kill_shots_per_game > props1.kill_shots_per_game:
                 return team2, team1
             # Editorial: it is possible for the above to end in a tie,
             #   which won't work. If we get all the way to the bottom,
             #   we just go back to picking based on InjuryRank.
             else:
-                if team1.evanmiyaInjuryRank < team2.evanmiyaInjuryRank:
+                if props1.injury_rank < props2.injury_rank:
                     return team1, team2
                 else:
                     return team2, team1
 
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         return 75, 67
-
-    @no_type_check
-    def _team_metric(self, team: Team) -> float:
-        """
-        We're not actually using _team_metric() in this strategy, though
-        we made this an @abstractmethod, so it has to be implemented.
-
-        We did this because the default pick() method uses _team_metric().
-        However, we may wanna relax this at some point because... of things like this.
-        """
-        return NotImplemented

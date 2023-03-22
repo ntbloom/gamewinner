@@ -1,5 +1,4 @@
 import random
-from typing import no_type_check
 
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
 from gamewinner.team import Team
@@ -20,19 +19,17 @@ class TheCuts23(IEvanMiyaStrategy):
     def name(self) -> str:
         return "TheCuts23"
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
+        props = self.em_teams[team.name]
         overall_score = (
-            random.random()
-            * self._rank_to_percentile(team.evanmiyaResumeRank)
-            * team.evanmiyaBPR
+            random.random() * self._rank_to_percentile(props.resume_rank) * props.bpr
         )
 
         # upset factor
         overall_score = overall_score + (
             0.5
             * random.random()
-            * self._rank_to_percentile(team.evanmiyaHomeRank, reverse=True)
+            * self._rank_to_percentile(props.home_rank, reverse=True)
         )
 
         return overall_score
@@ -54,15 +51,13 @@ class TheCuts23Frozen(IEvanMiyaStrategy):
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         return 82, 68
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
-        overall_score = (
-            self._rank_to_percentile(team.evanmiyaResumeRank) * team.evanmiyaBPR
-        )
+        props = self.em_teams[team.name]
+        overall_score = self._rank_to_percentile(props.resume_rank) * props.bpr
 
         # upset factor
         overall_score = overall_score + (
-            0.5 * self._rank_to_percentile(team.evanmiyaHomeRank, reverse=True)
+            0.5 * self._rank_to_percentile(props.home_rank, reverse=True)
         )
 
         return overall_score
@@ -80,13 +75,13 @@ class TheCuts23DumBayz(IEvanMiyaStrategy):
     def name(self) -> str:
         return "TheCuts23DumBayz"
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
+        props = self.em_teams[team.name]
         overall_score = self._dumbayz(
             lambda: (
                 random.random()
-                * self._rank_to_percentile(team.evanmiyaResumeRank)
-                * team.evanmiyaBPR
+                * self._rank_to_percentile(props.resume_rank)
+                * props.bpr
             )
         )
 
@@ -94,7 +89,7 @@ class TheCuts23DumBayz(IEvanMiyaStrategy):
         overall_score = overall_score + (
             0.5
             * random.random()
-            * self._rank_to_percentile(team.evanmiyaHomeRank, reverse=True)
+            * self._rank_to_percentile(props.home_rank, reverse=True)
         )
 
         return overall_score

@@ -1,14 +1,35 @@
+from __future__ import annotations
+
 import csv
 from abc import ABC
 from pathlib import Path
 from random import randint
 from statistics import median
-from typing import Callable
+from typing import Callable, NamedTuple
 
 from gamewinner.strategies.istrategy import IStrategy
 from gamewinner.team import Team
 
 EVAN_MIYA_FILE = Path(__file__).parent.joinpath("data").joinpath("evanmiya.csv")
+
+
+class EMProps(NamedTuple):
+    rank: int
+    obpr: float
+    dbpr: float
+    bpr: float
+    off_rank: int
+    def_rank: int
+    true_tempo: float
+    tempo_rank: int
+    injury_rank: int
+    roster_rank: int
+    kill_shots_per_game: float
+    kill_shots_allowed_per_game: float
+    total_kill_shots: int
+    total_kill_shots_allowed: int
+    resume_rank: int
+    home_rank: int
 
 
 class IEvanMiyaStrategy(IStrategy, ABC):
@@ -18,11 +39,14 @@ class IEvanMiyaStrategy(IStrategy, ABC):
     The only thing you _have to_ implement is self._team_metric()
     """
 
+    em_teams: dict[str, EMProps]
+
     def prepare(self, teams: dict[str, Team]) -> None:
         """
         Loads all the Evan Miya data and attaches it to the teams
         """
         assert EVAN_MIYA_FILE.exists()
+        self.em_teams = {}
 
         with open(EVAN_MIYA_FILE, "r") as f:
             reader = csv.reader(f)
@@ -30,60 +54,45 @@ class IEvanMiyaStrategy(IStrategy, ABC):
             for row in reader:
                 (
                     name,
-                    evanmiyaRank,
-                    evanmiyaOBPR,
-                    evanmiyaDBPR,
-                    evanmiyaBPR,
-                    evanmiyaOffRank,
-                    evanmiyaDefRank,
-                    evanmiyaTrueTempo,
-                    evanmiyaTempoRank,
-                    evanmiyaInjuryRank,
-                    evanmiyaRosterRank,
-                    evanmiyaKillShotsPerGame,
-                    evanmiyaKillShotsAllowedPerGame,
-                    evanmiyaTotalKillShots,
-                    evanmiyaTotalKillShotsAllowed,
-                    evanmiyaResumeRank,
-                    evanmiyaHomeRank,
+                    rank,
+                    obpr,
+                    dpbr,
+                    bpr,
+                    off_rank,
+                    def_rank,
+                    true_tempo,
+                    tempo_rank,
+                    injury_rank,
+                    roster_rank,
+                    kill_shots_per_game,
+                    kill_shots_allowed_per_game,
+                    total_kill_shots,
+                    total_kill_shots_allowed,
+                    resume_rank,
+                    home_rank,
                 ) = row
 
                 # add all Evan Miya stats to relevant team if they're in the tournament
                 if name in teams:
-                    team = teams[name]
-                    setattr(team, "evanmiyaRank", int(evanmiyaRank))
-                    setattr(team, "evanmiyaOBPR", float(evanmiyaOBPR))
-                    setattr(team, "evanmiyaDBPR", float(evanmiyaDBPR))
-                    setattr(team, "evanmiyaBPR", float(evanmiyaBPR))
-                    setattr(team, "evanmiyaOffRank", int(evanmiyaOffRank))
-                    setattr(team, "evanmiyaDefRank", int(evanmiyaDefRank))
-                    setattr(team, "evanmiyaTrueTempo", float(evanmiyaTrueTempo))
-                    setattr(team, "evanmiyaTempoRank", int(evanmiyaTempoRank))
-                    setattr(team, "evanmiyaInjuryRank", int(evanmiyaInjuryRank))
-                    setattr(team, "evanmiyaRosterRank", int(evanmiyaRosterRank))
-                    setattr(
-                        team,
-                        "evanmiyaKillShotsPerGame",
-                        float(evanmiyaKillShotsPerGame),
+                    props = EMProps(
+                        rank=int(rank),
+                        obpr=float(obpr),
+                        dbpr=float(dpbr),
+                        bpr=float(bpr),
+                        off_rank=int(off_rank),
+                        def_rank=int(def_rank),
+                        true_tempo=float(true_tempo),
+                        tempo_rank=int(tempo_rank),
+                        injury_rank=int(injury_rank),
+                        roster_rank=int(roster_rank),
+                        kill_shots_per_game=float(kill_shots_per_game),
+                        kill_shots_allowed_per_game=float(kill_shots_allowed_per_game),
+                        total_kill_shots=int(total_kill_shots),
+                        total_kill_shots_allowed=int(total_kill_shots_allowed),
+                        resume_rank=int(resume_rank),
+                        home_rank=int(home_rank),
                     )
-                    setattr(
-                        team,
-                        "evanmiyaKillShotsAllowedPerGame",
-                        float(evanmiyaKillShotsAllowedPerGame),
-                    )
-                    setattr(team, "evanmiyaTotalKillShots", int(evanmiyaTotalKillShots))
-                    setattr(
-                        team,
-                        "evanmiyaTotalKillShotsAllowed",
-                        int(evanmiyaTotalKillShotsAllowed),
-                    )
-                    setattr(team, "evanmiyaResumeRank", int(evanmiyaResumeRank))
-                    setattr(team, "evanmiyaHomeRank", int(evanmiyaHomeRank))
-
-        for team in teams.values():
-            # make sure we found every team and added evanmiya attrs.
-            # could check all of them, but for now just check one.
-            assert hasattr(team, "evanmiyaRank"), f"skipped {team.name}"
+                    self.em_teams[str(name)] = props
 
     def _team_metric(self, team: Team) -> float:
         raise NotImplementedError

@@ -1,5 +1,4 @@
 import random
-from typing import no_type_check
 
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
 from gamewinner.team import Team
@@ -17,20 +16,20 @@ class SlothfireSteady(IEvanMiyaStrategy):
     def name(self) -> str:
         return "SlothfireSteady"
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
+        props = self.em_teams[team.name]
         overall_score = (
-            self._rank_to_percentile(team.evanmiyaDefRank)
-            + 0.5 * self._rank_to_percentile(team.evanmiyaTempoRank, reverse=True)
-            + 0.3 * self._rank_to_percentile(team.evanmiyaOffRank)
-            + 0.3 * self._rank_to_percentile(team.evanmiyaRank)
-            - team.evanmiyaKillShotsAllowedPerGame
+            self._rank_to_percentile(props.def_rank)
+            + 0.5 * self._rank_to_percentile(props.tempo_rank, reverse=True)
+            + 0.3 * self._rank_to_percentile(props.off_rank)
+            + 0.3 * self._rank_to_percentile(props.rank)
+            - props.kill_shots_allowed_per_game
         )
 
         # upset factor
         overall_score = overall_score + random.random() * (
-            self._rank_to_percentile(team.evanmiyaResumeRank)
-            + min(self._rank_to_percentile(team.evanmiyaHomeRank, reverse=True), 0.5)
+            self._rank_to_percentile(props.resume_rank)
+            + min(self._rank_to_percentile(props.home_rank, reverse=True), 0.5)
         )
 
         return overall_score
@@ -57,20 +56,20 @@ class SlothfireSteadiest(IEvanMiyaStrategy):
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         return 76, 67
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
+        props = self.em_teams[team.name]
         overall_score = (
-            self._rank_to_percentile(team.evanmiyaDefRank)
-            + 0.5 * self._rank_to_percentile(team.evanmiyaTempoRank, reverse=True)
-            + 0.3 * self._rank_to_percentile(team.evanmiyaOffRank)
-            + 0.3 * self._rank_to_percentile(team.evanmiyaRank)
-            - team.evanmiyaKillShotsAllowedPerGame
+            self._rank_to_percentile(props.def_rank)
+            + 0.5 * self._rank_to_percentile(props.tempo_rank, reverse=True)
+            + 0.3 * self._rank_to_percentile(props.off_rank)
+            + 0.3 * self._rank_to_percentile(props.rank)
+            - props.kill_shots_allowed_per_game
         )
 
         # upset factor
         overall_score = overall_score + (
-            self._rank_to_percentile(team.evanmiyaResumeRank)
-            + min(self._rank_to_percentile(team.evanmiyaHomeRank, reverse=True), 0.5)
+            self._rank_to_percentile(props.resume_rank)
+            + min(self._rank_to_percentile(props.home_rank, reverse=True), 0.5)
         )
 
         return overall_score
@@ -85,14 +84,14 @@ class SlothfireSteadyBayz(IEvanMiyaStrategy):
     def name(self) -> str:
         return "SlothfireSteadyBayz"
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
+        props = self.em_teams[team.name]
         overall_score = (
-            self._rank_to_percentile(team.evanmiyaDefRank)
-            + 0.5 * self._rank_to_percentile(team.evanmiyaTempoRank, reverse=True)
-            + 0.3 * self._rank_to_percentile(team.evanmiyaOffRank)
-            + 0.3 * self._rank_to_percentile(team.evanmiyaRank)
-            - team.evanmiyaKillShotsAllowedPerGame
+            self._rank_to_percentile(props.def_rank)
+            + 0.5 * self._rank_to_percentile(props.tempo_rank, reverse=True)
+            + 0.3 * self._rank_to_percentile(props.off_rank)
+            + 0.3 * self._rank_to_percentile(props.rank)
+            - props.kill_shots_allowed_per_game
         )
 
         # upset factor
@@ -100,9 +99,9 @@ class SlothfireSteadyBayz(IEvanMiyaStrategy):
             lambda: (
                 random.random()
                 * (
-                    self._rank_to_percentile(team.evanmiyaResumeRank)
+                    self._rank_to_percentile(props.resume_rank)
                     + min(
-                        self._rank_to_percentile(team.evanmiyaHomeRank, reverse=True),
+                        self._rank_to_percentile(props.home_rank, reverse=True),
                         0.5,
                     )
                 )
