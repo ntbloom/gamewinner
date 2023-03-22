@@ -138,3 +138,6 @@ class IEvanMiyaStrategy(IStrategy, ABC):
         """
         ans = median([func() for x in range((numdraws - 1))])
         return float(ans)
+
+    def get_props(self, team: Team) -> EMProps:
+        return self.em_teams[team.name]

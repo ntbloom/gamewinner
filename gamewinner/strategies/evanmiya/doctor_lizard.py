@@ -31,8 +31,8 @@ class DoctorLizard(IEvanMiyaStrategy):
         The Lizard Sauce
         """
 
-        props1 = self.em_teams[team1.name]
-        props2 = self.em_teams[team2.name]
+        props1 = self.get_props(team1)
+        props2 = self.get_props(team2)
         # "if the difference in ranking (using the injuryrank) is greater than 25..."
         if abs(props1.injury_rank - props2.injury_rank) > 25:
             # "pick higher rank"

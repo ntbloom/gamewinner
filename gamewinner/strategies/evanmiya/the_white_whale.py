@@ -16,8 +16,8 @@ class TheWhiteWhale(IEvanMiyaStrategy):
         return "TheWhiteWhale"
 
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
-        props1 = self.em_teams[team1.name]
-        props2 = self.em_teams[team2.name]
+        props1 = self.get_props(team1)
+        props2 = self.get_props(team2)
 
         fave: EMProps
         underdog: EMProps

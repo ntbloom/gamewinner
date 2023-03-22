@@ -14,7 +14,7 @@ class Chillz(IEvanMiyaStrategy):
         return "Chillz"
 
     def _team_metric(self, team: Team) -> float:
-        props = self.em_teams[team.name]
+        props = self.get_props(team)
         overall_score = (
             self._rank_to_percentile(props.rank)
             + (props.bpr / 25)  # scaling based on a very good BPR (:shrug:)
@@ -37,7 +37,7 @@ class KillerChillz(IEvanMiyaStrategy):
         return "KillerChillz"
 
     def _team_metric(self, team: Team) -> float:
-        props = self.em_teams[team.name]
+        props = self.get_props(team)
         overall_score = (
             self._rank_to_percentile(props.rank)
             + (props.bpr / 25)  # scaling based on a very good BPR (:shrug:)

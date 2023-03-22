@@ -13,7 +13,7 @@ class FireWaterFireWater(IEvanMiyaStrategy):
         return "FireWaterFireWater"
 
     def _team_metric(self, team: Team) -> float:
-        props = self.em_teams[team.name]
+        props = self.get_props(team)
         overall_score = (
             self._rank_to_percentile(props.def_rank)
             - 0.75 * props.kill_shots_allowed_per_game

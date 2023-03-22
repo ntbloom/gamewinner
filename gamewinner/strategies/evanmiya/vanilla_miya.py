@@ -13,5 +13,5 @@ class VanillaMiya(IEvanMiyaStrategy):
         return "VanillaMiya"
 
     def _team_metric(self, team: Team) -> float:
-        props = self.em_teams[team.name]
+        props = self.get_props(team)
         return self._rank_to_percentile(props.rank)

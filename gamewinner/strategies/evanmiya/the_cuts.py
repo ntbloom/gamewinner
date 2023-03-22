@@ -20,7 +20,7 @@ class TheCuts23(IEvanMiyaStrategy):
         return "TheCuts23"
 
     def _team_metric(self, team: Team) -> float:
-        props = self.em_teams[team.name]
+        props = self.get_props(team)
         overall_score = (
             random.random() * self._rank_to_percentile(props.resume_rank) * props.bpr
         )
@@ -52,7 +52,7 @@ class TheCuts23Frozen(IEvanMiyaStrategy):
         return 82, 68
 
     def _team_metric(self, team: Team) -> float:
-        props = self.em_teams[team.name]
+        props = self.get_props(team)
         overall_score = self._rank_to_percentile(props.resume_rank) * props.bpr
 
         # upset factor
@@ -76,7 +76,7 @@ class TheCuts23DumBayz(IEvanMiyaStrategy):
         return "TheCuts23DumBayz"
 
     def _team_metric(self, team: Team) -> float:
-        props = self.em_teams[team.name]
+        props = self.get_props(team)
         overall_score = self._dumbayz(
             lambda: (
                 random.random()
