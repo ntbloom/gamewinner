@@ -8,11 +8,13 @@ class TheOwl(IEvanMiyaStrategy):
     """
     SJB likes teams that play D and can get hot and go on a run.
     Also, you gotta be able to play on the road.
+
+    For the record, this is the original: https://github.com/ntbloom/gamewinner/pull/20/
     """
 
     @property
     def name(self) -> str:
-        return "FireWaterFireWater"
+        return "TheOwl"
 
     @no_type_check
     def _team_metric(self, team: Team) -> float:
