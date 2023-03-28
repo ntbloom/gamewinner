@@ -1,5 +1,3 @@
-from typing import no_type_check
-
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
 from gamewinner.team import Team
 
@@ -16,14 +14,14 @@ class TheOwl(IEvanMiyaStrategy):
     def name(self) -> str:
         return "TheOwl"
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
+        props = self.get_props(team)
         overall_score = (
-            self._rank_to_percentile(team.evanmiyaDefRank)
-            - 0.75 * team.evanmiyaKillShotsAllowedPerGame
-            + 0.75 * team.evanmiyaKillShotsPerGame
-            + 0.75 * self._rank_to_percentile(team.evanmiyaInjuryRank)
-            + 0.75 * self._rank_to_percentile(team.evanmiyaHomeRank, reverse=True)
+            self._rank_to_percentile(props.def_rank)
+            - 0.75 * props.kill_shots_allowed_per_game
+            + 0.75 * props.kill_shots_per_game
+            + 0.75 * self._rank_to_percentile(props.injury_rank)
+            + 0.75 * self._rank_to_percentile(props.home_rank, reverse=True)
         )
         return overall_score
 

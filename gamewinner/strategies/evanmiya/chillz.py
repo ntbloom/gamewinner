@@ -1,5 +1,3 @@
-from typing import no_type_check
-
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
 from gamewinner.team import Team
 
@@ -15,14 +13,14 @@ class Chillz(IEvanMiyaStrategy):
     def name(self) -> str:
         return "Chillz"
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
+        props = self.get_props(team)
         overall_score = (
-            self._rank_to_percentile(team.evanmiyaRank)
-            + (team.evanmiyaBPR / 25)  # scaling based on a very good BPR (:shrug:)
-            + team.evanmiyaKillShotsPerGame
-            - team.evanmiyaKillShotsAllowedPerGame
-            * self._rank_to_percentile(team.evanmiyaRosterRank)
+            self._rank_to_percentile(props.rank)
+            + (props.bpr / 25)  # scaling based on a very good BPR (:shrug:)
+            + props.kill_shots_per_game
+            - props.kill_shots_allowed_per_game
+            * self._rank_to_percentile(props.roster_rank)
         )
         return overall_score
 
@@ -38,14 +36,14 @@ class KillerChillz(IEvanMiyaStrategy):
     def name(self) -> str:
         return "KillerChillz"
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
+        props = self.get_props(team)
         overall_score = (
-            self._rank_to_percentile(team.evanmiyaRank)
-            + (team.evanmiyaBPR / 25)  # scaling based on a very good BPR (:shrug:)
-            + 3 * team.evanmiyaKillShotsPerGame
+            self._rank_to_percentile(props.rank)
+            + (props.bpr / 25)  # scaling based on a very good BPR (:shrug:)
+            + 3 * props.kill_shots_per_game
             - 3
-            * team.evanmiyaKillShotsAllowedPerGame
-            * self._rank_to_percentile(team.evanmiyaRosterRank)
+            * props.kill_shots_allowed_per_game
+            * self._rank_to_percentile(props.roster_rank)
         )
         return overall_score
