@@ -1,5 +1,3 @@
-from typing import no_type_check
-
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
 from gamewinner.team import Team
 
@@ -14,6 +12,6 @@ class VanillaMiya(IEvanMiyaStrategy):
     def name(self) -> str:
         return "VanillaMiya"
 
-    @no_type_check
     def _team_metric(self, team: Team) -> float:
-        return self._rank_to_percentile(team.evanmiyaRank)
+        props = self.get_props(team)
+        return self._rank_to_percentile(props.rank)

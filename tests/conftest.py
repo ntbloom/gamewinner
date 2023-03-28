@@ -18,11 +18,17 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
             year_fixture,
             available_years,
             scope="class",
+            ids=[year.year for year in available_years],
         )
 
     strategy_fixture = "strategy"
     if strategy_fixture in metafunc.fixturenames:
-        metafunc.parametrize(strategy_fixture, available_strategies, scope="function")
+        metafunc.parametrize(
+            strategy_fixture,
+            available_strategies,
+            scope="function",
+            ids=[strategy.name for strategy in available_strategies],
+        )
 
 
 @pytest.fixture(scope="class")
