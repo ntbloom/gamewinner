@@ -97,34 +97,26 @@ work with any Python package manager (pip, poetry, conda, pipenv, etc.) on
 pretty much any system.
 
 ```python
-from gamewinner import gamewinner
+from gamewinner import play 
 from yourlib.strategies import YourFavoriteStrategy
 
-gamewinner.play(strategy=YourFavoriteStrategy())
+play(strategy=YourFavoriteStrategy())
 ```
 
 Or in your terminal with `poetry`
 
 ```shell
 poetry run play --help
-#usage: play [-h] [--strategy STRATEGY] [--year YEAR] [--printer PRINTER]
+#                                                                                                                              
+# Usage: play [OPTIONS]                                                                                                      
+#                                                                                                                              
+#╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+#│ *  --strategy        TEXT     strategy you want to use [default: None] [required]                                          │
+#│    --year            INTEGER  year you want to use [default: 2023]                                                         │
+#│    --printer         TEXT     printer to use [default: colortext]                                                          │
+#│    --help                     Show this message and exit.                                                                  │
+#╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 #
-#options:
-#  -h, --help           show this help message and exit
-#  --strategy STRATEGY  what strategy you want to use, must be one of ['BestRankWins',
-#                       'MrFreeze', 'SlothfireSteady', 'SlothfireSteadiest',
-#                       'SlothfireSteadyBayz', 'TheCuts23', 'TheCuts23Frozen',
-#                       'TheCuts23DumBayz', 'VanillaMiya', 'WorstRankWins']
-#  --year YEAR          year you want to play
-#  --printer PRINTER    how to print the bracket, must be one of {'plaintext', 'color'}
-#
-```
-
-There is an additional `make` target if that's preferable, though you don't get
-all the features:
-
-```sh
-make play strategy=BestRankWins
 ```
 
 That's it. Good luck!

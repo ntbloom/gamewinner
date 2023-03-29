@@ -16,6 +16,3 @@ precommit:
 
 mypy:
 	poetry run mypy .
-
-play:
-	poetry run play --strategy $(strategy)
