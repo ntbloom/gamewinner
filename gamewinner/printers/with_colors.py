@@ -10,7 +10,7 @@ console = Console()
 
 
 class WithColors(PlainText):
-    name = "Rich"
+    name = "colortext"
 
     winning_team_color = "green"
     losing_team_color = "bright_black"

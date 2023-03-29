@@ -6,7 +6,7 @@ from gamewinner.team import Team
 
 
 class PlainText(IPrinter):
-    name = "PlainText"
+    name = "text"
 
     @staticmethod
     def print(bracket: Bracket, *args: Any, **kwargs: Any) -> None:
