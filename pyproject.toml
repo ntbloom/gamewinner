@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gamewinner"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = ["Noah Bloom <ntbloom@gmail.com>"]
 readme = "README.md"
