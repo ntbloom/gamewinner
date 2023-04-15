@@ -1,37 +1,12 @@
 import pytest
 
 from gamewinner.bracket.bracket import Bracket
-from gamewinner.strategies import BestRankWins
-from gamewinner.bracket.team import Team
 from gamewinner.bracket.geographic_region import GeographicRegion
 from gamewinner.bracket.years import Year
-
-first_four = (
-    ("Notre Dame", "Rutgers"),
-    ("Texas A&M-Corpus Christi", "Texas Southern"),
-    ("Bryant", "Wright State"),
-    ("Wyoming", "Indiana"),
-)
+from gamewinner.strategies import BestRankWins
 
 
 class TestBracketBestWins:
-    @pytest.mark.parametrize("winner,loser", first_four)
-    def test_playoffs(
-        self, best_wins_bracket: Bracket, winner: Team, loser: Team
-    ) -> None:
-        bracket = best_wins_bracket
-        bracket.play()
-
-        teams = {
-            team.name
-            for team in bracket.west.teams
-            + bracket.east.teams
-            + bracket.south.teams
-            + bracket.midwest.teams
-        }
-        assert winner in teams
-        assert loser not in teams
-
     def test_bracket_with_best_wins(self, best_wins_bracket: Bracket) -> None:
         bracket = best_wins_bracket
         bracket.play()
@@ -101,24 +76,7 @@ class TestBracketBestWins:
 
 
 class TestBracketWorstWins:
-    @pytest.mark.parametrize("best,worst", first_four)
-    def test_playoffs(
-        self, worst_wins_bracket: Bracket, best: Team, worst: Team
-    ) -> None:
-        bracket = worst_wins_bracket
-        bracket.play()
-
-        teams = {
-            team.name
-            for team in bracket.west.teams
-            + bracket.east.teams
-            + bracket.south.teams
-            + bracket.midwest.teams
-        }
-        assert worst in teams
-        assert best not in teams
-
-    def test_bracket_with_best_wins(self, worst_wins_bracket: Bracket) -> None:
+    def test_bracket_with_worst_wins(self, worst_wins_bracket: Bracket) -> None:
         bracket = worst_wins_bracket
         bracket.play()
 

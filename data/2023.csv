@@ -1,12 +1,8 @@
 Team Name,Region,Regional Rank,Wins,Losses
-Arizona State,West-Playoff,11,22,12
-Nevada,West-Playoff,11,22,10
-Texas A&M-Corpus Christi,South-Playoff,16,23,10
-Southeast Missouri State,South-Playoff,16,19,6
-Mississippi State,Midwest-Playoff,11,21,12
-Pittsburgh,Midwest-Playoff,11,22,11
-Texas Southern,East-Playoff,16,14,20
-Fairleigh Dickinson,East-Playoff,16,19,15
+Arizona State,West,11,22,12
+Texas A&M-Corpus Christi,South,16,23,10
+Pittsburgh,Midwest,11,22,11
+Fairleigh Dickinson,East,16,19,15
 Alabama,South,1,29,5
 Maryland,South,8,21,12
 West Virginia,South,9,19,14

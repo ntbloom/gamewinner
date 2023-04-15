@@ -3,17 +3,16 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from gamewinner.bracket.region import Region
-from gamewinner.strategies.istrategy import Strategy
-from gamewinner.bracket.team import Team
 from gamewinner.bracket.geographic_region import GeographicRegion
+from gamewinner.bracket.region import Region
+from gamewinner.bracket.team import Team
 from gamewinner.bracket.years import Year, this_year
+from gamewinner.strategies.istrategy import Strategy
 
 
 class Bracket:
     def __init__(
         self,
-        first_four: list[tuple[Team, Team]],
         west: Region,
         east: Region,
         south: Region,
@@ -23,7 +22,6 @@ class Bracket:
     ):
         self.played = False
 
-        self.first_four = first_four
         self.west = west
         self.east = east
         self.south = south
@@ -100,25 +98,12 @@ class Bracket:
         # do any adjustments to the strategy now that we know who all the teams are
         strategy.prepare(teams)
 
-        # play the playoffs, add the teams to the regions accordingly
-        playoffs.sort(key=lambda team: team.region.value)
-        first_four: list[tuple[Team, Team]] = []
-        for order in [
-            (0, 1),
-            (2, 3),
-            (4, 5),
-            (6, 7),
-        ]:
-            first_four.append(strategy.pick(playoffs[order[0]], playoffs[order[1]]))
-        for t in first_four:
-            eval(f"{t[0].region.value.lower()}_teams.append(t[0])")
-
         west = Region(GeographicRegion.WEST, west_teams, strategy)
         east = Region(GeographicRegion.EAST, east_teams, strategy)
         south = Region(GeographicRegion.SOUTH, south_teams, strategy)
         midwest = Region(GeographicRegion.MIDWEST, midwest_teams, strategy)
 
-        return Bracket(first_four, west, east, south, midwest, strategy, year)
+        return Bracket(west, east, south, midwest, strategy, year)
 
     def _play_round(self, round_name: str) -> None:
         self.strategy.adjust(self.teams)

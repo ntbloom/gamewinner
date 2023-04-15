@@ -1,8 +1,8 @@
 from typing import Any
 
 from gamewinner.bracket.bracket import Bracket, Region
-from gamewinner.printers.iprinter import IPrinter
 from gamewinner.bracket.team import Team
+from gamewinner.printers.iprinter import IPrinter
 
 
 class PlainText(IPrinter):
@@ -20,7 +20,6 @@ class PlainText(IPrinter):
             f"{bracket.final_score}"
         )
         print()
-        cls._first_four(bracket)
         for region in bracket.regions:
             cls._region(region)
         cls._final_four(bracket)
@@ -28,12 +27,6 @@ class PlainText(IPrinter):
         print(f"[red]{len(bracket.upsets)} upsets predicted:")
         for upset in bracket.upsets:
             print(f"[red]\t{upset}")
-
-    @classmethod
-    def _first_four(cls, bracket: Bracket) -> None:
-        print("FIRST FOUR:")
-        for game in bracket.first_four:
-            cls._print_game(*game)
 
     @classmethod
     def _region(cls, region: Region) -> None:
