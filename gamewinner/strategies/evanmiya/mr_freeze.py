@@ -1,5 +1,5 @@
-from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
 from gamewinner.bracket.team import Team
+from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
 
 
 class MrFreeze(IEvanMiyaStrategy):

@@ -2,8 +2,8 @@ import pytest
 from typer.testing import CliRunner
 
 from cli import app
-from gamewinner.strategies import BestRankWins
 from gamewinner.bracket.years import this_year
+from gamewinner.strategies import BestRankWins
 
 VALUE_ERROR_EXIT_CODE = 1
 

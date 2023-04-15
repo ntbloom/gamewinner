@@ -2,13 +2,13 @@ import pytest
 from _pytest.python import Metafunc
 
 from gamewinner.bracket.bracket import Bracket
+from gamewinner.bracket.years import Year, available_years, year2022
 from gamewinner.strategies import (
     BestRankWins,
     Strategy,
     WorstRankWins,
     available_strategies,
 )
-from gamewinner.bracket.years import Year, available_years, year2022
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:

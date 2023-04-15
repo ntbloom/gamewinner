@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from gamewinner.strategies.evanmiya.ievanmiya import EMProps, IEvanMiyaStrategy
 from gamewinner.bracket.team import Team
+from gamewinner.strategies.evanmiya.ievanmiya import EMProps, IEvanMiyaStrategy
 
 
 class TheWhiteWhale(IEvanMiyaStrategy):
