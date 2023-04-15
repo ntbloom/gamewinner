@@ -1,14 +1,14 @@
 import pytest
 from _pytest.python import Metafunc
 
-from gamewinner.games.bracket import Bracket
+from gamewinner.bracket.bracket import Bracket
+from gamewinner.bracket.years import Year, available_years, year2022
 from gamewinner.strategies import (
     BestRankWins,
     Strategy,
     WorstRankWins,
     available_strategies,
 )
-from gamewinner.years import Year, available_years, test_year
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
@@ -33,7 +33,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 
 @pytest.fixture(scope="class")
 def reference_year() -> Year:
-    return test_year
+    return year2022
 
 
 @pytest.fixture(scope="class")

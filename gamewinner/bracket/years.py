@@ -1,6 +1,6 @@
 from typing import NamedTuple
 
-from gamewinner.team import GeographicRegion
+from gamewinner.bracket.geographic_region import GeographicRegion
 
 
 class Year(NamedTuple):
@@ -18,4 +18,3 @@ year2023 = Year(year=2023, west_plays=GeographicRegion.MIDWEST)
 
 available_years = (year2022, year2023)
 this_year = year2023
-test_year = year2022

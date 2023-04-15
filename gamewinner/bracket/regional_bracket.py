@@ -1,10 +1,11 @@
 import logging
 
+from gamewinner.bracket.geographic_region import GeographicRegion
+from gamewinner.bracket.team import Team
 from gamewinner.strategies import Strategy
-from gamewinner.team import GeographicRegion, Team
 
 
-class Region:
+class RegionalBracket:
     def __init__(self, name: GeographicRegion, teams: list[Team], strategy: Strategy):
         self._log = logging.getLogger(__name__)
         self.name = name

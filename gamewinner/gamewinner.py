@@ -1,7 +1,7 @@
 import gamewinner.printers as printers
 import gamewinner.strategies as strategies
-from gamewinner.games.bracket import Bracket
-from gamewinner.years import Year
+from gamewinner.bracket.bracket import Bracket
+from gamewinner.bracket.years import Year
 
 
 def play(

@@ -1,7 +1,7 @@
 import random
 
+from gamewinner.bracket.team import Team
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
-from gamewinner.team import Team
 
 
 class TheCuts23(IEvanMiyaStrategy):

@@ -1,4 +1,4 @@
-from gamewinner.games.bracket import Bracket
+from gamewinner.bracket.bracket import Bracket
 
 
 class TestStrategies:

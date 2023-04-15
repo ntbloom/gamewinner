@@ -1,5 +1,5 @@
+from gamewinner.bracket.team import Team
 from gamewinner.strategies.istrategy import IStrategy
-from gamewinner.team import Team
 
 
 class WorstRankWins(IStrategy):

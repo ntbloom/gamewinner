@@ -2,9 +2,9 @@ from typing import Any
 
 from rich.console import Console
 
-from gamewinner.games.bracket import Bracket
+from gamewinner.bracket.bracket import Bracket
+from gamewinner.bracket.team import Team
 from gamewinner.printers.plain_text import PlainText
-from gamewinner.team import Team
 
 console = Console()
 
@@ -32,7 +32,6 @@ class WithColors(PlainText):
             f"over {bracket.runner_up}: "
             f"{bracket.final_score}"
         )
-        cls._first_four(bracket)
         for region in bracket.regions:
             cls._region(region)
         cls._final_four(bracket)

@@ -1,6 +1,6 @@
 from _pytest.python import Metafunc
 
-from gamewinner.games.bracket import Bracket
+from gamewinner.bracket.bracket import Bracket
 from gamewinner.printers import Printer, available_printers
 
 

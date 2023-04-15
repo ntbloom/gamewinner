@@ -1,13 +1,6 @@
-from enum import Enum, unique
 from typing import Any
 
-
-@unique
-class GeographicRegion(Enum):
-    WEST = "West"
-    EAST = "East"
-    SOUTH = "South"
-    MIDWEST = "Midwest"
+from gamewinner.bracket.geographic_region import GeographicRegion
 
 
 class Team:
