@@ -1,6 +1,6 @@
 from typing import Any
 
-from gamewinner.bracket.bracket import Bracket, Region
+from gamewinner.bracket.bracket import Bracket, RegionalBracket
 from gamewinner.bracket.team import Team
 from gamewinner.printers.iprinter import IPrinter
 
@@ -29,7 +29,7 @@ class PlainText(IPrinter):
             print(f"[red]\t{upset}")
 
     @classmethod
-    def _region(cls, region: Region) -> None:
+    def _region(cls, region: RegionalBracket) -> None:
         print(region.name.value.upper() + ":")
         indentations = 0
         for i in range(1, 16):

@@ -5,7 +5,7 @@ from gamewinner.bracket.team import Team
 from gamewinner.bracket.geographic_region import GeographicRegion
 
 
-class Region:
+class RegionalBracket:
     def __init__(self, name: GeographicRegion, teams: list[Team], strategy: Strategy):
         self._log = logging.getLogger(__name__)
         self.name = name

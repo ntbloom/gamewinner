@@ -4,7 +4,7 @@ import csv
 from pathlib import Path
 
 from gamewinner.bracket.geographic_region import GeographicRegion
-from gamewinner.bracket.region import Region
+from gamewinner.bracket.regional_bracket import RegionalBracket
 from gamewinner.bracket.team import Team
 from gamewinner.bracket.years import Year, this_year
 from gamewinner.strategies.istrategy import Strategy
@@ -13,10 +13,10 @@ from gamewinner.strategies.istrategy import Strategy
 class Bracket:
     def __init__(
         self,
-        west: Region,
-        east: Region,
-        south: Region,
-        midwest: Region,
+        west: RegionalBracket,
+        east: RegionalBracket,
+        south: RegionalBracket,
+        midwest: RegionalBracket,
         strategy: Strategy,
         year: Year = this_year,
     ):
@@ -98,10 +98,10 @@ class Bracket:
         # do any adjustments to the strategy now that we know who all the teams are
         strategy.prepare(teams)
 
-        west = Region(GeographicRegion.WEST, west_teams, strategy)
-        east = Region(GeographicRegion.EAST, east_teams, strategy)
-        south = Region(GeographicRegion.SOUTH, south_teams, strategy)
-        midwest = Region(GeographicRegion.MIDWEST, midwest_teams, strategy)
+        west = RegionalBracket(GeographicRegion.WEST, west_teams, strategy)
+        east = RegionalBracket(GeographicRegion.EAST, east_teams, strategy)
+        south = RegionalBracket(GeographicRegion.SOUTH, south_teams, strategy)
+        midwest = RegionalBracket(GeographicRegion.MIDWEST, midwest_teams, strategy)
 
         return Bracket(west, east, south, midwest, strategy, year)
 
