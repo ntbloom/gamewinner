@@ -3,7 +3,7 @@ from typer.testing import CliRunner
 
 from cli import app
 from gamewinner.strategies import BestRankWins
-from gamewinner.years import this_year
+from gamewinner.bracket.years import this_year
 
 VALUE_ERROR_EXIT_CODE = 1
 

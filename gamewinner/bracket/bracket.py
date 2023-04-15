@@ -3,10 +3,11 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from gamewinner.games.region import Region
+from gamewinner.bracket.region import Region
 from gamewinner.strategies.istrategy import Strategy
-from gamewinner.team import GeographicRegion, Team
-from gamewinner.years import Year, this_year
+from gamewinner.bracket.team import Team
+from gamewinner.bracket.geographic_region import GeographicRegion
+from gamewinner.bracket.years import Year, this_year
 
 
 class Bracket:

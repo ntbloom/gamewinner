@@ -8,7 +8,7 @@ from statistics import median
 from typing import Callable, NamedTuple
 
 from gamewinner.strategies.istrategy import IStrategy
-from gamewinner.team import Team
+from gamewinner.bracket.team import Team
 
 EVAN_MIYA_FILE = Path(__file__).parent.joinpath("data").joinpath("evanmiya.csv")
 

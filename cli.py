@@ -7,7 +7,7 @@ from rich.console import Console
 from gamewinner import play
 from gamewinner.printers import Printer, WithColors, available_printers
 from gamewinner.strategies import Strategy, available_strategies
-from gamewinner.years import Year, available_years, this_year
+from gamewinner.bracket.years import Year, available_years, this_year
 
 PRINTERS: dict[str, Printer] = {printer.name: printer for printer in available_printers}
 STRATEGIES: dict[str, Strategy] = {

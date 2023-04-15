@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Type
 
-from gamewinner.games.bracket import Bracket
+from gamewinner.bracket.bracket import Bracket
 
 
 class IPrinter(ABC):

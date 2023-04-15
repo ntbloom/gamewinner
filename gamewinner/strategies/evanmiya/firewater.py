@@ -1,5 +1,5 @@
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
-from gamewinner.team import Team
+from gamewinner.bracket.team import Team
 
 
 class FireWaterFireWater(IEvanMiyaStrategy):

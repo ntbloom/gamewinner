@@ -1,9 +1,10 @@
 import pytest
 
-from gamewinner.games.bracket import Bracket
+from gamewinner.bracket.bracket import Bracket
 from gamewinner.strategies import BestRankWins
-from gamewinner.team import GeographicRegion, Team
-from gamewinner.years import Year
+from gamewinner.bracket.team import Team
+from gamewinner.bracket.geographic_region import GeographicRegion
+from gamewinner.bracket.years import Year
 
 first_four = (
     ("Notre Dame", "Rutgers"),
@@ -45,7 +46,7 @@ class TestBracketBestWins:
         assert bracket.runner_up.name == "Gonzaga"
 
     def test_all_first_round_matchups(self, best_wins_bracket: Bracket) -> None:
-        """Make sure we set out the games in right order"""
+        """Make sure we set out the bracket in right order"""
         bracket = best_wins_bracket
         bracket.play()
 

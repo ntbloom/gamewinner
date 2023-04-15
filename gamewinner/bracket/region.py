@@ -1,7 +1,8 @@
 import logging
 
 from gamewinner.strategies import Strategy
-from gamewinner.team import GeographicRegion, Team
+from gamewinner.bracket.team import Team
+from gamewinner.bracket.geographic_region import GeographicRegion
 
 
 class Region:
