@@ -5,9 +5,9 @@ from pathlib import Path
 
 from gamewinner.bracket.geographic_region import GeographicRegion
 from gamewinner.bracket.regional_bracket import RegionalBracket
-from gamewinner.bracket.team import Team
 from gamewinner.bracket.years import Year, this_year
 from gamewinner.strategies.istrategy import Strategy
+from gamewinner.teams.team import Team
 
 
 class Bracket:

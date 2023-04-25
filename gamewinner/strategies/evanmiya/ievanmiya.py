@@ -7,8 +7,8 @@ from random import randint
 from statistics import median
 from typing import Callable, NamedTuple
 
-from gamewinner.bracket.team import Team
 from gamewinner.strategies.istrategy import IStrategy
+from gamewinner.teams.team import Team, get_definitive_name
 
 EVAN_MIYA_FILE = Path(__file__).parent.joinpath("data").joinpath("evanmiya.csv")
 
@@ -73,7 +73,7 @@ class IEvanMiyaStrategy(IStrategy, ABC):
                 ) = row
 
                 # add all Evan Miya stats to relevant team if they're in the tournament
-                if name in teams:
+                if get_definitive_name(name) in teams:
                     props = EMProps(
                         rank=int(rank),
                         obpr=float(obpr),

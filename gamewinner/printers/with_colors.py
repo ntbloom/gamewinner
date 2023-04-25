@@ -3,8 +3,8 @@ from typing import Any
 from rich.console import Console
 
 from gamewinner.bracket.bracket import Bracket
-from gamewinner.bracket.team import Team
 from gamewinner.printers.plain_text import PlainText
+from gamewinner.teams.team import Team
 
 console = Console()
 

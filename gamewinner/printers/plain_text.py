@@ -1,8 +1,8 @@
 from typing import Any
 
 from gamewinner.bracket.bracket import Bracket, RegionalBracket
-from gamewinner.bracket.team import Team
 from gamewinner.printers.iprinter import IPrinter
+from gamewinner.teams.team import Team
 
 
 class PlainText(IPrinter):

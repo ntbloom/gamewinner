@@ -1,6 +1,16 @@
 from typing import Any
 
 from gamewinner.bracket.geographic_region import GeographicRegion
+from gamewinner.teams.alternate_names import name_map
+
+
+def get_definitive_name(raw: str) -> str:
+    """
+    Get a definitive name for each team so we can pull from different data sets"""
+    definitive = name_map.get(raw.lower(), None)
+    if not definitive:
+        raise ValueError(f"Can't find definitive name for `{raw}`")
+    return definitive
 
 
 class Team:
@@ -13,7 +23,7 @@ class Team:
         losses: int,
         **kwargs: Any,
     ):
-        self.name = name
+        self.name = get_definitive_name(name)
         self.region = region
         self.rank = rank
         self.wins = wins

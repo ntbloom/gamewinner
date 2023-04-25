@@ -1,7 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 
-from gamewinner.bracket.team import Team
+from gamewinner.teams.team import Team
 
 
 class IStrategy(ABC):
