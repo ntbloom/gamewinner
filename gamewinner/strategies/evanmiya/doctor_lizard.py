@@ -1,5 +1,5 @@
-from gamewinner.bracket.team import Team
 from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
+from gamewinner.teams.team import Team
 
 
 class DoctorLizard(IEvanMiyaStrategy):
