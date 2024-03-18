@@ -10,6 +10,10 @@ from gamewinner.strategies.istrategy import Strategy
 from gamewinner.teams.team import Team
 
 
+class InvalidDataFile(Exception):
+    pass
+
+
 class Bracket:
     def __init__(
         self,
@@ -73,7 +77,10 @@ class Bracket:
             reader = csv.reader(f)
             reader.__next__()
             for row in reader:
-                name, region, rank, wins, losses = row
+                try:
+                    name, region, rank, wins, losses = row
+                except ValueError:
+                    raise InvalidDataFile(f"Bad entry for {row}")
                 match region:
                     case _ if "Playoff" in region:
                         _region = region.split("-")[0]

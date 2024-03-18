@@ -1,5 +1,8 @@
 import pytest
 
+from gamewinner.bracket.bracket import Bracket
+from gamewinner.bracket.years import Year
+from gamewinner.strategies import BestRankWins
 from gamewinner.teams.alternate_names import alternate_names
 from gamewinner.teams.team import get_definitive_name
 
@@ -32,3 +35,9 @@ class TestGetDefinitiveName:
         assert names_unsorted == sorted(
             names_unsorted
         ), "`alternate_names` entries are not in alphabetical order"
+
+    def test_all_teams_are_in_alternate_names(self, every_year: Year) -> None:
+        bracket = Bracket.create(BestRankWins(), every_year)
+        teams = {team for team in bracket.teams.keys()}
+        for team in teams:
+            assert get_definitive_name(team)
