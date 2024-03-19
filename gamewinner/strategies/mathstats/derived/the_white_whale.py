@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from gamewinner.strategies.evanmiya.ievanmiya import EMProps, IEvanMiyaStrategy
+from gamewinner.strategies.mathstats.imathstats import IMathStatsStrategy, MSProps
 from gamewinner.teams.team import Team
 
 
-class TheWhiteWhale(IEvanMiyaStrategy):
+class TheWhiteWhale(IMathStatsStrategy):
     """
     Witness the white bear of the poles, and the white shark of the tropics;
     what but their smooth, flaky whiteness makes them the transcendent horrors
@@ -19,20 +19,24 @@ class TheWhiteWhale(IEvanMiyaStrategy):
         props1 = self.get_props(team1)
         props2 = self.get_props(team2)
 
-        fave: EMProps
-        underdog: EMProps
+        fave: MSProps
+        underdog: MSProps
         fave, underdog = (
-            (props1, props2) if props1.rank < props2.rank else (props2, props1)
+            (props1, props2)
+            if props1.rank_overall < props2.rank_overall
+            else (props2, props1)
         )
         upset = False
 
         # can an underdog with good defense stifle a better team?
         tempo_winner, tempo_loser = (
             (fave, underdog)
-            if fave.tempo_rank < underdog.tempo_rank
+            if fave.rank_tempo < underdog.rank_tempo
             else (underdog, fave)
         )
-        defense_holds = True if (tempo_winner.obpr < tempo_loser.dbpr) else False
+        defense_holds = (
+            True if (tempo_winner.raw_offense < tempo_loser.raw_defense) else False
+        )
         if defense_holds and tempo_winner == self:
             upset = True
 

@@ -1,4 +1,4 @@
-name,evanmiyaRank,evanmiyaOBPR,evanmiyaDBPR,evanmiyaBPR,evanmiyaOffRank,evanmiyaDefRank,evanmiyaTrueTempo,evanmiyaTempoRank,evanmiyaInjuryRank,evanmiyaRosterRank,evanmiyaKillShotsPerGame,evanmiyaKillShotsAllowedPerGame,evanmiyaTotalKillShots,evanmiyaTotalKillShotsAllowed,evanmiyaResumeRank,evanmiyaHomeRank
+name,Rank,OBPR,DBPR,BPR,OffRank,DefRank,TrueTempo,TempoRank,InjuryRank,RosterRank,KillShotsPerGame,KillShotsAllowedPerGame,TotalKillShots,TotalKillShotsAllowed,ResumeRank,HomeRank
 Houston,1,12.8,15.4,28.3,6,2,65.6,334,1,1,0.86,0.2,30,7,1,301
 Gonzaga,2,18.7,6.7,25.5,1,47,71.6,41,2,2,0.79,0.15,26,5,6,160
 Alabama,3,10.6,14.7,25.2,13,3,74.2,3,3,4,0.71,0.11,25,4,2,2

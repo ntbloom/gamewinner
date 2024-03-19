@@ -1,8 +1,8 @@
-from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
+from gamewinner.strategies.mathstats.imathstats import IMathStatsStrategy
 from gamewinner.teams.team import Team
 
 
-class MrFreeze(IEvanMiyaStrategy):
+class MrFreeze(IMathStatsStrategy):
     """
     Cool party!  Is Arnold invited?
     """
@@ -31,13 +31,13 @@ class MrFreeze(IEvanMiyaStrategy):
         total *= magic_numbers.pop(0)
 
         # it's a cold town: punish teams who don't play on the road
-        total += props.home_rank * magic_numbers.pop(0)
+        total += props.rank_home * magic_numbers.pop(0)
 
         # you're not sending me to the cooler: reward teams with a deep bench
-        total -= props.roster_rank * magic_numbers.pop(0)
+        total -= props.rank_roster * magic_numbers.pop(0)
 
         # it doesn't work on the cold-blooded: reward teams not bothered by injury
-        total -= props.injury_rank * magic_numbers.pop(0)
+        total -= props.rank_injury * magic_numbers.pop(0)
 
         # let 's kick some ice!
         return total
