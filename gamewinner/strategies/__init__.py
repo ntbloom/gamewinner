@@ -8,6 +8,9 @@ from gamewinner.strategies.mathstats.derived.mr_freeze import MrFreeze
 from gamewinner.strategies.mathstats.derived.the_white_whale import TheWhiteWhale
 from gamewinner.strategies.mathstats.derived.theowl import TheOwl
 from gamewinner.strategies.mathstats.derived.vanilla import Vanilla
+from gamewinner.strategies.mathstats.derived.slothfire_steady import SlothfireSteady
+from gamewinner.strategies.mathstats.derived.slothfire_steady import SlothfireSteadiest
+from gamewinner.strategies.mathstats.derived.slothfire_steady import SlothfireSteadyBayz
 
 available_strategies = (
     BestRankWins(),
@@ -20,4 +23,7 @@ available_strategies = (
     TheWhiteWhale(),
     Vanilla(),
     WorstRankWins(),
+    SlothfireSteady(),
+    SlothfireSteadiest(),
+    SlothfireSteadyBayz(),
 )
