@@ -5,8 +5,16 @@ jobs:
   validate:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - run: make install
-      - run: make precommit
-      - run: make mypy
-      - run: make test
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: build & test
+        run: |
+          make install
+          make precommit
+          make mypy
+          make test
+      - name: Store bracket results
+        uses: actions/upload-artifact@v4
+        with:
+          name: brackets
+          path: generated/*.bkt
