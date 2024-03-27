@@ -15,3 +15,6 @@ class TestPrinters:
         bracket = strategized_bracket
         bracket.play()
         printer.print(bracket)
+
+    # def test_file_print(self, strategized_bracket: Bracket) -> None:
+    #     strategized_bracket.play()

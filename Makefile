@@ -16,3 +16,6 @@ precommit:
 
 mypy:
 	poetry run mypy .
+
+clean:
+	rm -rf gamewinner/generated/*.bkt
