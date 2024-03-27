@@ -9,7 +9,9 @@ from gamewinner.bracket.years import Year, available_years, this_year
 from gamewinner.printers import Printer, WithColors, available_printers
 from gamewinner.strategies import Strategy, available_strategies
 
-PRINTERS: dict[str, Printer] = {printer.name: printer for printer in available_printers}
+PRINTERS: dict[str, Printer] = {
+    printer.name: printer for printer in available_printers  # type: ignore
+}
 STRATEGIES: dict[str, Strategy] = {
     strategy.name: strategy for strategy in available_strategies
 }
