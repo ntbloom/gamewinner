@@ -14,8 +14,8 @@ class IFilePrinter(IPrinter):
         if filename.exists():
             os.remove(filename)
         with open(filename, "w+") as f:
-            cls._print(bracket, f)
+            cls._print(f, bracket)
 
     @classmethod
-    def _print(cls, bracket: Bracket, file_desc: TextIO) -> None:
+    def _print(cls, fd: TextIO, bracket: Bracket) -> None:
         raise NotImplementedError
