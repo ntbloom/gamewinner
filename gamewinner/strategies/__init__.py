@@ -5,6 +5,7 @@ from gamewinner.strategies.mathstats.derived.chillz import Chillz, KillerChillz
 from gamewinner.strategies.mathstats.derived.doctor_lizard import DoctorLizard
 from gamewinner.strategies.mathstats.derived.firewater import FireWaterFireWater
 from gamewinner.strategies.mathstats.derived.mr_freeze import MrFreeze
+from gamewinner.strategies.mathstats.derived.rocky import Rocky
 from gamewinner.strategies.mathstats.derived.slothfire_steady import (
     SlothfireSteadiest,
     SlothfireSteady,
@@ -26,14 +27,15 @@ available_strategies = (
     FireWaterFireWater(),
     KillerChillz(),
     MrFreeze(),
-    TheOwl(),
-    TheWhiteWhale(),
-    Vanilla(),
-    WorstRankWins(),
+    Rocky(),
     SlothfireSteady(),
     SlothfireSteadiest(),
     SlothfireSteadyBayz(),
     TheCuts23(),
-    TheCuts23Frozen(),
     TheCuts23DumBayz(),
+    TheCuts23Frozen(),
+    TheOwl(),
+    TheWhiteWhale(),
+    Vanilla(),
+    WorstRankWins(),
 )
