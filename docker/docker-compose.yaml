@@ -1,0 +1,7 @@
+services:
+  gamewinner:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-gamewinner
+    volumes:
+      - ../gamewinner/generated:/opt/gamewinner/gamewinner/generated
