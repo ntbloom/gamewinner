@@ -6,6 +6,7 @@ from gamewinner.teams.team import Team
 
 
 class BasicFilePrinter(IFilePrinter):
+    name = "basicfileprinter"
 
     @classmethod
     def _print(cls, fd: TextIO, bracket: Bracket) -> None:
