@@ -1,8 +1,8 @@
-from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
+from gamewinner.strategies.mathstats.imathstats import IMathStatsStrategy
 from gamewinner.teams.team import Team
 
 
-class DoctorLizard(IEvanMiyaStrategy):
+class DoctorLizard(IMathStatsStrategy):
     """
     Straight from The Doc:
 
@@ -34,9 +34,9 @@ class DoctorLizard(IEvanMiyaStrategy):
         props1 = self.get_props(team1)
         props2 = self.get_props(team2)
         # "if the difference in ranking (using the injuryrank) is greater than 25..."
-        if abs(props1.injury_rank - props2.injury_rank) > 25:
+        if abs(props1.rank_injury - props2.rank_injury) > 25:
             # "pick higher rank"
-            if props1.injury_rank < props2.injury_rank:
+            if props1.rank_injury < props2.rank_injury:
                 return team1, team2
             else:
                 return team2, team1
@@ -45,23 +45,23 @@ class DoctorLizard(IEvanMiyaStrategy):
         #    with greater value..."
         # (Using BPR for this, see note above)
         # "...unless difference is less than 5."
-        elif abs(props1.bpr - props2.bpr) >= 5:
-            if props1.bpr > props2.bpr:
+        elif abs(props1.rank_overall - props2.rank_overall) >= 5:
+            if props1.rank_overall > props2.rank_overall:
                 return team1, team2
             else:
                 return team2, team1
 
         # "If not greater than 5, pick team with more KillShotsPerGame."
         else:
-            if props1.kill_shots_per_game > props2.kill_shots_per_game:
+            if props1.obj_kills_per_game > props2.obj_kills_per_game:
                 return team1, team2
-            elif props2.kill_shots_per_game > props1.kill_shots_per_game:
+            elif props2.obj_kills_per_game > props1.obj_kills_per_game:
                 return team2, team1
             # Editorial: it is possible for the above to end in a tie,
             #   which won't work. If we get all the way to the bottom,
             #   we just go back to picking based on InjuryRank.
             else:
-                if props1.injury_rank < props2.injury_rank:
+                if props1.rank_injury < props2.rank_injury:
                     return team1, team2
                 else:
                     return team2, team1

@@ -1,10 +1,10 @@
 import random
 
-from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
+from gamewinner.strategies.mathstats.imathstats import IMathStatsStrategy
 from gamewinner.teams.team import Team
 
 
-class TheCuts23(IEvanMiyaStrategy):
+class TheCuts23(IMathStatsStrategy):
     """
     The Inuagural Effort by The Mind Behind The Cuts, Dan H Cook III
 
@@ -22,20 +22,22 @@ class TheCuts23(IEvanMiyaStrategy):
     def _team_metric(self, team: Team) -> float:
         props = self.get_props(team)
         overall_score = (
-            random.random() * self._rank_to_percentile(props.resume_rank) * props.bpr
+            random.random()
+            * self._rank_to_percentile(props.resume_rank)
+            * props.raw_overall
         )
 
         # upset factor
         overall_score = overall_score + (
             0.5
             * random.random()
-            * self._rank_to_percentile(props.home_rank, reverse=True)
+            * self._rank_to_percentile(props.rank_home, reverse=True)
         )
 
         return overall_score
 
 
-class TheCuts23Frozen(IEvanMiyaStrategy):
+class TheCuts23Frozen(IMathStatsStrategy):
     """
     TheCuts23 without any randomness.
 
@@ -53,17 +55,18 @@ class TheCuts23Frozen(IEvanMiyaStrategy):
 
     def _team_metric(self, team: Team) -> float:
         props = self.get_props(team)
-        overall_score = self._rank_to_percentile(props.resume_rank) * props.bpr
-
-        # upset factor
+        overall_score = props.raw_overall
+        overall_score = self._rank_to_percentile(props.resume_rank) * props.raw_overall
+        #
+        # # upset factor
         overall_score = overall_score + (
-            0.5 * self._rank_to_percentile(props.home_rank, reverse=True)
+            0.5 * self._rank_to_percentile(props.rank_home, reverse=True)
         )
 
         return overall_score
 
 
-class TheCuts23DumBayz(IEvanMiyaStrategy):
+class TheCuts23DumBayz(IMathStatsStrategy):
     """
     The Bayesian version of TheCuts23
 
@@ -81,7 +84,7 @@ class TheCuts23DumBayz(IEvanMiyaStrategy):
             lambda: (
                 random.random()
                 * self._rank_to_percentile(props.resume_rank)
-                * props.bpr
+                * props.raw_overall
             )
         )
 
@@ -89,7 +92,7 @@ class TheCuts23DumBayz(IEvanMiyaStrategy):
         overall_score = overall_score + (
             0.5
             * random.random()
-            * self._rank_to_percentile(props.home_rank, reverse=True)
+            * self._rank_to_percentile(props.rank_home, reverse=True)
         )
 
         return overall_score

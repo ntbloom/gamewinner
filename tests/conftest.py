@@ -2,7 +2,7 @@ import pytest
 from _pytest.python import Metafunc
 
 from gamewinner.bracket.bracket import Bracket
-from gamewinner.bracket.years import Year, available_years, year2022
+from gamewinner.bracket.years import Year, available_years, this_year, year2022
 from gamewinner.strategies import (
     BestRankWins,
     Strategy,
@@ -47,6 +47,8 @@ def worst_wins_bracket(reference_year: Year) -> Bracket:
 
 
 @pytest.fixture(scope="function")
-def strategized_bracket(every_year: Year, strategy: Strategy) -> Bracket:
-    bracket = Bracket.create(strategy, every_year)
+def strategized_bracket(strategy: Strategy) -> Bracket:
+    # don't worry about breaking changes and only run strategies for this year
+    year = this_year
+    bracket = Bracket.create(strategy, year)
     return bracket

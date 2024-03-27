@@ -1,12 +1,12 @@
 import random
 
-from gamewinner.strategies.evanmiya.ievanmiya import IEvanMiyaStrategy
+from gamewinner.strategies.mathstats.imathstats import IMathStatsStrategy
 from gamewinner.teams.team import Team
 
 
-class SlothfireSteady(IEvanMiyaStrategy):
+class SlothfireSteady(IMathStatsStrategy):
     """
-    Using Evan Miya data and heavily weighting teams that play slow
+    Using math data and heavily weighting teams that play slow
       and don't let other teams go on runs against them.
 
     In theory, this would pick UVa high, but we'll see what the numbers say...
@@ -19,23 +19,23 @@ class SlothfireSteady(IEvanMiyaStrategy):
     def _team_metric(self, team: Team) -> float:
         props = self.get_props(team)
         overall_score = (
-            self._rank_to_percentile(props.def_rank)
-            + 0.5 * self._rank_to_percentile(props.tempo_rank, reverse=True)
-            + 0.3 * self._rank_to_percentile(props.off_rank)
-            + 0.3 * self._rank_to_percentile(props.rank)
-            - props.kill_shots_allowed_per_game
+            self._rank_to_percentile(props.rank_defense)
+            + 0.5 * self._rank_to_percentile(props.rank_tempo, reverse=True)
+            + 0.3 * self._rank_to_percentile(props.rank_offense)
+            + 0.3 * self._rank_to_percentile(props.rank_overall)
+            - props.obj_kills_concede_per_game
         )
 
         # upset factor
         overall_score = overall_score + random.random() * (
-            self._rank_to_percentile(props.resume_rank)
-            + min(self._rank_to_percentile(props.home_rank, reverse=True), 0.5)
+            self._rank_to_percentile(props.rank_roster)
+            + min(self._rank_to_percentile(props.rank_home, reverse=True), 0.5)
         )
 
         return overall_score
 
 
-class SlothfireSteadiest(IEvanMiyaStrategy):
+class SlothfireSteadiest(IMathStatsStrategy):
     """
     Same thing, but with no randomness.
 
@@ -59,23 +59,23 @@ class SlothfireSteadiest(IEvanMiyaStrategy):
     def _team_metric(self, team: Team) -> float:
         props = self.get_props(team)
         overall_score = (
-            self._rank_to_percentile(props.def_rank)
-            + 0.5 * self._rank_to_percentile(props.tempo_rank, reverse=True)
-            + 0.3 * self._rank_to_percentile(props.off_rank)
-            + 0.3 * self._rank_to_percentile(props.rank)
-            - props.kill_shots_allowed_per_game
+            self._rank_to_percentile(props.rank_defense)
+            + 0.5 * self._rank_to_percentile(props.rank_tempo, reverse=True)
+            + 0.3 * self._rank_to_percentile(props.rank_offense)
+            + 0.3 * self._rank_to_percentile(props.rank_overall)
+            - props.obj_kills_concede_per_game
         )
 
         # upset factor
         overall_score = overall_score + (
-            self._rank_to_percentile(props.resume_rank)
-            + min(self._rank_to_percentile(props.home_rank, reverse=True), 0.5)
+            self._rank_to_percentile(props.rank_roster)
+            + min(self._rank_to_percentile(props.rank_home, reverse=True), 0.5)
         )
 
         return overall_score
 
 
-class SlothfireSteadyBayz(IEvanMiyaStrategy):
+class SlothfireSteadyBayz(IMathStatsStrategy):
     """
     Same thing, but with 100 iterations of DumBayz for added steadiness
     """
@@ -87,11 +87,11 @@ class SlothfireSteadyBayz(IEvanMiyaStrategy):
     def _team_metric(self, team: Team) -> float:
         props = self.get_props(team)
         overall_score = (
-            self._rank_to_percentile(props.def_rank)
-            + 0.5 * self._rank_to_percentile(props.tempo_rank, reverse=True)
-            + 0.3 * self._rank_to_percentile(props.off_rank)
-            + 0.3 * self._rank_to_percentile(props.rank)
-            - props.kill_shots_allowed_per_game
+            self._rank_to_percentile(props.rank_defense)
+            + 0.5 * self._rank_to_percentile(props.rank_tempo, reverse=True)
+            + 0.3 * self._rank_to_percentile(props.rank_offense)
+            + 0.3 * self._rank_to_percentile(props.rank_overall)
+            - props.obj_kills_concede_per_game
         )
 
         # upset factor
@@ -99,9 +99,9 @@ class SlothfireSteadyBayz(IEvanMiyaStrategy):
             lambda: (
                 random.random()
                 * (
-                    self._rank_to_percentile(props.resume_rank)
+                    self._rank_to_percentile(props.rank_roster)
                     + min(
-                        self._rank_to_percentile(props.home_rank, reverse=True),
+                        self._rank_to_percentile(props.rank_home, reverse=True),
                         0.5,
                     )
                 )

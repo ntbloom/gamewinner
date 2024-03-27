@@ -46,7 +46,7 @@ class TestBracketBestWins:
     @pytest.mark.parametrize("region", GeographicRegion)
     def test_final_four(self, region: GeographicRegion, reference_year: Year) -> None:
         if region == GeographicRegion.WEST:
-            pytest.skip("invalid region")
+            pytest.skip("West can't play West, skipping matchup")
 
         # inject the test west_plays variable into the 2022 data
         year = Year(reference_year.year, west_plays=region)
