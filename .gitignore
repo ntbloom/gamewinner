@@ -12,5 +12,5 @@ scratch_seth/
 *.ipynb
 venv/
 .venv/
-gamewinner/generated/*
-!gamewinner/generated/.gitkeep
+generated/*
+!generated/.gitkeep

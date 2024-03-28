@@ -90,18 +90,19 @@ The class has 4 main methods:
 ## Run the model
 
 Once you've got your strategy figured out, printing a sample bracket is trivial.
-The only requirement is Python 3.10 with standard library, so the tooling should
-work with any Python package manager (pip, poetry, conda, pipenv, etc.) on
-pretty much any system.
 
-```python
-from gamewinner import play 
-from yourlib.strategies import YourFavoriteStrategy
+### Python
 
-play(strategy=YourFavoriteStrategy())
+Dependencies:
+* python 3.10 or later
+* poetry
+
+```shell
+$ python -m pip install poetry
+$ poetry install
 ```
 
-Or in your terminal with `poetry`
+From there, invoke the cli:
 
 ```shell
 poetry run play --help
@@ -115,6 +116,29 @@ poetry run play --help
 #│    --help                     Show this message and exit.                                                                  │
 #╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 #
+```
+
+### Docker
+
+Dependencies:
+* make
+* docker with compose plugin
+
+No python toolchain is needed here. Simply run `make docker` and generate 
+brackets for every strategy.  Files will be created in the `generated/`
+directory.
+
+```shell
+$ make docker
+# ...
+$ ls generated/
+# BestRankWins-2024-basic.txt        Rocky-2024-basic.txt                TheCuts23Frozen-2024-basic.txt
+# Chillz-2024-basic.txt              SlothfireSteadiest-2024-basic.txt   TheOwl-2024-basic.txt
+# DoctorLizard-2024-basic.txt        SlothfireSteady-2024-basic.txt      TheWhiteWhale-2024-basic.txt
+# FireWaterFireWater-2024-basic.txt  SlothfireSteadyBayz-2024-basic.txt  Vanilla-2024-basic.txt
+# KillerChillz-2024-basic.txt        TheCuts23-2024-basic.txt            WorstRankWins-2024-basic.txt
+# MrFreeze-2024-basic.txt            TheCuts23DumBayz-2024-basic.txt
+
 ```
 
 That's it. Good luck!
