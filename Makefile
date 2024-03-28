@@ -27,4 +27,4 @@ docker:
 	docker compose ${DOCKER_FLAGS} up --build
 
 clean:
-	rm -rf gamewinner/generated/*.bkt
+	rm -rf gamewinner/generated/*
