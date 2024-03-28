@@ -11,7 +11,7 @@ class IFilePrinter(IPrinter):
 
     @classmethod
     def print(cls, bracket: Bracket, *args: Any, **kwargs: Any) -> None:
-        dest_dir = Path(__file__).parent.parent.joinpath("generated")
+        dest_dir = Path(__file__).parent.parent.parent.joinpath("generated")
         filename = dest_dir.joinpath(
             f"{bracket.strategy.name}-{bracket.year.year}-{cls.name}.{cls.extension}"
         )

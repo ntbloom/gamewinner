@@ -27,4 +27,6 @@ docker:
 	docker compose ${DOCKER_FLAGS} up --build
 
 clean:
-	rm -rf gamewinner/generated/*
+	rm -rf generated/*
+
+.DEFAULT_GOAL:=test

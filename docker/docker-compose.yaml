@@ -4,4 +4,4 @@ services:
       context: ..
       dockerfile: docker/Dockerfile-gamewinner
     volumes:
-      - ../gamewinner/generated:/opt/gamewinner/gamewinner/generated
+      - ../generated:/opt/gamewinner/generated
