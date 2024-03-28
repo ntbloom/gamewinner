@@ -28,6 +28,8 @@ class TestPrinters:
         capture = capsys.readouterr()
         assert capture.out and capture.out != "\n"
 
-    def test_file_print(self, strategized_bracket: Bracket, file_printer: Printer):
+    def test_file_print(
+        self, strategized_bracket: Bracket, file_printer: Printer
+    ) -> None:
         strategized_bracket.play()
         file_printer.print(strategized_bracket)
