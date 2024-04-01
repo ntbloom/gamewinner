@@ -22,7 +22,6 @@ class TestPrinters:
         console_printer: Printer,
         capsys: CaptureFixture,
     ) -> None:
-        strategized_bracket.play()
         console_printer.print(strategized_bracket)
 
         capture = capsys.readouterr()
@@ -31,5 +30,4 @@ class TestPrinters:
     def test_file_print(
         self, strategized_bracket: Bracket, file_printer: Printer
     ) -> None:
-        strategized_bracket.play()
         file_printer.print(strategized_bracket)

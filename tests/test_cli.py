@@ -2,7 +2,6 @@ import pytest
 from typer.testing import CliRunner
 
 from cli import app
-from gamewinner.bracket.years import this_year
 from gamewinner.strategies import BestRankWins
 
 VALUE_ERROR_EXIT_CODE = 1
@@ -19,8 +18,8 @@ def valid_strategy() -> str:
 
 
 @pytest.fixture(scope="class")
-def valid_year() -> str:
-    return str(this_year.year)
+def valid_year(this_year: int) -> str:
+    return str(this_year)
 
 
 class TestCli:
