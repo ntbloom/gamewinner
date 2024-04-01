@@ -130,24 +130,36 @@ class Bracket:
 
         return Bracket(west, east, south, midwest, strategy, year)
 
-    def _play_round(self, round_name: str) -> None:
+    def play(self) -> None:
+        self.__play_first_round()
+        self.__play_second_round()
+        self.__play_sweet_sixteen()
+        self.__play_elite_eight()
+        self.__play_final_four()
+        self.__play_final()
+        self.played = True
+        for region in self.regions:
+            for upset in region.upsets:
+                self.upsets.append(upset)
+
+    def __play_round(self, round_name: str) -> None:
         for reg in self._region_names:
             cmd = f"self.{reg}.{round_name}()"
             eval(cmd)
 
-    def _play_first_round(self) -> None:
-        self._play_round("first_round")
+    def __play_first_round(self) -> None:
+        self.__play_round("first_round")
 
-    def _play_second_round(self) -> None:
-        self._play_round("second_round")
+    def __play_second_round(self) -> None:
+        self.__play_round("second_round")
 
-    def _play_sweet_sixteen(self) -> None:
-        self._play_round("sweet_sixteen")
+    def __play_sweet_sixteen(self) -> None:
+        self.__play_round("sweet_sixteen")
 
-    def _play_elite_eight(self) -> None:
-        self._play_round("elite_eight")
+    def __play_elite_eight(self) -> None:
+        self.__play_round("elite_eight")
 
-    def _play_final_four(self) -> None:
+    def __play_final_four(self) -> None:
         # decide the matchups based on who the west bracket is matched against
         matchups = {
             "east": self.east.winner,
@@ -166,20 +178,8 @@ class Bracket:
             self.ff2_loser,
         )
 
-    def _play_final(self) -> None:
+    def __play_final(self) -> None:
         self._winner, self._runner_up = self.strategy.pick(
             self.ff1_winner, self.ff2_winner
         )
         self.final_score = self.strategy.predict_score(self._winner, self._runner_up)
-
-    def play(self) -> None:
-        self._play_first_round()
-        self._play_second_round()
-        self._play_sweet_sixteen()
-        self._play_elite_eight()
-        self._play_final_four()
-        self._play_final()
-        self.played = True
-        for region in self.regions:
-            for upset in region.upsets:
-                self.upsets.append(upset)
