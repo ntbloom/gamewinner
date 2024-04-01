@@ -14,6 +14,10 @@ class InvalidDataFile(Exception):
     pass
 
 
+class BracketLogicError(Exception):
+    pass
+
+
 class Bracket:
     def __init__(
         self,
@@ -48,6 +52,8 @@ class Bracket:
 
         self.strategy = strategy
         self.upsets: list[str] = []
+        self._winner: Team | None = None
+        self._runner_up: Team | None = None
 
     @property
     def teams(self) -> dict[str, Team]:
@@ -56,6 +62,18 @@ class Bracket:
     @property
     def final_four(self) -> tuple[tuple[Team, Team], ...]:
         return tuple(self._final_four)
+
+    @property
+    def runner_up(self) -> Team:
+        if not self._runner_up:
+            raise BracketLogicError("must call `play()` first, or logic is broken")
+        return self._runner_up
+
+    @property
+    def winner(self) -> Team:
+        if not self._winner:
+            raise BracketLogicError("must call `play()` first, or logic is broken")
+        return self._winner
 
     @staticmethod
     def create(strategy: Strategy, year: Year) -> Bracket:
@@ -113,7 +131,6 @@ class Bracket:
         return Bracket(west, east, south, midwest, strategy, year)
 
     def _play_round(self, round_name: str) -> None:
-        self.strategy.adjust(self.teams)
         for reg in self._region_names:
             cmd = f"self.{reg}.{round_name}()"
             eval(cmd)
@@ -150,11 +167,10 @@ class Bracket:
         )
 
     def _play_final(self) -> None:
-        self.strategy.adjust(self.teams)
-        self.winner, self.runner_up = self.strategy.pick(
+        self._winner, self._runner_up = self.strategy.pick(
             self.ff1_winner, self.ff2_winner
         )
-        self.final_score = self.strategy.predict_score(self.winner, self.runner_up)
+        self.final_score = self.strategy.predict_score(self._winner, self._runner_up)
 
     def play(self) -> None:
         self._play_first_round()

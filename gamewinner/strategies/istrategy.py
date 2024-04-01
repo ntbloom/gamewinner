@@ -21,16 +21,6 @@ class IStrategy(ABC):
         """
         pass
 
-    def adjust(self, teams: dict[str, Team]) -> None:
-        """
-        Called before each round, including in between the first four and the
-        first round.  This can be used to amend strategies based on the results
-        of previous bracket.
-
-        It is not necessary to overload this method; the default is a no-op.
-        """
-        pass
-
     @abstractmethod
     def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
         """Pick a game winner"""
