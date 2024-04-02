@@ -2,52 +2,98 @@ from __future__ import annotations
 
 import logging
 
-from gamewinner.bracket.bracket_node import BracketNode, Round
+from gamewinner.bracket.bracket_node import BracketNode
 from gamewinner.bracket.exceptions import BracketLogicError
+from gamewinner.bracket.game import Game
 from gamewinner.bracket.parser import Parser
+from gamewinner.bracket.round import Round
+from gamewinner.strategies import BestRankWins
 from gamewinner.strategies.istrategy import Strategy
 from gamewinner.teams.team import Team
 
 
 class Bracket:
-    def __init__(self, strategy: Strategy, year: int):
+
+    def __init__(self, year: int):
         self._log = logging.getLogger("bracket")
-        self._strategy = strategy
 
         self._parser = Parser(year)
+        self._root = BracketNode(round=Round.Winner)
 
-        self._teams: dict[str, Team] = {}
-        self._games: set[tuple[str, str]] = set()
-        self._teamcount = 0
-        self._root = BracketNode(round=Round.WINNER)
+        self.teams: dict[str, Team] = {}
+        self.games: set[Game] = set()
+        self._first_round: set[Game] = set()
+        # self.second_round: set[Game] = set()
+        # self.sweet_sixteen: set[Game] = set()
+        # self.elite_eight: set[Game] = set()
+        # self.final_foud: set[Game] = set()
+        # self.finals: set[Game] = set()
 
         self.__build(self._root)
-        self.play()
+        self._strategy = BestRankWins()
 
     @property
-    def games(self) -> set[tuple[str, str]]:
-        # TODO: sort team names by rank
-        return self._games
+    def first_round(self) -> set[Game]:
+        return self._first_round
 
-    @property
-    def teams(self) -> dict[str, Team]:
-        return self._teams
+    # @property
+    # def games(self) -> set[tuple[str, str]]:
+    #     # TODO: sort team names by rank
+    #     return self._games
+    #
+    # @property
+    # def final_four(self) -> set[Team]:
+    #     raise NotImplementedError
+    #
+    # @property
+    # def runner_up(self) -> Team:
+    #     raise NotImplementedError
+    #
+    # @property
+    # def winner(self) -> Team:
+    #     raise NotImplementedError
+    #
+    # @property
+    # def root(self) -> BracketNode:
+    #     return self._root
 
-    @property
-    def final_four(self) -> set[Team]:
-        raise NotImplementedError
+    def play(self, strategy: Strategy = BestRankWins()) -> None:
+        self._strategy = strategy
+        self.__play(self._root)
 
-    @property
-    def runner_up(self) -> Team:
-        raise NotImplementedError
+    def __play(self, node: BracketNode) -> None:
+        if not node:
+            pass
+        assert node, "out of bounds"
 
-    @property
-    def winner(self) -> Team:
-        raise NotImplementedError
+        if node.left_child.team and node.right_child.team:
+            game_round = node.left_child.round
+            game = Game(node.left_child.team, node.right_child.team, game_round)
+            self.games.add(game)
+            winner = self._strategy.pick(game.team1, game.team2)[0]
+            self._log.debug(f"{game}->{winner}")
+            node.team = winner
+            self._log.debug("moving up")
 
-    @property
-    def root(self) -> BracketNode:
-        return self._root
+            if game_round == Round.FirstRound:
+                self._first_round.add(game)
+
+            if node.round == Round.Winner and node.team:
+                self._log.info(f"Play finished: {len(self.games)} played")
+                return
+
+            return self.__play(node.parent)
+
+        if node.left_child.team and not node.right_child.team:
+            self._log.debug("moving right")
+            return self.__play(node.right_child)
+
+        if not node.left_child.team and not node.right_child.team:
+            self._log.debug("moving left")
+            return self.__play(node.left_child)
+
+        self._log.debug("moving up")
+        return self.__play(node.parent)
 
     def __build(self, node: BracketNode) -> None:
         assert node, "out of bounds!"
@@ -55,36 +101,31 @@ class Bracket:
             raise BracketLogicError
         self._log.debug(f"{node.round=}")
 
-        if node.round == Round.FIRST_ROUND:
+        if node.round == Round.FirstRound:
             node.team = self._parser.teams.pop()
-            self._log.info(
+            self._log.debug(
                 f"adding {node.team.region.name} #{node.team.rank} {node.team.name}"
             )
-            self._teamcount += 1
+            self.teams[node.team.name] = node.team
             self._log.debug("moving up")
             return self.__build(node.parent)
 
-        if node.left_child is None and node.round > Round.FIRST_ROUND:
+        if node.left_child is None and node.round > Round.FirstRound:
             node.left_child = BracketNode(round=Round(node.round - 1), parent=node)
             self._log.debug("moving left")
             return self.__build(node.left_child)
 
-        if node.right_child is None and node.round > Round.FIRST_ROUND:
+        if node.right_child is None and node.round > Round.FirstRound:
             node.right_child = BracketNode(round=Round(node.round - 1), parent=node)
             self._log.debug("moving right")
             return self.__build(node.right_child)
 
-        if node.round == Round.WINNER and node.left_child and node.right_child:
-            self._log.info(
-                f"preliminary build finished: {self._teamcount} teams populated"
-            )
+        if node.round == Round.Winner and node.left_child and node.right_child:
+            self._log.info(f"Build finished: {len(self.teams)} teams populated")
             return
 
         self._log.debug("moving up")
         return self.__build(node.parent)
-
-    def play(self) -> None:
-        raise NotImplementedError
 
 
 #

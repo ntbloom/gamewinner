@@ -1,7 +1,6 @@
-import pytest
 from _pytest.python import Metafunc
 
-from gamewinner.strategies import BestRankWins, Strategy, available_strategies
+from gamewinner.strategies import available_strategies
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
@@ -14,6 +13,13 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
             ids=[strategy.name for strategy in available_strategies],
         )
 
+    year_fixture = "test_year"
+    testable_years = (2024,)
+    if year_fixture in metafunc.fixturenames:
+        metafunc.parametrize(
+            year_fixture, testable_years, scope="function", ids=testable_years
+        )
+
 
 # @pytest.fixture(scope="class")
 # def reference_year() -> int:
@@ -24,10 +30,10 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 # def this_year() -> int:
 #     return 2024
 #
-#
-@pytest.fixture(scope="class")
-def best_wins() -> Strategy:
-    return BestRankWins()
+# #
+# @pytest.fixture(scope="class")
+# def best_wins() -> Strategy:
+#     return BestRankWins()
 
 
 #

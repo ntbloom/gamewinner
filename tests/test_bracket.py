@@ -1,17 +1,17 @@
 import pytest
 
+import tests.expected_first_round as expected_first_round
 from gamewinner.bracket.bracket import Bracket
+from gamewinner.bracket.game import Game
 from gamewinner.bracket.parser import Parser
-from gamewinner.strategies.istrategy import Strategy
 from gamewinner.teams.team import Team
 
 
-@pytest.mark.parametrize("year", (2024,))
 class TestBasicBuild:
-    def test_parser(self, year: int) -> None:
-        parser = Parser(year)
+    def test_parser(self, test_year: int) -> None:
+        parser = Parser(test_year)
         assert parser.west_plays
-        assert year
+        assert parser.year == test_year
         for region in (parser.east, parser.west, parser.south, parser.midwest):
             assert len(region) == 16
             assert sum(region.keys()) == 136
@@ -20,60 +20,26 @@ class TestBasicBuild:
         for team in parser.teams:
             assert isinstance(team, Team)
 
-    def test_bracket_builds(self, best_wins: Strategy, year: int) -> None:
-        bracket = Bracket(best_wins, year)
+    def test_bracket_builds(self, test_year: int) -> None:
+        bracket = Bracket(test_year)
         assert bracket
+        assert len(set(bracket.teams)) == 64
 
-
-first_round_2024 = {
-    ("UNC", "Wagner"),
-    ("Mississippi State", "Michigan State"),
-    ("Saint Mary's", "Grand Canyon"),
-    ("Alabama", "Charleston"),
-    ("Clemson", "New Mexico"),
-    ("Baylor", "Colgate"),
-    ("Dayton", "Nevada"),
-    ("Arizona", "Long Beach State"),
-    ("Purdue", "Grambling"),
-    ("Utah State", "TCU"),
-    ("Gonzaga", "McNeese"),
-    ("Kansas", "Samford"),
-    ("South Carolina", "Oregon"),
-    ("Creighton", "Akron"),
-    ("Texas", "Colorado State"),
-    ("Tennessee", "Saint Peter's"),
-    ("UConn", "Stetson"),
-    ("FAU", "Northwestern"),
-    ("San Diego State", "UAB"),
-    ("Auburn", "Yale"),
-    ("BYU", "Duquesne"),
-    ("Illinois", "Morehead State"),
-    ("Washington State", "Drake"),
-    ("Iowa State", "South Dakota State"),
-    ("Houston", "Longwood"),
-    ("Nebraska", "Texas A&M"),
-    ("Wisconsin", "JMU"),
-    ("Duke", "Vermont"),
-    ("Texas Tech", "NC State"),
-    ("Kentucky", "Oakland"),
-    ("Florida", "Colorado"),
-    ("Marquette", "Western Kentucky"),
-}
-
-
-@pytest.mark.parametrize(
-    "year,first_round_games",
-    [
-        (2024, first_round_2024),
-    ],
-)
-def test_first_round_games(
-    best_wins: Strategy, year: int, first_round_games: set[tuple[str, str]]
-) -> None:
-    bracket = Bracket(best_wins, year)
-    assert len(first_round_games) == 32
-    for matchup in first_round_games:
-        assert matchup in bracket.games
+    @pytest.mark.parametrize(
+        "year,first_round_games",
+        [
+            (2024, expected_first_round.FIRST_ROUND2024),
+        ],
+    )
+    def test_first_round_games(self, year: int, first_round_games: set[Game]) -> None:
+        bracket = Bracket(year)
+        bracket.play()
+        assert len(bracket.games) == 63
+        assert len(first_round_games) == 32
+        assert len(bracket.first_round) == 32
+        for game in bracket.first_round:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in first_round_games
 
 
 # class TestBracketBestWins:
