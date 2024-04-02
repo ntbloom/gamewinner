@@ -5,8 +5,8 @@ from gamewinner.bracket.parser import Parser
 from gamewinner.strategies.istrategy import Strategy
 
 
-class TestParser:
-    @pytest.mark.parametrize("year", (2024,))
+@pytest.mark.parametrize("year", (2024,))
+class TestBasicBuild:
     def test_parser(self, year: int) -> None:
         parser = Parser(year)
         assert parser.west_plays
@@ -16,9 +16,6 @@ class TestParser:
             assert sum(region.keys()) == 136
             assert len(set(region.values())) == 16
 
-
-class TestBuildBracket:
-    @pytest.mark.parametrize("year", (2024,))
     def test_bracket_builds(self, best_wins_bracket: Strategy, year: int) -> None:
         bracket = Bracket(best_wins_bracket, year)
         assert bracket
