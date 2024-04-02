@@ -1,13 +1,7 @@
 import pytest
 from _pytest.python import Metafunc
 
-from gamewinner.bracket.bracket import Bracket
-from gamewinner.strategies import (
-    BestRankWins,
-    Strategy,
-    WorstRankWins,
-    available_strategies,
-)
+from gamewinner.strategies import BestRankWins, Strategy, available_strategies
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
@@ -21,27 +15,29 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         )
 
 
+# @pytest.fixture(scope="class")
+# def reference_year() -> int:
+#     return 2022
+#
+#
+# @pytest.fixture(scope="class")
+# def this_year() -> int:
+#     return 2024
+#
+#
 @pytest.fixture(scope="class")
-def reference_year() -> int:
-    return 2022
+def best_wins_bracket() -> Strategy:
+    return BestRankWins()
 
 
-@pytest.fixture(scope="class")
-def this_year() -> int:
-    return 2024
-
-
-@pytest.fixture(scope="class")
-def best_wins_bracket(reference_year: int) -> Bracket:
-    return Bracket(BestRankWins(), reference_year)
-
-
-@pytest.fixture(scope="class")
-def worst_wins_bracket(reference_year: int) -> Bracket:
-    return Bracket(WorstRankWins(), reference_year)
-
-
-@pytest.fixture(scope="function")
-def strategized_bracket(strategy: Strategy, this_year: int) -> Bracket:
-    # don't worry about breaking changes and only run strategies for this year
-    return Bracket(strategy, this_year)
+#
+#
+# @pytest.fixture(scope="class")
+# def worst_wins_bracket(reference_year: int) -> Bracket:
+#     return Bracket(WorstRankWins(), reference_year)
+#
+#
+# @pytest.fixture(scope="function")
+# def strategized_bracket(strategy: Strategy, this_year: int) -> Bracket:
+#     # don't worry about breaking changes and only run strategies for this year
+#     return Bracket(strategy, this_year)

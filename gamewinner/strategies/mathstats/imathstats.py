@@ -7,13 +7,10 @@ from random import randint
 from statistics import median
 from typing import Callable, NamedTuple
 
-from gamewinner.bracket.years import this_year
 from gamewinner.strategies.istrategy import IStrategy
 from gamewinner.teams.team import Team, get_definitive_name
 
-STATS_FILE = (
-    Path(__file__).parent.joinpath("data").joinpath(f"mathstats{this_year.year}.csv")
-)
+STATS_FILE = Path(__file__).parent.joinpath("data").joinpath("mathstats2024.csv")
 
 
 class MSProps(NamedTuple):

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from gamewinner.bracket.bracket_node import BracketNode
+from gamewinner.bracket.parser import Parser
 from gamewinner.bracket.round import Round
 from gamewinner.strategies.istrategy import Strategy
 from gamewinner.teams.team import Team
@@ -16,8 +17,9 @@ class BracketLogicError(Exception):
 
 class Bracket:
     def __init__(self, strategy: Strategy, year: int):
-        self._year = year
         self._strategy = strategy
+
+        self._parser = Parser(year)
 
         self._teams: dict[str, Team] = {}
         self._games: set[tuple[str, str]] = set()

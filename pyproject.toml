@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 rich = "*"
 typer = "^0.7.0"
+pyyaml = "^6.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
