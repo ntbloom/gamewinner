@@ -3,6 +3,7 @@ import pytest
 from gamewinner.bracket.bracket import Bracket
 from gamewinner.bracket.parser import Parser
 from gamewinner.strategies.istrategy import Strategy
+from gamewinner.teams.team import Team
 
 
 @pytest.mark.parametrize("year", (2024,))
@@ -15,6 +16,9 @@ class TestBasicBuild:
             assert len(region) == 16
             assert sum(region.keys()) == 136
             assert len(set(region.values())) == 16
+        assert len(set(parser.teams)) == 64
+        for team in parser.teams:
+            assert isinstance(team, Team)
 
     def test_bracket_builds(self, best_wins: Strategy, year: int) -> None:
         bracket = Bracket(best_wins, year)

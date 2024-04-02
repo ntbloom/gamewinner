@@ -3,17 +3,10 @@ from __future__ import annotations
 import logging
 
 from gamewinner.bracket.bracket_node import BracketNode, Round
+from gamewinner.bracket.exceptions import BracketLogicError
 from gamewinner.bracket.parser import Parser
 from gamewinner.strategies.istrategy import Strategy
 from gamewinner.teams.team import Team
-
-
-class InvalidDataFile(Exception):
-    pass
-
-
-class BracketLogicError(Exception):
-    pass
 
 
 class Bracket:
@@ -29,7 +22,7 @@ class Bracket:
         self._root = BracketNode(round=Round.WINNER)
 
         self.__build(self._root)
-        self.__play()
+        self.play()
 
     @property
     def games(self) -> set[tuple[str, str]]:
@@ -87,7 +80,7 @@ class Bracket:
         self._log.debug("moving up")
         return self.__build(node.parent)
 
-    def __play(self) -> None:
+    def play(self) -> None:
         raise NotImplementedError
 
 
