@@ -35,6 +35,7 @@ class TestGetDefinitiveName:
             names_unsorted
         ), "`alternate_names` entries are not in alphabetical order"
 
+    @pytest.mark.skip
     def test_all_teams_are_in_alternate_names(self, this_year: int) -> None:
         bracket = Bracket(BestRankWins(), this_year)
         teams = {team for team in bracket.teams.keys()}

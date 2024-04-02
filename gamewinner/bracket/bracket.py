@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from gamewinner.bracket.bracket_node import BracketNode
+import logging
+
+from gamewinner.bracket.bracket_node import BracketNode, Round
 from gamewinner.bracket.parser import Parser
-from gamewinner.bracket.round import Round
 from gamewinner.strategies.istrategy import Strategy
 from gamewinner.teams.team import Team
 
@@ -17,13 +18,15 @@ class BracketLogicError(Exception):
 
 class Bracket:
     def __init__(self, strategy: Strategy, year: int):
+        self._log = logging.getLogger("bracket")
         self._strategy = strategy
 
         self._parser = Parser(year)
 
         self._teams: dict[str, Team] = {}
         self._games: set[tuple[str, str]] = set()
-        self._root = BracketNode(Round.WINNER)
+        self._teamcount = 0
+        self._root = BracketNode(round=Round.WINNER)
 
         self.__build(self._root)
         self.__play()
@@ -53,8 +56,36 @@ class Bracket:
     def root(self) -> BracketNode:
         return self._root
 
-    def __build(self, root: BracketNode) -> None:
-        raise NotImplementedError
+    def __build(self, node: BracketNode) -> None:
+        assert node, "out of bounds!"
+        if node.round < 1:
+            raise BracketLogicError
+        self._log.debug(f"{node.round=}")
+
+        if node.round == Round.FIRST_ROUND:
+            self._log.debug("node needs a team!")
+            self._teamcount += 1
+            self._log.debug("moving up")
+            return self.__build(node.parent)
+
+        if node.left_child is None and node.round > Round.FIRST_ROUND:
+            node.left_child = BracketNode(round=Round(node.round - 1), parent=node)
+            self._log.debug("moving left")
+            return self.__build(node.left_child)
+
+        if node.right_child is None and node.round > Round.FIRST_ROUND:
+            node.right_child = BracketNode(round=Round(node.round - 1), parent=node)
+            self._log.debug("moving right")
+            return self.__build(node.right_child)
+
+        if node.round == Round.WINNER and node.left_child and node.right_child:
+            self._log.info(
+                f"preliminary build finished: {self._teamcount} teams populated"
+            )
+            return
+
+        self._log.debug("moving up")
+        return self.__build(node.parent)
 
     def __play(self) -> None:
         raise NotImplementedError

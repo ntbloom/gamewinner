@@ -26,7 +26,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 #
 #
 @pytest.fixture(scope="class")
-def best_wins_bracket() -> Strategy:
+def best_wins() -> Strategy:
     return BestRankWins()
 
 
