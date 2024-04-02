@@ -56,7 +56,10 @@ class Bracket:
         self._log.debug(f"{node.round=}")
 
         if node.round == Round.FIRST_ROUND:
-            self._log.debug("node needs a team!")
+            node.team = self._parser.teams.pop()
+            self._log.info(
+                f"adding {node.team.region.name} #{node.team.rank} {node.team.name}"
+            )
             self._teamcount += 1
             self._log.debug("moving up")
             return self.__build(node.parent)
