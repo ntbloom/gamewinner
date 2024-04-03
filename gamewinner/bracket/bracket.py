@@ -38,9 +38,9 @@ class Bracket:
         self.__games: set[Game] = set()
 
         # get each round
-        self.__first_round: set[Game] = set()
-        # self.second_round: set[Game] = set()
-        # self.sweet_sixteen: set[Game] = set()
+        self.first_round: set[Game] = set()
+        self.second_round: set[Game] = set()
+        self.sweet_sixteen: set[Game] = set()
         self.elite_eight: set[Game] = set()
         self.final_four: set[Game] = set()
         self.finals: Game | None = None
@@ -48,10 +48,6 @@ class Bracket:
 
         self.__build(self.__root)
         self.__strategy = BestRankWins()
-
-    @property
-    def first_round(self) -> set[Game]:
-        return self.__first_round
 
     @property
     def games(self) -> set[Game]:
@@ -83,7 +79,13 @@ class Bracket:
 
             match stage:
                 case Stage.FirstRound:
-                    self.__first_round.add(game)
+                    self.first_round.add(game)
+
+                case Stage.SecondRound:
+                    self.second_round.add(game)
+
+                case Stage.SweetSixteen:
+                    self.sweet_sixteen.add(game)
 
                 case Stage.EliteEight:
                     self.elite_eight.add(game)

@@ -17,19 +17,23 @@ class ExpectedTeamData:
         finals: matchup,
         final_four: list[matchup],
         elite_eight: list[matchup],
+        sweet_sixteen: list[matchup],
+        second_round: list[matchup],
         first_round: list[matchup],
     ):
         self.winner = get_definitive_name(winner)
         self.finals = {get_definitive_name(game) for game in finals}
         self.final_four = make_set(final_four)
         self.elite_eight = make_set(elite_eight)
-
+        self.sweet_sixteen = make_set(sweet_sixteen)
+        self.second_round = make_set(second_round)
         self.first_round = make_set(first_round)
 
         assert self.winner
         assert len(final_four) == 2
         assert len(elite_eight) == 4
-
+        assert len(sweet_sixteen) == 8
+        assert len(second_round) == 16
         assert len(first_round) == 32
 
 
@@ -45,6 +49,34 @@ Expected2024 = ExpectedTeamData(
         {"UNC", "Arizona"},
         {"Purdue", "Tennessee"},
         {"Houston", "Marquette"},
+    ],
+    sweet_sixteen=[
+        {"UNC", "Alabama"},
+        {"Baylor", "Arizona"},
+        {"Purdue", "Kansas"},
+        {"Creighton", "Tennessee"},
+        {"UConn", "Auburn"},
+        {"Illinois", "Iowa State"},
+        {"Houston", "Duke"},
+        {"Marquette", "Kentucky"},
+    ],
+    second_round=[
+        {"UConn", "FAU"},
+        {"San Diego State", "Auburn"},
+        {"BYU", "Illinois"},
+        {"Washington State", "Iowa State"},
+        {"UNC", "Mississippi State"},
+        {"Saint Mary's", "Alabama"},
+        {"Clemson", "Baylor"},
+        {"Dayton", "Arizona"},
+        {"Purdue", "Utah State"},
+        {"Gonzaga", "Kansas"},
+        {"South Carolina", "Creighton"},
+        {"Texas", "Tennessee"},
+        {"Houston", "Nebraska"},
+        {"Wisconsin", "Duke"},
+        {"Texas Tech", "Kentucky"},
+        {"Florida", "Marquette"},
     ],
     first_round=[
         {"UNC", "Wagner"},

@@ -57,6 +57,14 @@ class TestBracketPlayBestWins:
             teams = {game.team1.name, game.team2.name}
             assert teams in expected_data.elite_eight
 
+        for game in bracket.sweet_sixteen:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.sweet_sixteen
+
+        for game in bracket.second_round:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.second_round
+
         for game in bracket.first_round:
             teams = {game.team1.name, game.team2.name}
             assert teams in expected_data.first_round
