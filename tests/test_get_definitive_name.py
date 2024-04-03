@@ -38,6 +38,6 @@ class TestGetDefinitiveName:
     @pytest.mark.skip
     def test_all_teams_are_in_alternate_names(self, this_year: int) -> None:
         bracket = Bracket(BestRankWins(), this_year)
-        teams = {team for team in bracket.teams.keys()}
+        teams = {team for team in bracket.__teams.keys()}
         for team in teams:
             assert get_definitive_name(team)
