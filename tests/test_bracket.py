@@ -3,7 +3,7 @@ import pytest
 from gamewinner.bracket.bracket import Bracket
 from gamewinner.bracket.parser import Parser
 from gamewinner.teams.team import Team
-from tests.expected_teams import Expected2024, ExpectedTeamData
+from tests.expected_teams import Expected2023, Expected2024, ExpectedTeamData
 
 
 class TestBasicBuild:
@@ -34,7 +34,13 @@ class TestBasicBuild:
         assert len(bracket.first_round) == 32
 
 
-@pytest.mark.parametrize("year,expected_data", [(2024, Expected2024)])
+@pytest.mark.parametrize(
+    "year,expected_data",
+    [
+        (2023, Expected2023),
+        (2024, Expected2024),
+    ],
+)
 class TestBracketPlayBestWins:
     def test_first_round_games(
         self, year: int, expected_data: ExpectedTeamData
@@ -42,29 +48,29 @@ class TestBracketPlayBestWins:
         bracket = Bracket(year)
         bracket.play()
 
-        assert bracket.winner.name == expected_data.winner
+        for game in bracket.first_round:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.first_round
+
+        for game in bracket.second_round:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.second_round
+
+        for game in bracket.sweet_sixteen:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.sweet_sixteen
+
+        for game in bracket.elite_eight:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.elite_eight
+
+        for game in bracket.final_four:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.final_four
 
         assert {
             bracket.finals.team1.name,
             bracket.finals.team2.name,
         } == expected_data.finals
 
-        for game in bracket.final_four:
-            teams = {game.team1.name, game.team2.name}
-            assert teams in expected_data.final_four
-
-        for game in bracket.elite_eight:
-            teams = {game.team1.name, game.team2.name}
-            assert teams in expected_data.elite_eight
-
-        for game in bracket.sweet_sixteen:
-            teams = {game.team1.name, game.team2.name}
-            assert teams in expected_data.sweet_sixteen
-
-        for game in bracket.second_round:
-            teams = {game.team1.name, game.team2.name}
-            assert teams in expected_data.second_round
-
-        for game in bracket.first_round:
-            teams = {game.team1.name, game.team2.name}
-            assert teams in expected_data.first_round
+        assert bracket.winner.name == expected_data.winner

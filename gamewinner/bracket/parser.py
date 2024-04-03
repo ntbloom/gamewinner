@@ -34,11 +34,11 @@ class Parser:
             # the `WestPlays`
             match self.west_plays:
                 case GeographicRegion.EAST:
-                    order = ["Midwest", "South", "West", "East"]
+                    order = ["South", "Midwest", "East", "West"]
                 case GeographicRegion.SOUTH:
-                    order = ["East", "South", "Midwest", "West"]
-                case GeographicRegion.MIDWEST:
                     order = ["East", "Midwest", "South", "West"]
+                case GeographicRegion.MIDWEST:
+                    order = ["East", "South", "Midwest", "West"]
                 case _:
                     raise BracketLogicError("West can't play itself")
             assert len(set(order)) == 4
