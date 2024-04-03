@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from gamewinner.bracket.round import Round
+from gamewinner.bracket.stage import Stage
 from gamewinner.teams.team import Team
 
 
 @dataclass
 class BracketNode:
-    round: Round
+    round: Stage
     parent: BracketNode | None = None
     left_child: BracketNode | None = None
     right_child: BracketNode | None = None

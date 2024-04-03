@@ -4,7 +4,7 @@ from enum import IntEnum, unique
 
 
 @unique
-class Round(IntEnum):
+class Stage(IntEnum):
     FirstRound = 1
     SecondRound = 2
     SweetSixteen = 3
