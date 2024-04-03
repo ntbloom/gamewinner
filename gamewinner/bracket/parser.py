@@ -41,13 +41,14 @@ class Parser:
             # the `WestPlays`
             match self.west_plays:
                 case "East":
-                    order = ["West", "East", "South", "Midwest"]
+                    order = ["Midwest", "South", "West", "East"]
                 case "South":
-                    order = ["West", "South", "East", "Midwest"]
+                    order = ["East", "South", "Midwest", "West"]
                 case "MidWest":
-                    order = ["West", "Midwest", "South", "East"]
+                    order = ["East", "Midwest", "South", "West"]
                 case _:
                     raise BracketLogicError("West can't play itself")
+            assert len(set(order)) == 4
 
             for reg_str in order:
                 region: dict[int, str] = eval(f"self.{reg_str.lower()}")

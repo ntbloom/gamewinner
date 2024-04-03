@@ -37,3 +37,22 @@ FIRST_ROUND2024 = [
         {"Marquette", "Western Kentucky"},
     ]
 ]
+ELITE_EIGHT2024 = [
+    {get_definitive_name(game.pop()), get_definitive_name(game.pop())}
+    for game in [
+        {"UConn", "Iowa State"},
+        {"UNC", "Arizona"},
+        {"Purdue", "Tennessee"},
+        {"Houston", "Marquette"},
+    ]
+]
+
+FINAL_FOUR2024 = [
+    {get_definitive_name(game.pop()), get_definitive_name(game.pop())}
+    for game in [
+        {"UNC", "UConn"},
+        {"Houston", "Purdue"},
+    ]
+]
+
+FINALS2024 = {get_definitive_name(game) for game in ("Houston", "UConn")}

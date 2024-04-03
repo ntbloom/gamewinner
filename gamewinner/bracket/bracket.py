@@ -41,9 +41,10 @@ class Bracket:
         self.__first_round: set[Game] = set()
         # self.second_round: set[Game] = set()
         # self.sweet_sixteen: set[Game] = set()
-        # self.elite_eight: set[Game] = set()
-        # self.final_foud: set[Game] = set()
-        # self.finals: set[Game] = set()
+        self.elite_eight: set[Game] = set()
+        self.final_four: set[Game] = set()
+        self.finals: Game | None = None
+        self.winner: Team | None = None
 
         self.__build(self.__root)
         self.__strategy = BestRankWins()
@@ -83,8 +84,16 @@ class Bracket:
             if stage == Stage.FirstRound:
                 self.__first_round.add(game)
 
-            if node.round == Stage.Winner and node.team:
-                self.__log.info(f"Play finished: {len(self.__games)} played")
+            if stage == Stage.EliteEight:
+                self.elite_eight.add(game)
+
+            if stage == Stage.FinalFour:
+                self.final_four.add(game)
+
+            if stage == Stage.Finals:
+                self.__log.debug(f"Play finished: {len(self.__games)} played")
+                self.finals = game
+                self.winner = node.team
                 return
 
             return self.__play(node.parent)
@@ -126,7 +135,7 @@ class Bracket:
             return self.__build(node.right_child)
 
         if node.round == Stage.Winner and node.left_child and node.right_child:
-            self.__log.info(f"Build finished: {len(self.__teams)} teams populated")
+            self.__log.debug(f"Build finished: {len(self.__teams)} teams populated")
             return
 
         self.__log.debug("moving up")
