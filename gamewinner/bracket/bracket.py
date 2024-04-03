@@ -67,15 +67,17 @@ class Bracket:
         assert node, "out of bounds"
 
         if node.left_child.team and node.right_child.team:
-            game_round = node.left_child.round
-            game = Game(node.left_child.team, node.right_child.team, game_round)
+            stage = node.left_child.round
+            team1 = node.left_child.team
+            team2 = node.right_child.team
+            winner = self._strategy.pick(team1, team2)
+            game = Game(team1=team1, team2=team2, predicted_winner=winner, stage=stage)
             self.games.add(game)
-            winner = self._strategy.pick(game.team1, game.team2)[0]
             self._log.debug(f"{game}->{winner}")
             node.team = winner
             self._log.debug("moving up")
 
-            if game_round == Stage.FirstRound:
+            if stage == Stage.FirstRound:
                 self._first_round.add(game)
 
             if node.round == Stage.Winner and node.team:

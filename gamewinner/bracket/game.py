@@ -10,6 +10,7 @@ class Game:
     team1: Team
     team2: Team
     stage: Stage
+    predicted_winner: Team
 
     def __post_init__(self):
         if self.team1 == self.team2:

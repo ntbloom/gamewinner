@@ -22,7 +22,7 @@ class IStrategy(ABC):
         pass
 
     @abstractmethod
-    def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
+    def pick(self, team1: Team, team2: Team) -> Team:
         """Pick a game winner"""
         raise NotImplementedError
 
