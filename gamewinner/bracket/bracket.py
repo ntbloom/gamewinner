@@ -81,22 +81,24 @@ class Bracket:
             node.team = winner
             self.__log.debug("moving up")
 
-            if stage == Stage.FirstRound:
-                self.__first_round.add(game)
+            match stage:
+                case Stage.FirstRound:
+                    self.__first_round.add(game)
 
-            if stage == Stage.EliteEight:
-                self.elite_eight.add(game)
+                case Stage.EliteEight:
+                    self.elite_eight.add(game)
 
-            if stage == Stage.FinalFour:
-                self.final_four.add(game)
+                case Stage.FinalFour:
+                    self.final_four.add(game)
 
-            if stage == Stage.Finals:
-                self.__log.debug(f"Play finished: {len(self.__games)} played")
-                self.finals = game
-                self.winner = node.team
-                return
+                case Stage.Finals:
+                    self.__log.debug(f"Play finished: {len(self.__games)} played")
+                    self.finals = game
+                    self.winner = node.team
+                    return
 
-            return self.__play(node.parent)
+                case _:
+                    return self.__play(node.parent)
 
         if node.left_child.team and not node.right_child.team:
             self.__log.debug("moving right")
