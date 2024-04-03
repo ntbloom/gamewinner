@@ -14,7 +14,10 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         )
 
     year_fixture = "test_year"
-    testable_years = (2024,)
+    testable_years = (
+        2023,
+        2024,
+    )
     if year_fixture in metafunc.fixturenames:
         metafunc.parametrize(
             year_fixture, testable_years, scope="function", ids=testable_years

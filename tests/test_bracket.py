@@ -29,8 +29,8 @@ class TestBasicBuild:
         assert bracket.winner
         assert len(bracket.final_four) == 2
         assert len(bracket.elite_eight) == 4
-        # assert len(bracket.sweet_sixteen) == 8
-        # assert len(bracket.second_round) == 16
+        assert len(bracket.sweet_sixteen) == 8
+        assert len(bracket.second_round) == 16
         assert len(bracket.first_round) == 32
 
 
