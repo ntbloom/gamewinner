@@ -58,7 +58,7 @@ class IMathStatsStrategy(IStrategy, ABC):
         """
         Loads all the data and attaches it to the teams
         """
-        statsfile = STATS_DIR.joinpath(f"mathstats{year}.csv")
+        statsfile = STATS_DIR.joinpath(f"{year}.csv")
         assert statsfile.exists()
         self.stat_teams = {}
 
