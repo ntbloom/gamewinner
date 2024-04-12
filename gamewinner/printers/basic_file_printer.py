@@ -10,5 +10,11 @@ class BasicFilePrinter(IFilePrinter):
 
     @classmethod
     def _print(cls, fd: TextIO, bracket: Bracket) -> None:
+
+        gamestrings = []
         for game in bracket.games:
-            fd.write(f"{str(game)}\n")
+            gamestrings.append(f"{str(game)}\n")
+        gamestrings.sort()
+        for game in gamestrings:
+            indents = int(game[1]) - 1
+            fd.write(f"{'\t' * indents}{game}")

@@ -40,3 +40,8 @@ class Game:
 
     def __repr__(self) -> str:
         return f"{self.stage.name}: {self.team1.name}/{self.team2.name}"
+
+    def __str__(self) -> str:
+        winner = self.team1 if self.team1 == self.predicted_winner else self.team2
+        loser = self.team2 if self.team1 == self.predicted_winner else self.team1
+        return f"({self.stage.value}) {self.stage.name}: {winner} over {loser}"
