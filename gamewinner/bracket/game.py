@@ -12,7 +12,7 @@ class Game:
     stage: Stage
     predicted_winner: Team
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.team1 == self.team2:
             raise MatchupError("Same team can't play each other")
 

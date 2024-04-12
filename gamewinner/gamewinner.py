@@ -1,12 +1,13 @@
-# import gamewinner.printers as printers
+import gamewinner.printers as printers
 import gamewinner.strategies as strategies
+from gamewinner.bracket.bracket import Bracket
 
 
 def play(
     strategy: strategies.Strategy,
     year: int,
-    # printer: printers.Printer,
+    printer: printers.Printer,
 ) -> None:
-    raise NotImplementedError("In the middle of a refactor, come back")
-    # bracket = Bracket(strategy, year)
-    # printer.print(bracket)
+    bracket = Bracket(year)
+    bracket.play(strategy)
+    printer.print(bracket)

@@ -5,8 +5,10 @@ from rich import print as rprint
 from rich.console import Console
 
 from gamewinner import play
-from gamewinner.bracket.years import Year, available_years, this_year
-from gamewinner.printers import Printer, WithColors, all_printers
+from gamewinner.bracket import available_years, this_year
+from gamewinner.printers import all_printers
+from gamewinner.printers.basic_file_printer import BasicFilePrinter
+from gamewinner.printers.iprinter import Printer
 from gamewinner.strategies import Strategy, available_strategies
 
 PRINTERS: dict[str, Printer] = {
@@ -15,7 +17,7 @@ PRINTERS: dict[str, Printer] = {
 STRATEGIES: dict[str, Strategy] = {
     strategy.name: strategy for strategy in available_strategies
 }
-YEARS: dict[int, Year] = {year.year: year for year in available_years}
+YEARS: dict[int, int] = {year: year for year in available_years}
 
 app = typer.Typer(
     pretty_exceptions_show_locals=False,
@@ -34,8 +36,8 @@ def _error_msg(tag: str, name: Any, legals: dict[Any, Any]) -> None:
 @app.command()
 def main(
     strategy: str = typer.Option(..., help="strategy you want to use"),
-    year: int = typer.Option(this_year.year, help="year you want to use"),
-    printer: str = typer.Option(WithColors.name, help="printer to use"),
+    year: int = typer.Option(this_year, help="year you want to use"),
+    printer: str = typer.Option(BasicFilePrinter.name, help="printer to use"),
 ) -> None:
     _year = YEARS.get(year, None)
     if not _year:
