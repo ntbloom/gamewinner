@@ -47,7 +47,7 @@ class Parser:
                 region: dict[int, str] = eval(f"self.{reg_str.lower()}")
                 for rank in RANKS:
                     team = Team(
-                        name=region.get(rank),
+                        name=region[rank],
                         rank=rank,
                         region=GeographicRegion(reg_str),
                     )

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from typing import no_type_check
 
 from gamewinner.bracket.exceptions import BracketLogicError
 from gamewinner.bracket.game import Game
@@ -45,8 +46,8 @@ class Bracket:
         self.finals: Game | None = None
         self.winner: Team | None = None
 
-        self.__build(self.__root)
-        self.__strategy = BestRankWins()
+        self.__build(self.__root)  # type: ignore
+        self.__strategy: Strategy = BestRankWins()
 
     @property
     def games(self) -> set[Game]:
@@ -67,11 +68,10 @@ class Bracket:
     def play(self, strategy: Strategy = BestRankWins()) -> None:
         self.__strategy = strategy
         self.__strategy.prepare(self.__year, self.__teams)
-        self.__play(self.__root)
+        self.__play(self.__root)  # type: ignore
 
+    @no_type_check
     def __play(self, node: BracketNode) -> None:
-        if not node:
-            pass
         assert node, "out of bounds"
 
         if node.left_child.team and node.right_child.team:
@@ -121,6 +121,7 @@ class Bracket:
         self.__log.debug("moving up")
         return self.__play(node.parent)
 
+    @no_type_check
     def __build(self, node: BracketNode) -> None:
         assert node, "out of bounds!"
         if node.round < 1:
