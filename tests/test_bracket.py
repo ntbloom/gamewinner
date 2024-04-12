@@ -74,4 +74,4 @@ class TestBracketPlayBestWins:
             bracket.finals.team2.name,
         } == expected_data.finals
 
-        assert bracket.winner.name == expected_data.winner
+        assert bracket.winner and bracket.winner.name == expected_data.winner

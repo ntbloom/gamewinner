@@ -29,7 +29,9 @@ class Game:
         ):
             raise MatchupError("Early rounds must be inter-region matchup")
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Game):
+            return NotImplemented
         return {self.team1, self.team2} == {
             other.team1,
             other.team2,
