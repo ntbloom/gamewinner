@@ -18,4 +18,5 @@ class BasicFilePrinter(IFilePrinter):
         gamestr: str
         for gamestr in gamestrings:
             indents = int(gamestr[1]) - 1
-            fd.write(rf"{'\t' * indents}{gamestr}")  # flake8: noqa
+            tab = "\t"
+            fd.write(rf"{tab * indents}{gamestr}")

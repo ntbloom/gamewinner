@@ -4,9 +4,10 @@ import logging
 from dataclasses import dataclass
 from typing import no_type_check
 
-from gamewinner.bracket.exceptions import BracketLogicError
+from gamewinner.bracket.exceptions import BracketLogicError, TournamentNotPlayedYetError
 from gamewinner.bracket.game import Game
 from gamewinner.bracket.parser import Parser
+from gamewinner.bracket.scoring import BracketProvider
 from gamewinner.bracket.stage import Stage
 from gamewinner.strategies import BestRankWins
 from gamewinner.strategies.istrategy import Strategy
@@ -48,6 +49,8 @@ class Bracket:
 
         self.__build(self.__root)  # type: ignore
         self.__strategy: Strategy = BestRankWins()
+        self.__scored = False
+        self.__points = 0
 
     @property
     def games(self) -> set[Game]:
@@ -65,10 +68,20 @@ class Bracket:
     def strategy(self) -> str:
         return self.__strategy.name
 
+    @property
+    def points(self) -> int:
+        if not self.__scored:
+            raise TournamentNotPlayedYetError
+        return self.__points
+
     def play(self, strategy: Strategy = BestRankWins()) -> None:
         self.__strategy = strategy
         self.__strategy.prepare(self.__year, self.__teams)
         self.__play(self.__root)  # type: ignore
+
+    def score(self, provider: BracketProvider) -> None:
+        self.__scored = True
+        pass
 
     @no_type_check
     def __play(self, node: BracketNode) -> None:

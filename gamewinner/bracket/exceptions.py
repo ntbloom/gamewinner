@@ -11,3 +11,7 @@ class BracketLogicError(Exception):
 
 class MatchupError(Exception):
     pass
+
+
+class TournamentNotPlayedYetError(Exception):
+    pass
