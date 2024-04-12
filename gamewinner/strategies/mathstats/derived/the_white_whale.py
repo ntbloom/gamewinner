@@ -15,7 +15,7 @@ class TheWhiteWhale(IMathStatsStrategy):
     def name(self) -> str:
         return "TheWhiteWhale"
 
-    def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
+    def pick(self, team1: Team, team2: Team) -> Team:
         props1 = self.get_props(team1)
         props2 = self.get_props(team2)
 
@@ -44,4 +44,4 @@ class TheWhiteWhale(IMathStatsStrategy):
             result = underdog == props1
         else:
             result = fave == props1
-        return (team1, team2) if result else (team2, team1)
+        return team1 if result else team2

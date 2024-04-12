@@ -59,6 +59,7 @@ class Bracket:
 
     def play(self, strategy: Strategy = BestRankWins()) -> None:
         self.__strategy = strategy
+        self.__strategy.prepare(self.__teams)
         self.__play(self.__root)
 
     def __play(self, node: BracketNode) -> None:

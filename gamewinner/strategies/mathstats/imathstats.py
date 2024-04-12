@@ -124,7 +124,7 @@ class IMathStatsStrategy(IStrategy, ABC):
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         return randint(70, 78), randint(61, 69)
 
-    def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
+    def pick(self, team1: Team, team2: Team) -> Team:
         """
         By default, this picks the team with the higher self._team_metric() score
         """
@@ -136,10 +136,10 @@ class IMathStatsStrategy(IStrategy, ABC):
         self._log.debug(f"{team2}: {team2_overall}")
         if team1_overall > team2_overall:
             self._log.debug(f"----- {team1} wins")
-            return team1, team2
+            return team1
         else:
             self._log.debug(f"----- {team2} wins")
-            return team2, team1
+            return team2
 
     def _rank_to_percentile(self, rank: int, reverse: bool = False) -> float:
         perc = max((251 - rank) / 250, 0)

@@ -9,7 +9,7 @@ class Rocky(IMathStatsStrategy):
     def name(self) -> str:
         return "Rocky"
 
-    def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
+    def pick(self, team1: Team, team2: Team) -> Team:
 
         props1 = self.get_props(team1)
         props2 = self.get_props(team2)
@@ -45,6 +45,6 @@ class Rocky(IMathStatsStrategy):
             score2 += kill_weight
 
         if score1 > score2:
-            return team1, team2
+            return team1
         else:
-            return team2, team1
+            return team2

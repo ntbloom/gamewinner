@@ -23,6 +23,7 @@ class TestBasicBuild:
         bracket = Bracket(test_year)
         assert bracket
         assert len(set(bracket.teams)) == 64
+        assert not bracket.winner
 
         bracket.play()
         assert len(bracket.games) == 63
