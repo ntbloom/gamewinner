@@ -10,7 +10,7 @@ from typing import Callable, NamedTuple
 from gamewinner.strategies.istrategy import IStrategy
 from gamewinner.teams.team import Team, get_definitive_name
 
-STATS_FILE = Path(__file__).parent.joinpath("data").joinpath("mathstats2024.csv")
+STATS_DIR = Path(__file__).parent.joinpath("data")
 
 
 class MSProps(NamedTuple):
@@ -54,14 +54,15 @@ class IMathStatsStrategy(IStrategy, ABC):
 
     stat_teams: dict[str, MSProps]
 
-    def prepare(self, teams: dict[str, Team]) -> None:
+    def prepare(self, year: int, teams: dict[str, Team]) -> None:
         """
         Loads all the data and attaches it to the teams
         """
-        assert STATS_FILE.exists()
+        statsfile = STATS_DIR.joinpath(f"mathstats{year}.csv")
+        assert statsfile.exists()
         self.stat_teams = {}
 
-        with open(STATS_FILE, "r") as f:
+        with open(statsfile, "r") as f:
             reader = csv.reader(f)
             reader.__next__()
             for row in reader:

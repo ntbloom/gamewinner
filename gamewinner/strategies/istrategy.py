@@ -11,7 +11,7 @@ class IStrategy(ABC):
     def name(self) -> str:
         raise NotImplementedError
 
-    def prepare(self, teams: dict[str, Team]) -> None:
+    def prepare(self, year: int, teams: dict[str, Team]) -> None:
         """
         Called before any bracket are played, including the first four. This can
         be used to add datapoints to any teams or further amend the strategy

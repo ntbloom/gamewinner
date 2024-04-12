@@ -28,10 +28,9 @@ class Bracket:
 
     def __init__(self, year: int):
         self.__log = logging.getLogger("bracket")
-
-        self.__parser = Parser(year)
+        self.__year = year
+        self.__parser = Parser(self.__year)
         self.__root = BracketNode(round=Stage.Winner)
-
         self.__teams: dict[str, Team] = {}
 
         # set of all games; maybe we don't need this?
@@ -59,7 +58,7 @@ class Bracket:
 
     def play(self, strategy: Strategy = BestRankWins()) -> None:
         self.__strategy = strategy
-        self.__strategy.prepare(self.__teams)
+        self.__strategy.prepare(self.__year, self.__teams)
         self.__play(self.__root)
 
     def __play(self, node: BracketNode) -> None:
