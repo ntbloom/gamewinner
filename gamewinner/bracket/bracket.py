@@ -56,6 +56,14 @@ class Bracket:
     def teams(self) -> dict[str, Team]:
         return self.__teams
 
+    @property
+    def year(self) -> int:
+        return self.__year
+
+    @property
+    def strategy(self) -> str:
+        return self.__strategy.name
+
     def play(self, strategy: Strategy = BestRankWins()) -> None:
         self.__strategy = strategy
         self.__strategy.prepare(self.__year, self.__teams)

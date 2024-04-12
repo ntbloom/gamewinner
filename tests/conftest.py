@@ -1,6 +1,10 @@
+import pytest
 from _pytest.python import Metafunc
 
+from gamewinner.bracket.bracket import Bracket
 from gamewinner.strategies import available_strategies
+from gamewinner.strategies.istrategy import Strategy
+from gamewinner.strategies.mathstats.imathstats import IMathStatsStrategy
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
@@ -46,7 +50,12 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 #     return Bracket(WorstRankWins(), reference_year)
 #
 #
-# @pytest.fixture(scope="function")
-# def strategized_bracket(strategy: Strategy, this_year: int) -> Bracket:
-#     # don't worry about breaking changes and only run strategies for this year
-#     return Bracket(strategy, this_year)
+@pytest.fixture(scope="function")
+def strategized_bracket(strategy: Strategy, test_year: int) -> Bracket:
+    # don't worry about breaking changes and only run strategies for this year
+    if test_year == 2023 and isinstance(strategy, IMathStatsStrategy):
+        pytest.skip("2023 mathstats data is incompatible")
+
+    bracket = Bracket(test_year)
+    bracket.play(strategy)
+    return bracket
