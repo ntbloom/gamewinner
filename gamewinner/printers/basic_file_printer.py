@@ -15,6 +15,7 @@ class BasicFilePrinter(IFilePrinter):
         for game in bracket.games:
             gamestrings.append(f"{str(game)}\n")
         gamestrings.sort()
-        for game in gamestrings:
-            indents = int(game[1]) - 1
-            fd.write(f"{'\t' * indents}{game}")
+        gamestr: str
+        for gamestr in gamestrings:
+            indents = int(gamestr[1]) - 1
+            fd.write(f"{'\t' * indents}{gamestr}")

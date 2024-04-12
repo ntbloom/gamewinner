@@ -69,6 +69,7 @@ class TestBracketPlayBestWins:
             teams = {game.team1.name, game.team2.name}
             assert teams in expected_data.final_four
 
+        assert bracket.finals
         assert {
             bracket.finals.team1.name,
             bracket.finals.team2.name,

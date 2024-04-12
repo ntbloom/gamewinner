@@ -28,28 +28,6 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
         )
 
 
-# @pytest.fixture(scope="class")
-# def reference_year() -> int:
-#     return 2022
-#
-#
-# @pytest.fixture(scope="class")
-# def this_year() -> int:
-#     return 2024
-#
-# #
-# @pytest.fixture(scope="class")
-# def best_wins() -> Strategy:
-#     return BestRankWins()
-
-
-#
-#
-# @pytest.fixture(scope="class")
-# def worst_wins_bracket(reference_year: int) -> Bracket:
-#     return Bracket(WorstRankWins(), reference_year)
-#
-#
 @pytest.fixture(scope="function")
 def strategized_bracket(strategy: Strategy, test_year: int) -> Bracket:
     # don't worry about breaking changes and only run strategies for this year

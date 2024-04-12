@@ -25,4 +25,4 @@ class IFilePrinter(IPrinter):
     @classmethod
     @abstractmethod
     def _print(cls, fd: TextIO, bracket: Bracket) -> None:
-        return NotImplemented
+        raise NotImplementedError
