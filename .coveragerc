@@ -24,3 +24,6 @@ exclude_lines =
     # Ignore runner methods
     main()
     play()
+
+omit =
+    gamewinner/strategies/mathstats/defunct/*.py
