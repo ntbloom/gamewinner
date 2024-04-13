@@ -6,7 +6,7 @@ from typing import no_type_check
 
 from gamewinner.bracket.exceptions import BracketLogicError, TournamentNotPlayedYetError
 from gamewinner.bracket.game import Game
-from gamewinner.bracket.parser import Parser
+from gamewinner.bracket.parsers import SeedParser
 from gamewinner.bracket.scoring import BracketProvider
 from gamewinner.bracket.stage import Stage
 from gamewinner.strategies import BestRankWins
@@ -31,7 +31,7 @@ class Bracket:
     def __init__(self, year: int):
         self.__log = logging.getLogger("bracket")
         self.__year = year
-        self.__parser = Parser(self.__year)
+        self.__seed_parser = SeedParser(self.__year)
         self.__root = BracketNode(round=Stage.Winner)
         self.__teams: dict[str, Team] = {}
 
@@ -142,7 +142,7 @@ class Bracket:
         self.__log.debug(f"{node.round=}")
 
         if node.round == Stage.FirstRound:
-            node.team = self.__parser.teams.pop()
+            node.team = self.__seed_parser.teams.pop()
             self.__log.debug(
                 f"adding {node.team.region.name} #{node.team.rank} {node.team.name}"
             )

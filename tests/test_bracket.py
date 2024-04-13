@@ -1,24 +1,10 @@
 import pytest
 
 from gamewinner.bracket.bracket import Bracket
-from gamewinner.bracket.parser import Parser
-from gamewinner.teams.team import Team
 from tests.expected_teams import Expected2023, Expected2024, ExpectedTeamData
 
 
-class TestBasicBuild:
-    def test_parser(self, test_year: int) -> None:
-        parser = Parser(test_year)
-        assert parser.west_plays
-        assert parser.year == test_year
-        for region in (parser.east, parser.west, parser.south, parser.midwest):
-            assert len(region) == 16
-            assert sum(region.keys()) == 136
-            assert len(set(region.values())) == 16
-        assert len(set(parser.teams)) == 64
-        for team in parser.teams:
-            assert isinstance(team, Team)
-
+class TestBasicBracket:
     def test_bracket_builds_and_plays(self, test_year: int) -> None:
         bracket = Bracket(test_year)
         assert bracket
@@ -34,16 +20,14 @@ class TestBasicBuild:
         assert len(bracket.second_round) == 16
         assert len(bracket.first_round) == 32
 
-
-@pytest.mark.parametrize(
-    "year,expected_data",
-    [
-        (2023, Expected2023),
-        (2024, Expected2024),
-    ],
-)
-class TestBracketPlayBestWins:
-    def test_first_round_games(
+    @pytest.mark.parametrize(
+        "year,expected_data",
+        [
+            (2023, Expected2023),
+            (2024, Expected2024),
+        ],
+    )
+    def test_bracket_play_best_wins(
         self, year: int, expected_data: ExpectedTeamData
     ) -> None:
         bracket = Bracket(year)
