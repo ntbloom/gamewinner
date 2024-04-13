@@ -13,7 +13,7 @@ class Parser:
 
     def __init__(self, year: int):
 
-        datadir = Path(__file__).parent.parent.parent.joinpath("data")
+        datadir = Path(__file__).parent.parent.parent.joinpath("data").joinpath("seeds")
         assert datadir.exists()
         with open(datadir.joinpath(f"{year}.yaml"), "r") as f:
             data = yaml.safe_load(f)
