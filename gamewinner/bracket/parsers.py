@@ -15,7 +15,7 @@ datadir = Path(__file__).parent.parent.parent.joinpath("data")
 class SeedParser:
     def __init__(self, year: int):
         seed_file = datadir.joinpath("seeds").joinpath(f"{year}.yaml")
-        assert seed_file.exists()
+        assert seed_file.exists(), "invalid year: need pre-tournament seed data"
         with open(seed_file, "r") as f:
             data = yaml.safe_load(f)
             self.east: dict[int, str] = data["East"]
@@ -58,7 +58,7 @@ class SeedParser:
 class ResultsParser:
     def __init__(self, year: int):
         results_file = datadir.joinpath("results").joinpath(f"{year}.yaml")
-        assert results_file.exists()
+        assert results_file.exists(), "invalid year: need post-tournament results"
 
         with open(results_file, "r") as f:
             data = yaml.safe_load(f)
