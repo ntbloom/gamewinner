@@ -13,9 +13,6 @@ def seed_parser(test_year: int) -> SeedParser:
 
 @pytest.fixture(scope="function")
 def results_parser(test_year: int) -> ResultsParser:
-    if test_year == 2023:
-        pytest.skip(reason="TODO: write me!")
-
     parser = ResultsParser(test_year)
     assert parser.year == test_year
     return parser
@@ -41,6 +38,20 @@ class TestSeedParser:
 
 
 class TestResultsParser:
+    def test_results_have_valid_team_names(self, results_parser: ResultsParser) -> None:
+        assert len(results_parser.team_names) == 32
+        for name in results_parser.team_names:
+            assert get_definitive_name(name)
+
+    def test_all_teams_accounted_for(self, test_year: int) -> None:
+        seed = SeedParser(test_year)
+        result = ResultsParser(test_year)
+        seed_teams = {team.name for team in seed.teams}
+        result_teams = {
+            get_definitive_name(name) for name in result.first_round_winners
+        }
+        assert result_teams.issubset(seed_teams)
+
     def test_results_parser_has_correct_count(
         self, results_parser: ResultsParser
     ) -> None:
@@ -50,10 +61,6 @@ class TestResultsParser:
         assert len(results_parser.elite_eight_winners) == 4
         assert len(results_parser.final_four_winners) == 2
         assert len(results_parser.winner) == 1
-
-    def test_results_have_valid_team_names(self, results_parser: ResultsParser) -> None:
-        for name in results_parser.team_names:
-            assert get_definitive_name(name)
 
     def test_results_parser_teams_play_each_round(
         self, results_parser: ResultsParser

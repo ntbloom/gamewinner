@@ -1,25 +1,49 @@
-# import pytest
-#
-# from gamewinner.bracket.bracket import Bracket
-# from gamewinner.bracket.exceptions import TournamentNotPlayedYetError
-# from gamewinner.bracket.scoring import BracketProvider, Providers
-# from gamewinner.strategies import BestRankWins, Strategy
-#
-#
-# @pytest.fixture(scope="function")
-# def provider() -> BracketProvider:
-#     return Providers.espn
-#
-#
-# @pytest.mark.parametrize("basic_strategy,expected_score", [(BestRankWins(), 100)])
-# def test_2024_scoring(
-#     basic_strategy: Strategy, provider: BracketProvider, expected_score: int
-# ) -> None:
-#     bracket = Bracket(2024)
-#     bracket.play(basic_strategy)
-#
-#     with pytest.raises(TournamentNotPlayedYetError):
-#         assert bracket.points
-#
-#     bracket.score(provider)
-#     assert bracket.points == expected_score
+import pytest
+
+from gamewinner.bracket.bracket import Bracket
+from gamewinner.bracket.exceptions import TournamentNotPlayedYetError
+from gamewinner.bracket.scoring import BracketProvider, Providers
+from gamewinner.strategies import BestRankWins, Strategy, WorstRankWins
+
+"""
+2024 cumulative scoring
+
+BestRankWins 2024:
+    First Round: 21 games
+    Secound Round: 12 games
+    Sweet Sixteen: 3 games
+    Elite Eight: 2 games
+    Final Four: 1 games
+    Winner: correct
+WorstRankWins 2024:
+    0 points
+WorstRankWins 2023:
+    First Round: 2 games
+    Second Round: 1 game
+"""
+
+
+@pytest.mark.parametrize(
+    "year,basic_strategy,provider,expected_score",
+    [
+        (
+            2024,
+            BestRankWins(),
+            Providers.espn,
+            (10 * 21 + 20 * 12 + 40 * 3 + 80 * 2 + 160 * 1 + 320),
+        ),
+        (2024, WorstRankWins(), Providers.espn, 0),
+        (2023, WorstRankWins(), Providers.espn, 2 * 10 + 20),
+    ],
+)
+def test_bracket_scoring(
+    year: int, basic_strategy: Strategy, provider: BracketProvider, expected_score: int
+) -> None:
+    bracket = Bracket(year)
+    bracket.play(basic_strategy)
+
+    with pytest.raises(TournamentNotPlayedYetError):
+        assert bracket.points
+
+    bracket.score(provider)
+    assert bracket.points == expected_score

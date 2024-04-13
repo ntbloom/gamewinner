@@ -60,8 +60,6 @@ class ResultsParser:
         results_file = datadir.joinpath("results").joinpath(f"{year}.yaml")
         assert results_file.exists()
 
-        self.team_names: set[str] = set()
-
         with open(results_file, "r") as f:
             data = yaml.safe_load(f)
             self.year = data["Year"]
@@ -73,3 +71,11 @@ class ResultsParser:
             self.winner = set(data["Winner"])
             score = data["FinalScore"]
             self.final_score = (score[0], score[1])
+            self.team_names = (
+                self.first_round_winners
+                | self.second_round_winners
+                | self.sweet_sixteen_winners
+                | self.elite_eight_winners
+                | self.final_four_winners
+                | self.winner
+            )
