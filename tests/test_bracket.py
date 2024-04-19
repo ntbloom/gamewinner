@@ -1,90 +1,78 @@
 import pytest
 
 from gamewinner.bracket.bracket import Bracket
-from gamewinner.bracket.geographic_region import GeographicRegion
-from gamewinner.bracket.years import Year
-from gamewinner.strategies import BestRankWins
+from gamewinner.bracket.parser import Parser
+from gamewinner.teams.team import Team
+from tests.expected_teams import Expected2023, Expected2024, ExpectedTeamData
 
 
-class TestBracketBestWins:
-    def test_bracket_with_best_wins(self, best_wins_bracket: Bracket) -> None:
-        bracket = best_wins_bracket
+class TestBasicBuild:
+    def test_parser(self, test_year: int) -> None:
+        parser = Parser(test_year)
+        assert parser.west_plays
+        assert parser.year == test_year
+        for region in (parser.east, parser.west, parser.south, parser.midwest):
+            assert len(region) == 16
+            assert sum(region.keys()) == 136
+            assert len(set(region.values())) == 16
+        assert len(set(parser.teams)) == 64
+        for team in parser.teams:
+            assert isinstance(team, Team)
+
+    def test_bracket_builds_and_plays(self, test_year: int) -> None:
+        bracket = Bracket(test_year)
+        assert bracket
+        assert len(set(bracket.teams)) == 64
+        assert not bracket.winner
+
         bracket.play()
-
-        # should be all #1s
-        assert bracket.west.winner.name == "Gonzaga"
-        assert bracket.east.winner.name == "Baylor"
-        assert bracket.south.winner.name == "Arizona"
-        assert bracket.midwest.winner.name == "Kansas"
-
-        assert bracket.winner.name == "Arizona"
-        assert bracket.runner_up.name == "Gonzaga"
-
-    def test_all_first_round_matchups(self, best_wins_bracket: Bracket) -> None:
-        """Make sure we set out the bracket in right order"""
-        bracket = best_wins_bracket
-        bracket.play()
-
-        region = bracket.west.name.value.lower()
-        gameorder = (
-            ("Gonzaga", "Georgia State"),
-            ("Boise State", "Memphis"),
-            ("Connecticut", "New Mexico State"),
-            ("Arkansas", "Vermont"),
-            ("Alabama", "Notre Dame"),
-            ("Texas Tech", "Montana State"),
-            ("Michigan State", "Davidson"),
-            ("Duke", "Cal State Fullerton"),
-        )
-        for idx, teams in enumerate(gameorder):
-            gamenum = idx + 1
-            winner = eval(f"bracket.{region}.w{gamenum}.name")
-            loser = eval(f"bracket.{region}.l{gamenum}.name")
-            assert winner == teams[0]
-            assert loser == teams[1]
-
-    @pytest.mark.parametrize("region", GeographicRegion)
-    def test_final_four(self, region: GeographicRegion, reference_year: Year) -> None:
-        if region == GeographicRegion.WEST:
-            pytest.skip("West can't play West, skipping matchup")
-
-        # inject the test west_plays variable into the 2022 data
-        year = Year(reference_year.year, west_plays=region)
-
-        bracket = Bracket.create(BestRankWins(), year)
-        bracket.play()
-
+        assert len(bracket.games) == 63
+        assert bracket.winner
         assert len(bracket.final_four) == 2
-        for game in bracket.final_four:
-            assert len(game) == 2
-
-        match region:
-            case GeographicRegion.EAST:
-                expected = {"Gonzaga", "Baylor"}, {"Arizona", "Kansas"}
-            case GeographicRegion.SOUTH:
-                expected = {"Gonzaga", "Arizona"}, {"Kansas", "Baylor"}
-            case GeographicRegion.MIDWEST:
-                expected = {"Gonzaga", "Kansas"}, {"Baylor", "Arizona"}
-            case _:
-                raise ValueError("unreachable")
-
-        actual = set(team.name for team in bracket.final_four[0]), set(
-            team.name for team in bracket.final_four[1]
-        )
-        for matchup in expected:
-            assert matchup in actual
+        assert len(bracket.elite_eight) == 4
+        assert len(bracket.sweet_sixteen) == 8
+        assert len(bracket.second_round) == 16
+        assert len(bracket.first_round) == 32
 
 
-class TestBracketWorstWins:
-    def test_bracket_with_worst_wins(self, worst_wins_bracket: Bracket) -> None:
-        bracket = worst_wins_bracket
+@pytest.mark.parametrize(
+    "year,expected_data",
+    [
+        (2023, Expected2023),
+        (2024, Expected2024),
+    ],
+)
+class TestBracketPlayBestWins:
+    def test_first_round_games(
+        self, year: int, expected_data: ExpectedTeamData
+    ) -> None:
+        bracket = Bracket(year)
         bracket.play()
 
-        # should be all #1s
-        assert bracket.west.winner.name == "Georgia State"
-        assert bracket.east.winner.name == "Norfolk State"
-        assert bracket.south.winner.name == "Wright State"
-        assert bracket.midwest.winner.name == "Texas Southern"
+        for game in bracket.first_round:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.first_round
 
-        assert bracket.winner.name == "Texas Southern"
-        assert bracket.runner_up.name == "Georgia State"
+        for game in bracket.second_round:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.second_round
+
+        for game in bracket.sweet_sixteen:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.sweet_sixteen
+
+        for game in bracket.elite_eight:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.elite_eight
+
+        for game in bracket.final_four:
+            teams = {game.team1.name, game.team2.name}
+            assert teams in expected_data.final_four
+
+        assert bracket.finals
+        assert {
+            bracket.finals.team1.name,
+            bracket.finals.team2.name,
+        } == expected_data.finals
+
+        assert bracket.winner and bracket.winner.name == expected_data.winner

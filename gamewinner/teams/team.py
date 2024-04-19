@@ -19,16 +19,11 @@ class Team:
         name: str,
         region: GeographicRegion,
         rank: int,
-        wins: int,
-        losses: int,
         **kwargs: Any,
     ):
         self.name = get_definitive_name(name)
         self.region = region
         self.rank = rank
-        self.wins = wins
-        self.losses = losses
-        self.win_rate = self.wins / (self.wins + self.losses)
         for k, v in kwargs.items():
             setattr(self, f"_{k}", v)
 

@@ -1,169 +1,155 @@
 from __future__ import annotations
 
-import csv
-from pathlib import Path
+import logging
+from dataclasses import dataclass
+from typing import no_type_check
 
-from gamewinner.bracket.geographic_region import GeographicRegion
-from gamewinner.bracket.regional_bracket import RegionalBracket
-from gamewinner.bracket.years import Year, this_year
+from gamewinner.bracket.exceptions import BracketLogicError
+from gamewinner.bracket.game import Game
+from gamewinner.bracket.parser import Parser
+from gamewinner.bracket.stage import Stage
+from gamewinner.strategies import BestRankWins
 from gamewinner.strategies.istrategy import Strategy
 from gamewinner.teams.team import Team
 
 
-class InvalidDataFile(Exception):
-    pass
+@dataclass
+class BracketNode:
+    round: Stage
+    parent: BracketNode | None = None
+    left_child: BracketNode | None = None
+    right_child: BracketNode | None = None
+    team: Team | None = None
+
+    def __repr__(self) -> str:
+        return f"{self.round=}, {self.parent=}"
 
 
 class Bracket:
-    def __init__(
-        self,
-        west: RegionalBracket,
-        east: RegionalBracket,
-        south: RegionalBracket,
-        midwest: RegionalBracket,
-        strategy: Strategy,
-        year: Year = this_year,
-    ):
-        self.played = False
 
-        self.west = west
-        self.east = east
-        self.south = south
-        self.midwest = midwest
+    def __init__(self, year: int):
+        self.__log = logging.getLogger("bracket")
+        self.__year = year
+        self.__parser = Parser(self.__year)
+        self.__root = BracketNode(round=Stage.Winner)
+        self.__teams: dict[str, Team] = {}
 
-        self.year = year
-        self._west_machup = year.west_plays
+        # set of all games; maybe we don't need this?
+        self.__games: set[Game] = set()
 
-        self._teams = {
-            team.name: team
-            for team in (
-                self.west.teams
-                + self.east.teams
-                + self.south.teams
-                + self.midwest.teams
-            )
-        }
-        self._region_names = tuple(region.value.lower() for region in GeographicRegion)
-        self.regions = (self.west, self.east, self.south, self.midwest)
+        # get each round
+        self.first_round: set[Game] = set()
+        self.second_round: set[Game] = set()
+        self.sweet_sixteen: set[Game] = set()
+        self.elite_eight: set[Game] = set()
+        self.final_four: set[Game] = set()
+        self.finals: Game | None = None
+        self.winner: Team | None = None
 
-        self.strategy = strategy
-        self.upsets: list[str] = []
+        self.__build(self.__root)  # type: ignore
+        self.__strategy: Strategy = BestRankWins()
+
+    @property
+    def games(self) -> set[Game]:
+        return self.__games
 
     @property
     def teams(self) -> dict[str, Team]:
-        return self._teams
+        return self.__teams
 
     @property
-    def final_four(self) -> tuple[tuple[Team, Team], ...]:
-        return tuple(self._final_four)
+    def year(self) -> int:
+        return self.__year
 
-    @staticmethod
-    def create(strategy: Strategy, year: Year) -> Bracket:
-        teamfile = (
-            Path(__file__)
-            .parent.parent.parent.joinpath("data")
-            .joinpath(f"{year.year}.csv")
-        )
-        assert teamfile.exists(), f"Missing teamfile for year {year.year}: {teamfile=}"
+    @property
+    def strategy(self) -> str:
+        return self.__strategy.name
 
-        west_teams: list[Team] = []
-        east_teams: list[Team] = []
-        south_teams: list[Team] = []
-        midwest_teams: list[Team] = []
-        playoffs: list[Team] = []
-        teams: dict[str, Team] = {}
+    def play(self, strategy: Strategy = BestRankWins()) -> None:
+        self.__strategy = strategy
+        self.__strategy.prepare(self.__year, self.__teams)
+        self.__play(self.__root)  # type: ignore
 
-        with open(teamfile, "r") as f:
-            reader = csv.reader(f)
-            reader.__next__()
-            for row in reader:
-                try:
-                    name, region, rank, wins, losses = row
-                except ValueError:
-                    raise InvalidDataFile(f"Bad entry for {row}")
-                match region:
-                    case _ if "Playoff" in region:
-                        _region = region.split("-")[0]
-                        in_playoff = True
-                    case _:
-                        _region = region
-                        in_playoff = False
-                geographic_region = GeographicRegion(str(_region))
-                team = Team(
-                    name=name,
-                    region=geographic_region,
-                    rank=int(rank),
-                    wins=int(wins),
-                    losses=int(losses),
-                )
-                teams[name] = team
-                if in_playoff:
-                    playoffs.append(team)
-                else:
-                    eval(f"{geographic_region.value.lower()}_teams.append(team)")
+    @no_type_check
+    def __play(self, node: BracketNode) -> None:
+        assert node, "out of bounds"
 
-        # do any adjustments to the strategy now that we know who all the teams are
-        strategy.prepare(teams)
+        if node.left_child.team and node.right_child.team:
+            stage = node.left_child.round
+            team1 = node.left_child.team
+            team2 = node.right_child.team
+            winner = self.__strategy.pick(team1, team2)
+            game = Game(team1=team1, team2=team2, predicted_winner=winner, stage=stage)
+            self.__games.add(game)
+            self.__log.debug(f"{game}->{winner}")
+            node.team = winner
+            self.__log.debug("moving up")
 
-        west = RegionalBracket(GeographicRegion.WEST, west_teams, strategy)
-        east = RegionalBracket(GeographicRegion.EAST, east_teams, strategy)
-        south = RegionalBracket(GeographicRegion.SOUTH, south_teams, strategy)
-        midwest = RegionalBracket(GeographicRegion.MIDWEST, midwest_teams, strategy)
+            match stage:
+                case Stage.FirstRound:
+                    self.first_round.add(game)
 
-        return Bracket(west, east, south, midwest, strategy, year)
+                case Stage.SecondRound:
+                    self.second_round.add(game)
 
-    def _play_round(self, round_name: str) -> None:
-        self.strategy.adjust(self.teams)
-        for reg in self._region_names:
-            cmd = f"self.{reg}.{round_name}()"
-            eval(cmd)
+                case Stage.SweetSixteen:
+                    self.sweet_sixteen.add(game)
 
-    def _play_first_round(self) -> None:
-        self._play_round("first_round")
+                case Stage.EliteEight:
+                    self.elite_eight.add(game)
 
-    def _play_second_round(self) -> None:
-        self._play_round("second_round")
+                case Stage.FinalFour:
+                    self.final_four.add(game)
 
-    def _play_sweet_sixteen(self) -> None:
-        self._play_round("sweet_sixteen")
+                case Stage.Finals:
+                    self.__log.debug(f"Play finished: {len(self.__games)} played")
+                    self.finals = game
+                    self.winner = node.team
+                    return
 
-    def _play_elite_eight(self) -> None:
-        self._play_round("elite_eight")
+                case _:
+                    return self.__play(node.parent)
 
-    def _play_final_four(self) -> None:
-        # decide the matchups based on who the west bracket is matched against
-        matchups = {
-            "east": self.east.winner,
-            "south": self.south.winner,
-            "midwest": self.midwest.winner,
-        }
-        west_opponent = matchups.pop(self._west_machup.name.lower())
-        self.ff1_winner, self.ff1_loser = self.strategy.pick(
-            self.west.winner, west_opponent
-        )
-        self.ff2_winner, self.ff2_loser = self.strategy.pick(
-            matchups.popitem()[1], matchups.popitem()[1]
-        )
-        self._final_four = (self.ff1_winner, self.ff1_loser), (
-            self.ff2_winner,
-            self.ff2_loser,
-        )
+        if node.left_child.team and not node.right_child.team:
+            self.__log.debug("moving right")
+            return self.__play(node.right_child)
 
-    def _play_final(self) -> None:
-        self.strategy.adjust(self.teams)
-        self.winner, self.runner_up = self.strategy.pick(
-            self.ff1_winner, self.ff2_winner
-        )
-        self.final_score = self.strategy.predict_score(self.winner, self.runner_up)
+        if not node.left_child.team and not node.right_child.team:
+            self.__log.debug("moving left")
+            return self.__play(node.left_child)
 
-    def play(self) -> None:
-        self._play_first_round()
-        self._play_second_round()
-        self._play_sweet_sixteen()
-        self._play_elite_eight()
-        self._play_final_four()
-        self._play_final()
-        self.played = True
-        for region in self.regions:
-            for upset in region.upsets:
-                self.upsets.append(upset)
+        self.__log.debug("moving up")
+        return self.__play(node.parent)
+
+    @no_type_check
+    def __build(self, node: BracketNode) -> None:
+        assert node, "out of bounds!"
+        if node.round < 1:
+            raise BracketLogicError
+        self.__log.debug(f"{node.round=}")
+
+        if node.round == Stage.FirstRound:
+            node.team = self.__parser.teams.pop()
+            self.__log.debug(
+                f"adding {node.team.region.name} #{node.team.rank} {node.team.name}"
+            )
+            self.__teams[node.team.name] = node.team
+            self.__log.debug("moving up")
+            return self.__build(node.parent)
+
+        if node.left_child is None and node.round > Stage.FirstRound:
+            node.left_child = BracketNode(round=Stage(node.round - 1), parent=node)
+            self.__log.debug("moving left")
+            return self.__build(node.left_child)
+
+        if node.right_child is None and node.round > Stage.FirstRound:
+            node.right_child = BracketNode(round=Stage(node.round - 1), parent=node)
+            self.__log.debug("moving right")
+            return self.__build(node.right_child)
+
+        if node.round == Stage.Winner and node.left_child and node.right_child:
+            self.__log.debug(f"Build finished: {len(self.__teams)} teams populated")
+            return
+
+        self.__log.debug("moving up")
+        return self.__build(node.parent)

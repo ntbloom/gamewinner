@@ -8,16 +8,19 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 rich = "*"
-typer = "^0.7.0"
+typer = "^0.12.3"
+pyyaml = "^6.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
+flake8 = "*"
 isort = "*"
 mypy = "*"
 pre-commit = "*"
 pytest = "*"
 pytest-cov = "*"
+types-pyyaml = "*"
 
 [build-system]
 requires = ["poetry-core"]

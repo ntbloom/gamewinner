@@ -26,7 +26,7 @@ class DoctorLizard(IMathStatsStrategy):
     def name(self) -> str:
         return "DoctorLizard"
 
-    def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
+    def pick(self, team1: Team, team2: Team) -> Team:
         """
         The Lizard Sauce
         """
@@ -37,9 +37,9 @@ class DoctorLizard(IMathStatsStrategy):
         if abs(props1.rank_injury - props2.rank_injury) > 25:
             # "pick higher rank"
             if props1.rank_injury < props2.rank_injury:
-                return team1, team2
+                return team1
             else:
-                return team2, team1
+                return team2
 
         # "If not, subtract points allowed from points scored and select team
         #    with greater value..."
@@ -47,24 +47,24 @@ class DoctorLizard(IMathStatsStrategy):
         # "...unless difference is less than 5."
         elif abs(props1.rank_overall - props2.rank_overall) >= 5:
             if props1.rank_overall > props2.rank_overall:
-                return team1, team2
+                return team1
             else:
-                return team2, team1
+                return team2
 
         # "If not greater than 5, pick team with more KillShotsPerGame."
         else:
             if props1.obj_kills_per_game > props2.obj_kills_per_game:
-                return team1, team2
+                return team1
             elif props2.obj_kills_per_game > props1.obj_kills_per_game:
-                return team2, team1
+                return team2
             # Editorial: it is possible for the above to end in a tie,
             #   which won't work. If we get all the way to the bottom,
             #   we just go back to picking based on InjuryRank.
             else:
                 if props1.rank_injury < props2.rank_injury:
-                    return team1, team2
+                    return team1
                 else:
-                    return team2, team1
+                    return team2
 
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         return 75, 67

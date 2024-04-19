@@ -11,7 +11,7 @@ class IStrategy(ABC):
     def name(self) -> str:
         raise NotImplementedError
 
-    def prepare(self, teams: dict[str, Team]) -> None:
+    def prepare(self, year: int, teams: dict[str, Team]) -> None:
         """
         Called before any bracket are played, including the first four. This can
         be used to add datapoints to any teams or further amend the strategy
@@ -21,18 +21,8 @@ class IStrategy(ABC):
         """
         pass
 
-    def adjust(self, teams: dict[str, Team]) -> None:
-        """
-        Called before each round, including in between the first four and the
-        first round.  This can be used to amend strategies based on the results
-        of previous bracket.
-
-        It is not necessary to overload this method; the default is a no-op.
-        """
-        pass
-
     @abstractmethod
-    def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
+    def pick(self, team1: Team, team2: Team) -> Team:
         """Pick a game winner"""
         raise NotImplementedError
 

@@ -7,13 +7,10 @@ from random import randint
 from statistics import median
 from typing import Callable, NamedTuple
 
-from gamewinner.bracket.years import this_year
 from gamewinner.strategies.istrategy import IStrategy
 from gamewinner.teams.team import Team, get_definitive_name
 
-STATS_FILE = (
-    Path(__file__).parent.joinpath("data").joinpath(f"mathstats{this_year.year}.csv")
-)
+STATS_DIR = Path(__file__).parent.joinpath("data")
 
 
 class MSProps(NamedTuple):
@@ -57,14 +54,15 @@ class IMathStatsStrategy(IStrategy, ABC):
 
     stat_teams: dict[str, MSProps]
 
-    def prepare(self, teams: dict[str, Team]) -> None:
+    def prepare(self, year: int, teams: dict[str, Team]) -> None:
         """
         Loads all the data and attaches it to the teams
         """
-        assert STATS_FILE.exists()
+        statsfile = STATS_DIR.joinpath(f"{year}.csv")
+        assert statsfile.exists()
         self.stat_teams = {}
 
-        with open(STATS_FILE, "r") as f:
+        with open(statsfile, "r") as f:
             reader = csv.reader(f)
             reader.__next__()
             for row in reader:
@@ -127,7 +125,7 @@ class IMathStatsStrategy(IStrategy, ABC):
     def predict_score(self, winner: Team, loser: Team) -> tuple[int, int]:
         return randint(70, 78), randint(61, 69)
 
-    def pick(self, team1: Team, team2: Team) -> tuple[Team, Team]:
+    def pick(self, team1: Team, team2: Team) -> Team:
         """
         By default, this picks the team with the higher self._team_metric() score
         """
@@ -139,10 +137,10 @@ class IMathStatsStrategy(IStrategy, ABC):
         self._log.debug(f"{team2}: {team2_overall}")
         if team1_overall > team2_overall:
             self._log.debug(f"----- {team1} wins")
-            return team1, team2
+            return team1
         else:
             self._log.debug(f"----- {team2} wins")
-            return team2, team1
+            return team2
 
     def _rank_to_percentile(self, rank: int, reverse: bool = False) -> float:
         perc = max((251 - rank) / 250, 0)

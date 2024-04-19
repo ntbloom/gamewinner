@@ -2,25 +2,12 @@ import pytest
 from _pytest.python import Metafunc
 
 from gamewinner.bracket.bracket import Bracket
-from gamewinner.bracket.years import Year, available_years, this_year, year2022
-from gamewinner.strategies import (
-    BestRankWins,
-    Strategy,
-    WorstRankWins,
-    available_strategies,
-)
+from gamewinner.strategies import available_strategies
+from gamewinner.strategies.istrategy import Strategy
+from gamewinner.strategies.mathstats.imathstats import IMathStatsStrategy
 
 
 def pytest_generate_tests(metafunc: Metafunc) -> None:
-    year_fixture = "every_year"
-    if year_fixture in metafunc.fixturenames:
-        metafunc.parametrize(
-            year_fixture,
-            available_years,
-            scope="class",
-            ids=[year.year for year in available_years],
-        )
-
     strategy_fixture = "strategy"
     if strategy_fixture in metafunc.fixturenames:
         metafunc.parametrize(
@@ -30,25 +17,23 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
             ids=[strategy.name for strategy in available_strategies],
         )
 
-
-@pytest.fixture(scope="class")
-def reference_year() -> Year:
-    return year2022
-
-
-@pytest.fixture(scope="class")
-def best_wins_bracket(reference_year: Year) -> Bracket:
-    return Bracket.create(BestRankWins(), reference_year)
-
-
-@pytest.fixture(scope="class")
-def worst_wins_bracket(reference_year: Year) -> Bracket:
-    return Bracket.create(WorstRankWins(), reference_year)
+    year_fixture = "test_year"
+    testable_years = (
+        2023,
+        2024,
+    )
+    if year_fixture in metafunc.fixturenames:
+        metafunc.parametrize(
+            year_fixture, testable_years, scope="function", ids=testable_years
+        )
 
 
 @pytest.fixture(scope="function")
-def strategized_bracket(strategy: Strategy) -> Bracket:
+def strategized_bracket(strategy: Strategy, test_year: int) -> Bracket:
     # don't worry about breaking changes and only run strategies for this year
-    year = this_year
-    bracket = Bracket.create(strategy, year)
+    if test_year == 2023 and isinstance(strategy, IMathStatsStrategy):
+        pytest.skip("2023 mathstats data is incompatible")
+
+    bracket = Bracket(test_year)
+    bracket.play(strategy)
     return bracket
