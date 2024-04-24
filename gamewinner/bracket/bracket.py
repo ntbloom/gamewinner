@@ -6,7 +6,7 @@ from typing import no_type_check
 
 from gamewinner.bracket.exceptions import BracketLogicError
 from gamewinner.bracket.game import Game
-from gamewinner.bracket.parsers import SeedParser
+from gamewinner.bracket.parsers import ResultsParser, SeedParser
 from gamewinner.bracket.scoring import BracketProvider
 from gamewinner.bracket.stage import Stage
 from gamewinner.strategies import BestRankWins
@@ -32,6 +32,10 @@ class Bracket:
         self.__log = logging.getLogger("bracket")
         self.__year = year
         self.__seed_parser = SeedParser(self.__year)
+        self.__results_parser = (
+            ResultsParser(self.__year) if self.__seed_parser.complete else None
+        )
+
         self.__root = BracketNode(round=Stage.Winner)
         self.__teams: dict[str, Team] = {}
 
@@ -50,7 +54,7 @@ class Bracket:
         self.__build(self.__root)  # type: ignore
         self.__strategy: Strategy = BestRankWins()
 
-        self.__played = False
+        self.__scored = False
 
     @property
     def games(self) -> set[Game]:
@@ -72,18 +76,19 @@ class Bracket:
         self.__strategy = strategy
         self.__strategy.prepare(self.__year, self.__teams)
         self.__predict(self.__root)  # type: ignore
+        if self.__results_parser:
+            self.__scored = True
 
     def score(self, provider: BracketProvider) -> int:
-        assert self.__played
+        assert self.__scored
         points = 0
         for game in self.__games:
-            if game.actual_winner == game.predicted_winner:
+            assert (
+                game.prediction_correct is not None
+            ), "game should have been predicted"
+            if game.prediction_correct:
                 points += provider.stage_points(game.stage)
         return points
-
-    def __play(self) -> None:
-        """Score the bracket against real results"""
-        pass
 
     @no_type_check
     def __predict(self, node: BracketNode) -> None:
@@ -95,7 +100,43 @@ class Bracket:
             team1 = node.left_child.team
             team2 = node.right_child.team
             winner = self.__strategy.pick(team1, team2)
-            game = Game(team1=team1, team2=team2, predicted_winner=winner, stage=stage)
+
+            if self.__results_parser:
+                match stage:
+                    case Stage.FirstRound:
+                        correct = (
+                            winner.name in self.__results_parser.first_round_winners
+                        )
+                    case Stage.SecondRound:
+                        correct = (
+                            winner.name in self.__results_parser.second_round_winners
+                        )
+                    case Stage.SweetSixteen:
+                        correct = (
+                            winner.name in self.__results_parser.sweet_sixteen_winners
+                        )
+                    case Stage.EliteEight:
+                        correct = (
+                            winner.name in self.__results_parser.elite_eight_winners
+                        )
+                    case Stage.FinalFour:
+                        correct = (
+                            winner.name in self.__results_parser.final_four_winners
+                        )
+                    case Stage.Finals:
+                        correct = winner.name in self.__results_parser.winner
+                    case _:
+                        raise Exception("illegal stage")
+
+            else:
+                correct = None
+            game = Game(
+                team1=team1,
+                team2=team2,
+                predicted_winner=winner,
+                stage=stage,
+                prediction_correct=correct,
+            )
             self.__games.add(game)
             self.__log.debug(f"{game}->{winner}")
             node.team = winner

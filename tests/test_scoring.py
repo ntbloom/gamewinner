@@ -15,26 +15,29 @@ BestRankWins 2024:
     Final Four: 1 games
     Winner: correct
 WorstRankWins 2024:
-    0 points
+    First Round: 11 games
+    Second Round: 0 games
 WorstRankWins 2023:
     First Round: 2 games
     Second Round: 1 game
 """
 
+strategies = [
+    (
+        2024,
+        BestRankWins(),
+        Providers.espn,
+        (10 * 21 + 20 * 12 + 40 * 3 + 80 * 2 + 160 * 1 + 320),
+    ),
+    (2024, WorstRankWins(), Providers.espn, 11 * 10),
+    (2023, WorstRankWins(), Providers.espn, 7 * 10 + 20),
+]
 
-@pytest.mark.xfail
+
 @pytest.mark.parametrize(
     "year,basic_strategy,provider,expected_score",
-    [
-        (
-            2024,
-            BestRankWins(),
-            Providers.espn,
-            (10 * 21 + 20 * 12 + 40 * 3 + 80 * 2 + 160 * 1 + 320),
-        ),
-        (2024, WorstRankWins(), Providers.espn, 0),
-        (2023, WorstRankWins(), Providers.espn, 2 * 10 + 20),
-    ],
+    strategies,
+    ids=[f"{case[0]}-{case[1].name}-{case[2].name}" for case in strategies],
 )
 def test_bracket_scoring(
     year: int, basic_strategy: Strategy, provider: BracketProvider, expected_score: int

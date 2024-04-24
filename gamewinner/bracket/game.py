@@ -11,7 +11,7 @@ class Game:
     team2: Team
     stage: Stage
     predicted_winner: Team
-    actual_winner: Team | None = None
+    prediction_correct: bool | None = None
 
     def __post_init__(self) -> None:
         if self.team1 == self.team2:
@@ -47,4 +47,5 @@ class Game:
     def __str__(self) -> str:
         winner = self.team1 if self.team1 == self.predicted_winner else self.team2
         loser = self.team2 if self.team1 == self.predicted_winner else self.team1
-        return f"({self.stage.value}) {self.stage.name}: {winner} over {loser}"
+        correct = " (CORRECT)" if self.prediction_correct else ""
+        return f"({self.stage.value}) {self.stage.name}: {winner} over {loser}{correct}"

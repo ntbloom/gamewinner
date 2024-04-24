@@ -7,6 +7,7 @@ from gamewinner.bracket.stage import Stage
 
 
 class BracketProvider(NamedTuple):
+    name: str
     first_round_points: int
     second_round_points: int
     sweet_sixteen_points: int
@@ -31,12 +32,15 @@ class BracketProvider(NamedTuple):
             case _:
                 raise ValueError("must provide valid stage")
 
+    def __str__(self) -> str:
+        return f"BracketProvider({self.name})"
+
 
 @dataclass
 class Providers:
-    espn = BracketProvider(10, 20, 40, 80, 160, 320)
-    yahoo = BracketProvider(1, 2, 4, 8, 16, 32)
-    cbs = BracketProvider(1, 2, 4, 8, 16, 32)
-    fox_sports = BracketProvider(1, 2, 4, 8, 16, 32)
-    ncaa_dot_com = BracketProvider(1, 2, 4, 8, 16, 32)
-    balanced = BracketProvider(1, 2, 3, 4, 6, 10)
+    espn = BracketProvider("espn", 10, 20, 40, 80, 160, 320)
+    yahoo = BracketProvider("yahoo", 1, 2, 4, 8, 16, 32)
+    cbs = BracketProvider("cbs", 1, 2, 4, 8, 16, 32)
+    fox_sports = BracketProvider("foxsports", 1, 2, 4, 8, 16, 32)
+    ncaa_dot_com = BracketProvider("ncaa.com", 1, 2, 4, 8, 16, 32)
+    balanced = BracketProvider("balanced", 1, 2, 3, 4, 6, 10)
