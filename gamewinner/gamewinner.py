@@ -9,5 +9,5 @@ def play(
     printer: printers.Printer,
 ) -> None:
     bracket = Bracket(year)
-    bracket.play(strategy)
+    bracket.predict(strategy)
     printer.print(bracket)

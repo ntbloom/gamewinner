@@ -40,6 +40,6 @@ def test_bracket_scoring(
     year: int, basic_strategy: Strategy, provider: BracketProvider, expected_score: int
 ) -> None:
     bracket = Bracket(year)
-    bracket.play(basic_strategy)
+    bracket.predict(basic_strategy)
 
     assert bracket.score(provider) == expected_score

@@ -14,6 +14,23 @@ class BracketProvider(NamedTuple):
     final_four_points: int
     finals_points: int
 
+    def stage_points(self, stage: Stage) -> int:
+        match stage:
+            case Stage.FirstRound:
+                return self.first_round_points
+            case Stage.SecondRound:
+                return self.second_round_points
+            case Stage.SweetSixteen:
+                return self.sweet_sixteen_points
+            case Stage.EliteEight:
+                return self.elite_eight_points
+            case Stage.FinalFour:
+                return self.final_four_points
+            case Stage.Finals:
+                return self.finals_points
+            case _:
+                raise ValueError("must provide valid stage")
+
 
 @dataclass
 class Providers:
@@ -23,21 +40,3 @@ class Providers:
     fox_sports = BracketProvider(1, 2, 4, 8, 16, 32)
     ncaa_dot_com = BracketProvider(1, 2, 4, 8, 16, 32)
     balanced = BracketProvider(1, 2, 3, 4, 6, 10)
-
-
-def get_stage_points(provider: BracketProvider, stage: Stage) -> int:
-    match stage:
-        case Stage.FirstRound:
-            return provider.first_round_points
-        case Stage.SecondRound:
-            return provider.second_round_points
-        case Stage.SweetSixteen:
-            return provider.sweet_sixteen_points
-        case Stage.EliteEight:
-            return provider.elite_eight_points
-        case Stage.FinalFour:
-            return provider.final_four_points
-        case Stage.Finals:
-            return provider.finals_points
-        case _:
-            raise ValueError("must provide valid stage")

@@ -11,6 +11,7 @@ class Game:
     team2: Team
     stage: Stage
     predicted_winner: Team
+    actual_winner: Team | None = None
 
     def __post_init__(self) -> None:
         if self.team1 == self.team2:

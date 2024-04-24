@@ -72,3 +72,77 @@ West:
   14: Colgate
   15: Long Beach State
   16: Wagner
+
+Results:
+  FirstRoundWinners:
+    - UConn
+    - Northwestern
+    - San Diego State
+    - Yale
+    - Duquesne
+    - Illinois
+    - Washington State
+    - Iowa State
+    - Houston
+    - Texas A&M
+    - JMU
+    - Duke
+    - NC State
+    - Oakland
+    - Colorado
+    - Marquette
+    - UNC
+    - Michigan State
+    - Grand Canyon
+    - Alabama
+    - Clemson
+    - Baylor
+    - Dayton
+    - Arizona
+    - Purdue
+    - Utah State
+    - Gonzaga
+    - Kansas
+    - Oregon
+    - Creighton
+    - Texas
+    - Tennessee
+  SecondRoundWinners:
+    - UConn
+    - San Diego State
+    - Illinois
+    - Iowa State
+    - Houston
+    - Duke
+    - NC State
+    - Marquette
+    - UNC
+    - Alabama
+    - Clemson
+    - Arizona
+    - Purdue
+    - Gonzaga
+    - Creighton
+    - Tennessee
+  SweetSixteenWinners:
+    - UConn
+    - Illinois
+    - Duke
+    - NC State
+    - Purdue
+    - Tennessee
+    - Alabama
+    - Clemson
+  EliteEightWinners:
+    - UConn
+    - NC State
+    - Alabama
+    - Purdue
+  FinalFourWinners:
+    - UConn
+    - Purdue
+  Winner:
+    - UConn
+  FinalScore:
+    - 75
+    - 60

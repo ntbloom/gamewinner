@@ -35,5 +35,5 @@ def strategized_bracket(strategy: Strategy, test_year: int) -> Bracket:
         pytest.skip("2023 mathstats data is incompatible")
 
     bracket = Bracket(test_year)
-    bracket.play(strategy)
+    bracket.predict(strategy)
     return bracket

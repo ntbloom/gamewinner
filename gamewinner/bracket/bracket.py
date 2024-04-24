@@ -49,7 +49,8 @@ class Bracket:
 
         self.__build(self.__root)  # type: ignore
         self.__strategy: Strategy = BestRankWins()
-        self.__points = 0
+
+        self.__played = False
 
     @property
     def games(self) -> set[Game]:
@@ -67,16 +68,26 @@ class Bracket:
     def strategy(self) -> str:
         return self.__strategy.name
 
-    def play(self, strategy: Strategy = BestRankWins()) -> None:
+    def predict(self, strategy: Strategy = BestRankWins()) -> None:
         self.__strategy = strategy
         self.__strategy.prepare(self.__year, self.__teams)
-        self.__play(self.__root)  # type: ignore
+        self.__predict(self.__root)  # type: ignore
 
     def score(self, provider: BracketProvider) -> int:
+        assert self.__played
+        points = 0
+        for game in self.__games:
+            if game.actual_winner == game.predicted_winner:
+                points += provider.stage_points(game.stage)
+        return points
+
+    def __play(self) -> None:
+        """Score the bracket against real results"""
         pass
 
     @no_type_check
-    def __play(self, node: BracketNode) -> None:
+    def __predict(self, node: BracketNode) -> None:
+        """Make predictions for all 63 games"""
         assert node, "out of bounds"
 
         if node.left_child.team and node.right_child.team:
@@ -113,21 +124,22 @@ class Bracket:
                     return
 
                 case _:
-                    return self.__play(node.parent)
+                    return self.__predict(node.parent)
 
         if node.left_child.team and not node.right_child.team:
             self.__log.debug("moving right")
-            return self.__play(node.right_child)
+            return self.__predict(node.right_child)
 
         if not node.left_child.team and not node.right_child.team:
             self.__log.debug("moving left")
-            return self.__play(node.left_child)
+            return self.__predict(node.left_child)
 
         self.__log.debug("moving up")
-        return self.__play(node.parent)
+        return self.__predict(node.parent)
 
     @no_type_check
     def __build(self, node: BracketNode) -> None:
+        """Build the bracket with all first round games staged"""
         assert node, "out of bounds!"
         if node.round < 1:
             raise BracketLogicError

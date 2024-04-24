@@ -14,7 +14,7 @@ datadir = Path(__file__).parent.parent.parent.joinpath("data")
 
 class SeedParser:
     def __init__(self, year: int):
-        seed_file = datadir.joinpath("seeds").joinpath(f"{year}.yaml")
+        seed_file = datadir.joinpath(f"{year}.yaml")
         assert seed_file.exists(), "invalid year: need pre-tournament seed data"
         with open(seed_file, "r") as f:
             data = yaml.safe_load(f)
@@ -57,12 +57,14 @@ class SeedParser:
 
 class ResultsParser:
     def __init__(self, year: int):
-        results_file = datadir.joinpath("results").joinpath(f"{year}.yaml")
-        assert results_file.exists(), "invalid year: need post-tournament results"
+        results_file = datadir.joinpath(f"{year}.yaml")
+        assert results_file.exists(), f"no scoring data for {year}"
 
         with open(results_file, "r") as f:
-            data = yaml.safe_load(f)
-            self.year = data["Year"]
+            raw = yaml.safe_load(f)
+            assert "Results" in raw, "invalid year: need post-tournament results"
+            self.year = raw["Year"]
+            data = raw["Results"]
             self.first_round_winners = set(data["FirstRoundWinners"])
             self.second_round_winners = set(data["SecondRoundWinners"])
             self.sweet_sixteen_winners = set(data["SweetSixteenWinners"])

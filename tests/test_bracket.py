@@ -11,7 +11,7 @@ class TestBasicBracket:
         assert len(set(bracket.teams)) == 64
         assert not bracket.winner
 
-        bracket.play()
+        bracket.predict()
         assert len(bracket.games) == 63
         assert bracket.winner
         assert len(bracket.final_four) == 2
@@ -31,7 +31,7 @@ class TestBasicBracket:
         self, year: int, expected_data: ExpectedTeamData
     ) -> None:
         bracket = Bracket(year)
-        bracket.play()
+        bracket.predict()
 
         for game in bracket.first_round:
             teams = {game.team1.name, game.team2.name}
