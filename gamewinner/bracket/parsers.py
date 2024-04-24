@@ -9,13 +9,14 @@ from gamewinner.teams.team import Team
 RANKS = [1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15]
 
 
-class Parser:
+datadir = Path(__file__).parent.parent.parent.joinpath("data")
 
+
+class SeedParser:
     def __init__(self, year: int):
-
-        datadir = Path(__file__).parent.parent.parent.joinpath("data")
-        assert datadir.exists()
-        with open(datadir.joinpath(f"{year}.yaml"), "r") as f:
+        seed_file = datadir.joinpath("seeds").joinpath(f"{year}.yaml")
+        assert seed_file.exists(), "invalid year: need pre-tournament seed data"
+        with open(seed_file, "r") as f:
             data = yaml.safe_load(f)
             self.east: dict[int, str] = data["East"]
             self.west: dict[int, str] = data["West"]
@@ -52,3 +53,29 @@ class Parser:
                         region=GeographicRegion(reg_str),
                     )
                     self.teams.append(team)
+
+
+class ResultsParser:
+    def __init__(self, year: int):
+        results_file = datadir.joinpath("results").joinpath(f"{year}.yaml")
+        assert results_file.exists(), "invalid year: need post-tournament results"
+
+        with open(results_file, "r") as f:
+            data = yaml.safe_load(f)
+            self.year = data["Year"]
+            self.first_round_winners = set(data["FirstRoundWinners"])
+            self.second_round_winners = set(data["SecondRoundWinners"])
+            self.sweet_sixteen_winners = set(data["SweetSixteenWinners"])
+            self.elite_eight_winners = set(data["EliteEightWinners"])
+            self.final_four_winners = set(data["FinalFourWinners"])
+            self.winner = set(data["Winner"])
+            score = data["FinalScore"]
+            self.final_score = (score[0], score[1])
+            self.team_names = (
+                self.first_round_winners
+                | self.second_round_winners
+                | self.sweet_sixteen_winners
+                | self.elite_eight_winners
+                | self.final_four_winners
+                | self.winner
+            )
