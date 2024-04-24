@@ -38,18 +38,16 @@ class TestSeedParser:
 
 
 class TestResultsParser:
-    def test_results_have_valid_team_names(self, results_parser: ResultsParser) -> None:
+    def test_results_have_definitive_names(self, results_parser: ResultsParser) -> None:
         assert len(results_parser.team_names) == 32
         for name in results_parser.team_names:
-            assert get_definitive_name(name)
+            assert name == get_definitive_name(name)
 
     def test_all_teams_accounted_for(self, test_year: int) -> None:
         seed = SeedParser(test_year)
         result = ResultsParser(test_year)
         seed_teams = {team.name for team in seed.teams}
-        result_teams = {
-            get_definitive_name(name) for name in result.first_round_winners
-        }
+        result_teams = {name for name in result.first_round_winners}
         assert result_teams.issubset(seed_teams)
 
     def test_results_parser_has_correct_count(

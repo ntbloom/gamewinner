@@ -4,7 +4,7 @@ import yaml
 
 from gamewinner.bracket.exceptions import BracketLogicError
 from gamewinner.bracket.geographic_region import GeographicRegion
-from gamewinner.teams.team import Team
+from gamewinner.teams.team import Team, get_definitive_name
 
 RANKS = [1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15]
 
@@ -25,6 +25,7 @@ class SeedParser:
             self.west_plays = GeographicRegion(data["WestPlays"])
             self.year: int = data["Year"]
             self.teams: list[Team] = []
+            self.complete = "Results" in data
 
             # Make an array of all teams arranged by region and by rank order.
             # We can pop teams out one by one in each region to build the 4
@@ -65,12 +66,22 @@ class ResultsParser:
             assert "Results" in raw, "invalid year: need post-tournament results"
             self.year = raw["Year"]
             data = raw["Results"]
-            self.first_round_winners = set(data["FirstRoundWinners"])
-            self.second_round_winners = set(data["SecondRoundWinners"])
-            self.sweet_sixteen_winners = set(data["SweetSixteenWinners"])
-            self.elite_eight_winners = set(data["EliteEightWinners"])
-            self.final_four_winners = set(data["FinalFourWinners"])
-            self.winner = set(data["Winner"])
+            self.first_round_winners = {
+                get_definitive_name(team) for team in data["FirstRoundWinners"]
+            }
+            self.second_round_winners = {
+                get_definitive_name(team) for team in data["SecondRoundWinners"]
+            }
+            self.sweet_sixteen_winners = {
+                get_definitive_name(team) for team in data["SweetSixteenWinners"]
+            }
+            self.elite_eight_winners = {
+                get_definitive_name(team) for team in data["EliteEightWinners"]
+            }
+            self.final_four_winners = {
+                get_definitive_name(team) for team in data["FinalFourWinners"]
+            }
+            self.winner = {get_definitive_name(team) for team in data["Winner"]}
             score = data["FinalScore"]
             self.final_score = (score[0], score[1])
             self.team_names = (
