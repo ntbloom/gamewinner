@@ -44,3 +44,13 @@ class Providers:
     fox_sports = BracketProvider("foxsports", 1, 2, 4, 8, 16, 32)
     ncaa_dot_com = BracketProvider("ncaa.com", 1, 2, 4, 8, 16, 32)
     balanced = BracketProvider("balanced", 1, 2, 3, 4, 6, 10)
+
+
+available_providers = (
+    Providers.espn,
+    Providers.yahoo,
+    Providers.cbs,
+    Providers.fox_sports,
+    Providers.ncaa_dot_com,
+    Providers.balanced,
+)

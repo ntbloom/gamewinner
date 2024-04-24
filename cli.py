@@ -3,16 +3,21 @@ from typing import Any
 import typer
 from rich import print as rprint
 from rich.console import Console
+from typing_extensions import Annotated
 
-from gamewinner import play
 from gamewinner.bracket import available_years, this_year
+from gamewinner.bracket.scoring import BracketProvider, Providers, available_providers
+from gamewinner.gamewinner import play, rank_brackets
 from gamewinner.printers import all_printers
 from gamewinner.printers.basic_file_printer import BasicFilePrinter
 from gamewinner.printers.iprinter import Printer
-from gamewinner.strategies import Strategy, available_strategies
+from gamewinner.strategies import BestRankWins, Strategy, available_strategies
 
 PRINTERS: dict[str, Printer] = {
     printer.name: printer for printer in all_printers  # type: ignore
+}
+PROVIDERS: dict[str, BracketProvider] = {
+    provider.name: provider for provider in available_providers
 }
 STRATEGIES: dict[str, Strategy] = {
     strategy.name: strategy for strategy in available_strategies
@@ -35,21 +40,33 @@ def _error_msg(tag: str, name: Any, legals: dict[Any, Any]) -> None:
 
 @app.command()
 def main(
-    strategy: str = typer.Option(..., help="strategy you want to use"),
+    strategy: str = typer.Option(BestRankWins().name, help="strategy you want to use"),
     year: int = typer.Option(this_year, help="year you want to use"),
     printer: str = typer.Option(BasicFilePrinter.name, help="printer to use"),
+    score_all: Annotated[bool, typer.Option("--score_all")] = False,
+    provider: str = typer.Option(
+        Providers.espn.name, help="which scoring system to use"
+    ),
 ) -> None:
     _year = YEARS.get(year, None)
     if not _year:
         _error_msg("year", year, YEARS)
-    _strategy = STRATEGIES.get(strategy, None)
-    if not _strategy:
-        _error_msg("strategy", strategy, STRATEGIES)
-    _printer = PRINTERS.get(printer, None)
-    if not _printer:
-        _error_msg("printer", printer, PRINTERS)
 
-    play(_strategy, _year, _printer)  # type: ignore
+    if score_all:
+        _provider = PROVIDERS.get(provider, None)
+        if not _provider:
+            _error_msg("provider", provider, PROVIDERS)
+        rank_brackets(_year, _provider)
+
+    else:
+        _strategy = STRATEGIES.get(strategy, None)
+        if not _strategy:
+            _error_msg("strategy", strategy, STRATEGIES)
+        _printer = PRINTERS.get(printer, None)
+        if not _printer:
+            _error_msg("printer", printer, PRINTERS)
+
+        play(_strategy, _year, _printer)  # type: ignore
 
 
 if __name__ == "__main__":
