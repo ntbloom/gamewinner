@@ -48,15 +48,17 @@ def main(
         Providers.espn.name, help="which scoring system to use"
     ),
 ) -> None:
-    _year = YEARS.get(year, None)
-    if not _year:
+    try:
+        _year = YEARS[year]
+    except KeyError:
         _error_msg("year", year, YEARS)
 
     if score_all:
-        _provider = PROVIDERS.get(provider, None)
-        if not _provider:
+        try:
+            _provider = PROVIDERS[provider]
+            rank_brackets(_year, _provider)
+        except KeyError:
             _error_msg("provider", provider, PROVIDERS)
-        rank_brackets(_year, _provider)
 
     else:
         _strategy = STRATEGIES.get(strategy, None)

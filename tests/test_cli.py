@@ -58,10 +58,9 @@ class TestCli:
 
     @pytest.mark.parametrize(
         "year",
-        [
-            # 2023,
-            2024,
-        ],
+        [2024],
     )
     def test_score_all(self, cli_runner: CliRunner, year: int) -> None:
-        assert cli_runner.invoke(app, ["--year", year, "--score_all"]).exit_code == 0
+        assert (
+            cli_runner.invoke(app, ["--year", str(year), "--score_all"]).exit_code == 0
+        )
