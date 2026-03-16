@@ -29,3 +29,37 @@ Key findings from the codebase:
 Let me now rewrite the plan files with accurate, grounded content:
 
 ... 
+
+_After making a bunch of changes, captured in the next commit..._
+
+Here's a summary of what I did and why:
+
+Summary of Changes
+I rewrote all 8 plan files (00-07) to be grounded in the actual codebase rather than speculative/hallucinated. The original plans were ~3,500 lines of mostly fabricated code examples, invented APIs, and incorrect assumptions. The new plans are ~1,100 lines of accurate, actionable guidance.
+
+Key problems fixed across all files:
+
+1. CSV parsing is positional, not header-based — The original plans assumed csv.DictReader/pandas and talked about "column references" as string lookups. In reality, imathstats.py uses tuple unpacking with exact positional destructuring of 20 columns. This is the single most critical architectural detail for Steps 02-03.
+
+2. MSProps NamedTuple is the API boundary — Strategies access data through MSProps field names (like rank_defense, raw_overall), not CSV column names. The original plans confused these layers.
+
+3. 2023→2024 migration already happened — The plans didn't acknowledge that column changes were already handled once. This precedent (e.g., resume_rank kept with default=-1) is the template for handling 2026 changes.
+
+4. Team name system via alternate_names.py — The original plans invented separate "alias systems" when the codebase already has a comprehensive one.
+
+5. CLI uses Typer, not Click — Multiple plan files showed Click-based code. The actual CLI uses Typer.
+
+6. Scope right-sizing — The originals proposed: PDF exporters, Flask/FastAPI web servers, Plotly charts, Slack/Discord notification systems, pydantic schemas, Jinja2 templates, genetic algorithms, strategy marketplaces, mobile interfaces, etc. None of this matches the project's lightweight, single-purpose character. The rewrites propose proportionate solutions.
+
+**Per-file changes:**
+
+| File | Before | After | Key Change |
+|------|--------|-------|------------|
+| 00-plan | Generic overview | Documents actual architecture (positional CSV parsing, MSProps, etc.) |
+| 01-tournament | Invented APIs, validation frameworks | Focuses on exact YAML/CSV format with real examples |
+| 02-evan-miya | pandas, DictReader, subscription budgets | Documents exact 20-column format with positional mapping table |
+| 03-strategy-updates | Invented AdaptiveTeamProperties, column mapping scripts | Three clear scenarios (columns changed, backward compat, new teams) |
+| 04-rendering | Reporting framework, PDF/HTML exporters, Plotly | One new markdown printer + a comparison script |
+| 05-tracking | Flask dashboard, notification system, CI pipeline | Simple results YAML file + scoring script |
+| 06-yaml-builder | 650-line Jinja2/pydantic/Click framework | 195-line plan for a single-file YAML→Python converter |
+| 07-interactive | 812-line React/FastAPI/Textual mega-plan | 100-line suggestion for simple CLI prompts |
