@@ -1,437 +1,144 @@
-# Step 05: Tournament Tracking and Live Standings System
+# Step 05: Tournament Tracking and Standings
 
 ## Objective
-Build a system to track live tournament results as games are played and generate "standings" showing how each strategy is performing, similar to the examples in GitHub issue #19. Include comparison capabilities against manually-submitted brackets from ESPN.com and Yahoo.
 
-## Reference Analysis
+During the tournament, track actual game results and score each strategy's bracket against reality. Produce standings like those in GitHub issue #19. Optionally compare against human brackets from ESPN/Yahoo.
 
-### GitHub Issue #19 Standings Format
-Based on the referenced issue, standings should include:
-- Strategy rankings by current score
-- Points earned per round/game
-- Elimination status (strategies that can no longer win)
-- Comparison to human bracket performance
-- Projected final scores based on remaining games
+## How the system works today
 
-## Implementation Tasks
+When you run a strategy, the `Bracket` object records every predicted game as a `Game(team1, team2, predicted_winner, stage)`. The full bracket of predictions is the output.
 
-### Task 5.1: Tournament Results Data Pipeline
-**File**: `gamewinner/tracking/results_fetcher.py`
+To score a bracket, we need to compare these predictions against actual results. The existing codebase has **no** results-tracking infrastructure — this is entirely new.
 
-**Data Sources**:
-- **ESPN API**: `https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/`
-- **CBS Sports API**: Tournament results endpoint
-- **NCAA.com**: Official results (backup)
+## Design: Keep it simple
 
-**Core Functions**:
-```python
-class TournamentResultsFetcher:
-    def __init__(self, year: int):
-        self.year = year
-        self.base_urls = {
-            'espn': f'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard',
-            'cbs': f'https://www.cbssports.com/college-basketball/scores/{year}/',
-        }
-    
-    def fetch_daily_results(self, date: str) -> List[GameResult]:
-        """Get all completed games for a specific date"""
-        
-    def fetch_tournament_status(self) -> TournamentStatus:
-        """Get current tournament round and remaining games"""
-        
-    def validate_results(self, results: List[GameResult]) -> bool:
-        """Verify results data integrity"""
+The core need is:
+1. A way to record actual tournament results
+2. A scorer that compares predictions vs. results
+3. A script to produce standings
 
-@dataclass
-class GameResult:
-    home_team: str
-    away_team: str
-    home_score: int
-    away_score: int
-    winner: str
-    round_name: str  # "First Round", "Second Round", etc.
-    game_date: str
-    completed: bool
-```
+### Actual results: a simple data file
 
-### Task 5.2: Bracket Scoring System
-**File**: `gamewinner/tracking/bracket_scorer.py`
+**File**: `data/results/2026.yaml` (or `.json`)
 
-**Scoring Rules** (Traditional NCAA Tournament scoring):
-```python
-ROUND_POINTS = {
-    "First Four": 0,      # No points for play-in games
-    "First Round": 1,     # Round of 64
-    "Second Round": 2,    # Round of 32  
-    "Sweet 16": 4,
-    "Elite 8": 8,
-    "Final Four": 16,
-    "Championship": 32,
-}
+A manually-maintained (or script-updated) file recording game outcomes:
 
-class BracketScorer:
-    def __init__(self, bracket_predictions: Dict, actual_results: List[GameResult]):
-        self.predictions = bracket_predictions
-        self.results = actual_results
-        
-    def calculate_current_score(self) -> int:
-        """Calculate points earned so far"""
-        
-    def calculate_maximum_possible_score(self) -> int:
-        """Best possible final score if all remaining picks are correct"""
-        
-    def identify_eliminated_predictions(self) -> List[str]:
-        """Teams picked that have been eliminated"""
-        
-    def get_remaining_picks(self) -> Dict:
-        """Predictions that could still earn points"""
-```
-
-### Task 5.3: Strategy Standings Generator
-**File**: `gamewinner/tracking/standings_generator.py`
-
-**Standings Data Structure**:
-```python
-@dataclass
-class StrategyStanding:
-    strategy_name: str
-    current_score: int
-    max_possible_score: int
-    eliminated_picks: int
-    correct_picks: int
-    total_picks_made: int
-    final_four_alive: int  # How many Final Four picks still possible
-    championship_pick_alive: bool
-    rank: int
-    
-class StandingsGenerator:
-    def __init__(self, strategies: Dict[str, BracketPrediction], results: List[GameResult]):
-        self.strategies = strategies
-        self.results = results
-        
-    def generate_current_standings(self) -> List[StrategyStanding]:
-        """Create ranked list of strategy performance"""
-        
-    def generate_standings_report(self) -> str:
-        """Create formatted standings report"""
-        
-    def identify_leader_changes(self, previous_standings: List[StrategyStanding]) -> List[str]:
-        """Track which strategies moved up/down"""
-```
-
-### Task 5.4: External Bracket Integration
-**File**: `gamewinner/tracking/external_brackets.py`
-
-**ESPN Bracket Integration**:
-```python
-class ESPNBracketFetcher:
-    def __init__(self, group_id: str = None):
-        self.group_id = group_id
-        
-    def fetch_group_standings(self) -> List[ExternalBracket]:
-        """Get ESPN group bracket standings"""
-        
-    def fetch_public_leaderboard(self) -> List[ExternalBracket]:
-        """Get overall ESPN leaderboard sample"""
-
-@dataclass        
-class ExternalBracket:
-    bracket_name: str
-    owner_name: str
-    current_score: int
-    max_possible_score: int
-    percentile: float  # Compared to all ESPN brackets
-    source: str  # "ESPN", "Yahoo", etc.
-```
-
-**Yahoo Bracket Integration**:
-```python
-class YahooBracketFetcher:
-    def fetch_group_standings(self, group_id: str) -> List[ExternalBracket]:
-        """Get Yahoo group standings"""
-```
-
-### Task 5.5: Comparative Analysis System
-**File**: `gamewinner/tracking/comparative_analysis.py`
-
-**Analysis Features**:
-```python
-class ComparativeAnalyzer:
-    def __init__(self, strategy_standings: List[StrategyStanding], 
-                 external_brackets: List[ExternalBracket]):
-        self.strategies = strategy_standings
-        self.external = external_brackets
-        
-    def compare_to_human_average(self) -> Dict[str, float]:
-        """Compare each strategy to average human performance"""
-        
-    def identify_outperforming_strategies(self) -> List[str]:
-        """Strategies beating majority of human brackets"""
-        
-    def calculate_percentile_rankings(self) -> Dict[str, float]:
-        """Where each strategy would rank among all brackets"""
-        
-    def generate_comparison_report(self) -> str:
-        """Create human vs AI comparison report"""
-```
-
-### Task 5.6: Automated Daily Updates
-**File**: `scripts/daily_tournament_update.py`
-
-**Daily Update Workflow**:
-```python
-def daily_update_workflow():
-    """Run complete daily update process"""
-    
-    # 1. Fetch latest game results
-    results_fetcher = TournamentResultsFetcher(2026)
-    new_results = results_fetcher.fetch_daily_results(today())
-    
-    # 2. Update results database
-    update_results_database(new_results)
-    
-    # 3. Recalculate all strategy standings
-    all_results = load_all_results()
-    standings = calculate_all_standings(all_results)
-    
-    # 4. Fetch external bracket data  
-    external_data = fetch_external_brackets()
-    
-    # 5. Generate updated reports
-    generate_standings_report(standings, external_data)
-    
-    # 6. Send notifications if significant changes
-    check_and_notify_changes(standings)
-```
-
-### Task 5.7: CI/CD Integration
-**File**: `.github/workflows/tournament_tracking.yml`
-
-**Automated CI Pipeline**:
 ```yaml
-name: Tournament Tracking Update
-
-on:
-  schedule:
-    # Run every morning at 8 AM EST during tournament
-    - cron: '0 13 * 3 *'
-  workflow_dispatch:  # Manual trigger
-
-jobs:
-  update-standings:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-        
-    - name: Install dependencies
-      run: |
-        pip install poetry
-        poetry install
-        
-    - name: Fetch tournament results
-      run: |
-        poetry run python scripts/daily_tournament_update.py
-        
-    - name: Generate standings report
-      run: |
-        poetry run python scripts/generate_standings_report.py
-        
-    - name: Commit updated standings
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add standings/
-        git diff --staged --quiet || git commit -m "Update tournament standings $(date)"
-        git push
+# data/results/2026.yaml
+year: 2026
+games:
+  # First Round
+  - round: FirstRound
+    winner: Connecticut
+    loser: Stetson
+  - round: FirstRound
+    winner: Iowa State
+    loser: South Dakota State
+  # ... as games are played
+  
+  # Second Round
+  - round: SecondRound
+    winner: Connecticut
+    loser: Northwestern
+  # ...
 ```
 
-### Task 5.8: Standings Report Templates
-**File**: `gamewinner/tracking/templates/standings_report.md`
+Team names must be canonical (same as everywhere else). The `round` field should use `Stage` enum values: `FirstRound`, `SecondRound`, `SweetSixteen`, `EliteEight`, `FinalFour`, `Finals`.
 
-**Report Template**:
+This file gets updated each day as games are completed. It can be updated manually (simplest) or via script (nicer).
+
+### Scoring a bracket
+
+**File**: `gamewinner/scoring.py` (or `scripts/score_brackets.py`)
+
+Standard bracket scoring:
+
+| Round | Points per correct pick |
+|-------|------------------------|
+| First Round | 10 |
+| Second Round | 20 |
+| Sweet Sixteen | 40 |
+| Elite Eight | 80 |
+| Final Four | 160 |
+| Championship | 320 |
+
+(These are the ESPN standard point values. Adjust as desired.)
+
+The scorer:
+1. Runs each strategy to generate its bracket predictions (deterministic strategies are stable; random ones can be run with a fixed seed or multiple times)
+2. Loads the results file
+3. For each actual game result, checks if the strategy predicted that winner advancing in that round
+4. Tallies points
+
+**Key detail**: A bracket prediction isn't just "who wins each game" — it's "who reaches each round." If Strategy X picks Duke to reach the Elite Eight, but Duke loses in the Sweet Sixteen, the strategy gets no points for the Elite Eight game (even if the team that beat Duke is also someone the strategy picked elsewhere). This is standard bracket scoring: you only get points for a correct pick in the specific game slot.
+
+The simplest implementation:
+- For each completed game in results, identify the corresponding game in the bracket tree (same round, same matchup slot)
+- Check if the strategy's predicted winner matches the actual winner
+- Award points based on round
+
+Since the bracket is a binary tree, each game slot is deterministic. The `Bracket` object already organizes games by round.
+
+### Standings output
+
 ```markdown
-# March Madness Standings - Day {day_number}
-*Updated: {timestamp}*
+# 2026 Tournament Standings — Through Sweet Sixteen
 
-## Current Leaderboard
-
-| Rank | Strategy | Current Score | Max Possible | Correct Picks | Status |
-|------|----------|---------------|--------------|---------------|--------|
-| 1 | {strategy_1} | {score_1} | {max_1} | {correct_1}/{total_1} | {status_1} |
-| 2 | {strategy_2} | {score_2} | {max_2} | {correct_2}/{total_2} | {status_2} |
-
-## Today's Results Impact
-{daily_changes}
-
-## Comparison to Human Brackets
-- **Best Strategy vs ESPN Average**: {best_vs_avg}
-- **Strategies in Top 10%**: {top_performers}
-- **Strategies Below Average**: {underperformers}
-
-## Final Four Status
-{final_four_analysis}
-
-## Elimination Report
-{elimination_summary}
-
-## Tomorrow's Key Games
-{key_games}
+| Rank | Strategy | Score | Correct | Max Possible | Champion Pick |
+|------|----------|-------|---------|--------------|---------------|
+| 1 | SlothfireSteadiest | 290 | 24/48 | 770 | Houston ✅ |
+| 2 | TheCuts23Frozen | 270 | 22/48 | 690 | Duke ❌ |
+| 3 | Vanilla | 260 | 23/48 | 610 | Connecticut ✅ |
+| ... | ... | ... | ... | ... | ... |
 ```
 
-### Task 5.9: Notification System
-**File**: `gamewinner/tracking/notifications.py`
+### Handling randomness
 
-**Notification Triggers**:
-- Major upsets that affect multiple strategies
-- Leader changes in standings
-- Strategies eliminated from contention
-- Daily summary reports
+Strategies with randomness produce different brackets each run. Options:
+- **Lock brackets before tournament starts**: Run each strategy once, save the bracket (as JSON/YAML), and score against those locked picks. This is the fairest approach.
+- **Use deterministic variants**: `SlothfireSteadiest` instead of `SlothfireSteady`, `TheCuts23Frozen` instead of `TheCuts23`, etc.
+- **Run multiple times, take consensus**: More complex, probably not worth it.
 
-```python
-class NotificationSystem:
-    def __init__(self):
-        self.channels = ['email', 'slack', 'discord']  # Configurable
-        
-    def send_daily_summary(self, standings: List[StrategyStanding]):
-        """Send daily standings update"""
-        
-    def send_upset_alert(self, upset_game: GameResult, affected_strategies: List[str]):
-        """Notify about major upsets"""
-        
-    def send_leader_change_alert(self, old_leader: str, new_leader: str):
-        """Notify when standings leader changes"""
+Recommend: Before the tournament starts, run each strategy (including random ones) and save the brackets to `generated/brackets/2026/`. Score against those saved brackets.
+
+### Fetching results automatically (optional)
+
+The ESPN scoreboard API is undocumented but well-known:
+```
+https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?dates=20260319&groups=100
 ```
 
-### Task 5.10: Web Dashboard (Optional Enhancement)
-**File**: `gamewinner/web/dashboard.py`
+(`groups=100` filters to tournament games.)
 
-**Simple Flask/FastAPI Dashboard**:
-```python
-from flask import Flask, render_template, jsonify
+A script could fetch completed games and update the results YAML. This is nice-to-have but the results file can also be updated manually.
 
-app = Flask(__name__)
+### CI automation (optional)
 
-@app.route('/')
-def standings_dashboard():
-    """Main standings dashboard"""
-    current_standings = load_current_standings()
-    return render_template('dashboard.html', standings=current_standings)
+A GitHub Actions workflow that:
+1. Runs daily during the tournament (`schedule: cron: '0 13 * 3 *'`)
+2. Fetches latest results (or expects a manually-pushed results file)
+3. Runs the scoring script
+4. Commits updated standings to the repo (or creates/updates an issue)
 
-@app.route('/api/standings')
-def api_standings():
-    """API endpoint for standings data"""
-    return jsonify(load_current_standings())
+## Comparing against external brackets
 
-@app.route('/api/results/<date>')  
-def api_daily_results(date):
-    """API endpoint for daily results"""
-    return jsonify(load_results_for_date(date))
-```
+For ESPN/Yahoo group comparison:
+- The simplest approach: manually enter scores from the ESPN/Yahoo group leaderboard into a CSV
+- A fancier approach: scrape the ESPN bracket group standings
 
-## Data Storage
+ESPN and Yahoo bracket scoring varies by pool settings, so ensure you're comparing with the same point values.
 
-### Results Database
-**File**: `data/tournament_results/2026_results.json`
-```json
-{
-  "tournament_year": 2026,
-  "last_updated": "2026-03-21T10:30:00Z",
-  "current_round": "Sweet 16",
-  "completed_games": [
-    {
-      "game_id": "game_001",
-      "round": "First Round", 
-      "home_team": "Duke",
-      "away_team": "Vermont",
-      "home_score": 87,
-      "away_score": 56,
-      "winner": "Duke",
-      "date": "2026-03-18"
-    }
-  ],
-  "remaining_games": [...],
-  "eliminated_teams": [...]
-}
-```
+This is a nice-to-have and can be as simple as adding a row to the standings table.
 
-### Standings History
-**File**: `data/standings/2026_standings_history.json`
-```json
-{
-  "2026-03-18": {
-    "day": 1,
-    "standings": [...],
-    "external_comparison": {...}
-  },
-  "2026-03-19": {
-    "day": 2,  
-    "standings": [...],
-    "external_comparison": {...}
-  }
-}
-```
+## Files to create
 
-## Testing Strategy
-
-### Unit Tests
-- Test bracket scoring logic with known results
-- Verify standings calculations
-- Test external API data parsing
-
-### Integration Tests
-- Full pipeline test with mock tournament data
-- Test CI workflow in development environment
-- Verify report generation end-to-end
-
-### Manual Testing
-- Compare scoring against known ESPN/Yahoo results
-- Verify standings match manual calculations
-- Test notification systems
-
-## Error Handling
-
-### API Failures
-- Retry logic with exponential backoff
-- Fallback to alternative data sources
-- Cache previous results to continue operations
-
-### Data Inconsistencies  
-- Validation of fetched results against multiple sources
-- Manual override capabilities for incorrect data
-- Audit trail for all data changes
-
-## Performance Considerations
-
-### Daily Processing
-- Optimize for incremental updates (only new games)
-- Cache external bracket data to minimize API calls
-- Parallel processing of multiple strategies
-
-### Storage
-- Compress historical data after tournament completion
-- Archive old tournament data to separate storage
-- Implement data retention policies
-
-## Delivery Criteria
-- [ ] Daily results fetching working from ESPN/CBS APIs
-- [ ] Bracket scoring system calculates points correctly
-- [ ] Standings generation ranks strategies properly
-- [ ] External bracket comparison (ESPN/Yahoo) functional
-- [ ] Automated CI pipeline runs daily updates
-- [ ] Notification system sends relevant alerts
-- [ ] Historical data preserved for analysis
-- [ ] Error handling covers common failure scenarios
-
-## Security Considerations
-- API keys stored securely in environment variables
-- Rate limiting to respect external API terms
-- Input validation for all external data sources
-- Access controls for notification systems
+| File | Purpose |
+|------|---------|
+| `data/results/2026.yaml` | Actual game results (updated throughout tournament) |
+| `scripts/score_brackets.py` | Score each strategy's bracket against results |
+| `scripts/lock_brackets.py` | Run all strategies and save bracket predictions |
+| `scripts/fetch_results.py` | Optional: fetch results from ESPN API |
+| `.github/workflows/tournament_tracking.yml` | Optional: daily CI job |
 
 ## Next Step
-After implementing tournament tracking, proceed to **06-strategy-builder-yaml.md** to create the YAML-based strategy definition system.
+After implementing tournament tracking, proceed to **06-strategy-builder-yaml.md**.
