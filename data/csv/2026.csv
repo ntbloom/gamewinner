@@ -1,0 +1,69 @@
+Team Name,Region,Regional Rank,Wins,Losses
+Duke,East,1,32,2
+Connecticut,East,2,29,5
+Michigan State,East,3,25,7
+Kansas,East,4,23,10
+Saint John's,East,5,28,6
+Louisville,East,6,23,10
+UCLA,East,7,23,11
+Ohio State,East,8,21,12
+TCU,East,9,22,11
+UCF,East,10,21,11
+South Florida,East,11,25,8
+Northern Iowa,East,12,23,12
+California Baptist,East,13,25,8
+North Dakota State,East,14,27,7
+Furman,East,15,22,12
+Siena,East,16,23,11
+Florida,South,1,26,7
+Houston,South,2,28,6
+Illinois,South,3,24,8
+Nebraska,South,4,26,6
+Vanderbilt,South,5,26,8
+North Carolina,South,6,24,8
+Saint Mary's,South,7,27,5
+Clemson,South,8,24,10
+Iowa,South,9,21,12
+Texas A&M,South,10,21,11
+VCU,South,11,27,7
+McNeese State,South,12,28,5
+Troy,South,13,22,11
+Penn,South,14,18,11
+Idaho,South,15,21,14
+Lehigh,South-Playoff,16,18,16
+Prairie View,South-Playoff,16,18,17
+Arizona,West,1,32,2
+Purdue,West,2,27,8
+Gonzaga,West,3,30,3
+Arkansas,West,4,26,8
+Wisconsin,West,5,24,10
+BYU,West,6,23,11
+Miami (Fla.),West,7,25,8
+Villanova,West,8,24,8
+Utah State,West,9,28,6
+Missouri,West,10,20,12
+NC State,West-Playoff,11,20,13
+Texas,West-Playoff,11,18,14
+High Point,West,12,30,4
+Hawaii,West,13,24,8
+Kennesaw State,West,14,21,13
+Queens,West,15,21,13
+Long Island,West,16,24,10
+Michigan,Midwest,1,31,3
+Iowa State,Midwest,2,27,7
+Virginia,Midwest,3,29,5
+Alabama,Midwest,4,23,9
+Texas Tech,Midwest,5,22,10
+Tennessee,Midwest,6,22,11
+Kentucky,Midwest,7,21,13
+Georgia,Midwest,8,22,10
+Saint Louis,Midwest,9,28,5
+Santa Clara,Midwest,10,26,8
+Miami (Ohio),Midwest-Playoff,11,31,1
+SMU,Midwest-Playoff,11,20,13
+Akron,Midwest,12,29,5
+Hofstra,Midwest,13,24,10
+Wright State,Midwest,14,23,11
+Tennessee State,Midwest,15,23,9
+UMBC,Midwest-Playoff,16,24,8
+Howard,Midwest-Playoff,16,23,10

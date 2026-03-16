@@ -21,6 +21,7 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
     testable_years = (
         2023,
         2024,
+        2026,
     )
     if year_fixture in metafunc.fixturenames:
         metafunc.parametrize(
@@ -33,6 +34,8 @@ def strategized_bracket(strategy: Strategy, test_year: int) -> Bracket:
     # don't worry about breaking changes and only run strategies for this year
     if test_year == 2023 and isinstance(strategy, IMathStatsStrategy):
         pytest.skip("2023 mathstats data is incompatible")
+    if test_year == 2026 and isinstance(strategy, IMathStatsStrategy):
+        pytest.skip("2026 mathstats data not yet available")
 
     bracket = Bracket(test_year)
     bracket.play(strategy)
